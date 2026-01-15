@@ -11,11 +11,9 @@ Este proyecto es el Trabajo de Fin de Ciclo para 2º de DAW. Consiste en una apl
 
 El objetivo principal es resolver el problema de las plataformas que te ofrecen estos servicios pero solo si pagas de forma mensual, permitiendo a los usuarios comprar lo que quieran sin límite de uso ni de duración.
 
-## 📸 Capturas de Pantalla
+## 📸 Video Prototipo
 
-| Página de Inicio | Panel de Admin |
-|:---:|:---:|
-| ![Home](url_de_tu_imagen_home.png) | ![Admin](url_de_tu_imagen_admin.png) |
+https://github.com/user-attachments/assets/57aa71ef-8d9e-46eb-bb0c-7129f941fdc1
 
 ## 🛠️ Tecnologías Utilizadas
 
