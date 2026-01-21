@@ -7,6 +7,11 @@
             <img src="../assets/logos/Logo_gr.png" alt="Logo Nexus" class="imagen-logo">
         </a>
 
+        <button class="explorar">
+            <img src="../assets/logos/explorar.png" alt="Imagen de explorar">
+            <p>Explorar</p>
+        </button>
+
         <div class="buscador">
             <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -30,7 +35,7 @@
         padding: 12px 40px;
         background-color: #fff;
         border-bottom: 1px solid #eee;
-        height: 70px;
+        height: 80px;
     }
 
     .logo-container {
@@ -39,18 +44,44 @@
     }
 
     .imagen-logo {
-        height: 100px;
+        height: 80px;
+        width: 170px;
         width: auto;
         object-fit: contain;
+    }
+
+    .explorar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        background-color: white;
+        border: none;
+        padding: 10px 13px;
+        cursor: pointer;
+    }
+
+    .explorar:hover {
+        background-color: #008ca5;
+        border-radius: 6px;
+        color: #fff;
+    }
+
+    .explorar:hover img {
+        filter: brightness(0) invert(1);
+    }
+
+    .explorar img {
+        height: 30px;
     }
 
     .buscador {
         display: flex;
         align-items: center;
         background-color: #f8f9fa;
-        padding: 10px 16px;
+        padding: 8px 8px;
         border-radius: 6px;
-        width: 400px;
+        width: 750px;
     }
 
     .lupa {
