@@ -137,17 +137,14 @@
 </template>
 
 <style scoped>
-/* =========================================
-   1. NAVBAR (Barra de navegación)
-   ========================================= */
 .navbar {
   background-color: #ffffff;
   width: 100%;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
-  z-index: 100; /* Para que quede por encima al hacer scroll */
+  z-index: 100;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
 }
@@ -157,7 +154,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  max-width: 1200px; /* Ancho máximo estándar */
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -168,7 +165,7 @@
 }
 
 .imagen-logo {
-  height: 60px; /* Ajustado para que no sea enorme */
+  height: 60px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -192,7 +189,6 @@
   color: #2563eb;
 }
 
-/* Botón del menú actualizado al azul nuevo */
 .boton {
   background-color: #2563eb;
   color: white;
@@ -209,9 +205,6 @@
   background-color: #1d4ed8;
 }
 
-/* =========================================
-   2. ESTRUCTURA PRINCIPAL (Main)
-   ========================================= */
 main {
   background: none;
   width: 100%;
@@ -220,9 +213,6 @@ main {
   flex-direction: column;
 }
 
-/* =========================================
-   3. SECCIÓN HERO (La de arriba)
-   ========================================= */
 .hero {
   background: linear-gradient(to bottom, #f0fdff 0%, #ffffff 100%);
   width: 100%;
