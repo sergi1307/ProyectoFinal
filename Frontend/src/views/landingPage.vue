@@ -1,149 +1,500 @@
-<script>
-
-</script>
+<script></script>
 <template>
-    <nav class="navbar">
-        <a href="#" class="logo-container">
-            <img src="../assets/logos/Logo_gr.png" alt="Logo Nexus" class="imagen-logo">
-        </a>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="#" class="logo-container">
+        <img
+          src="../assets/logos/Logo_gr.png"
+          alt="Logo Nexus"
+          class="imagen-logo"
+        />
+      </a>
 
-        <button class="explorar">
-            <img src="../assets/logos/explorar.png" alt="Imagen de explorar">
-            <p>Explorar</p>
-        </button>
+      <div class="acciones">
+        <a href="#" class="enlace">Iniciar Sesión</a>
+        <button class="boton">Registrarse</button>
+      </div>
+    </div>
+  </nav>
 
-        <div class="buscador">
-            <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" placeholder="Buscar productos...">
+  <main>
+    <section class="hero">
+      <div class="hero-contenido">
+        <div class="etiqueta">
+          <img src="../assets/iconos/estrella.png" alt="Estrella" />
+          <span>Bienvenido a Nexus</span>
         </div>
 
-        <div class="acciones">
-            <a href="#" class="enlace">Iniciar Sesión</a>
-            <button class="boton">Registrarse</button>
+        <h1>
+          El marketplace para <br />
+          <span class="azul">creadores digitales</span>
+        </h1>
+
+        <p class="subtitulo">
+          Compra, vende y descubre productos digitales únicos creados por una
+          comunidad global de talento independiente.
+        </p>
+
+        <div class="botones-hero">
+          <button class="btn-empezar">
+            Comenzar gratis <span>&rarr;</span>
+          </button>
+          <button class="btn-secundario">Iniciar sesión</button>
         </div>
-    </nav>
+
+        <div class="beneficios">
+          <div class="item-beneficio">
+            <img
+              src="../assets/iconos/check.png"
+              alt="check"
+              class="icono-check"
+            />
+            <span>Sin comisiones ocultas</span>
+          </div>
+          <div class="item-beneficio">
+            <img
+              src="../assets/iconos/check.png"
+              alt="check"
+              class="icono-check"
+            />
+            <span>Pago seguro</span>
+          </div>
+          <div class="item-beneficio">
+            <img
+              src="../assets/iconos/check.png"
+              alt="check"
+              class="icono-check"
+            />
+            <span>Descarga instantánea</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="features-contenido">
+        <div class="features-header">
+          <h2>¿Por qué elegir Nexus?</h2>
+          <p>
+            La plataforma diseñada para impulsar tu creatividad y negocio
+            digital
+          </p>
+        </div>
+
+        <div class="grid-tarjetas">
+          <div class="tarjeta">
+            <div class="icono-contenedor">
+              <span style="font-size: 1.5rem">⚡</span>
+            </div>
+            <h3>Rápido y fácil</h3>
+            <p>
+              Configura tu tienda en minutos. Sube tus productos digitales y
+              empieza a vender al instante.
+            </p>
+          </div>
+
+          <div class="tarjeta">
+            <div class="icono-contenedor">
+              <span style="font-size: 1.5rem">🛡️</span>
+            </div>
+            <h3>100% Seguro</h3>
+            <p>
+              Transacciones protegidas y datos encriptados. Tu seguridad es
+              nuestra prioridad.
+            </p>
+          </div>
+
+          <div class="tarjeta">
+            <div class="icono-contenedor">
+              <span style="font-size: 1.5rem">🌍</span>
+            </div>
+            <h3>Comunidad global</h3>
+            <p>
+              Únete a miles de creadores y compradores de todo el mundo
+              compartiendo su pasión.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion-final">
+      <div class="tarjeta-azul">
+        <h2>¿Listo para comenzar?</h2>
+        <p>
+          Únete a Nexus hoy y descubre un mundo de posibilidades creativas.
+        </p>
+
+        <div class="botones-cta">
+          <button class="btn-blanco">
+            Crear cuenta gratis <span>&rarr;</span>
+          </button>
+          <button class="btn-borde">Ya tengo cuenta</button>
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
 
 <style scoped>
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 40px;
-        background-color: #fff;
-        border-bottom: 1px solid #eee;
-        height: 80px;
-    }
+/* =========================================
+   1. NAVBAR (Barra de navegación)
+   ========================================= */
+.navbar {
+  background-color: #ffffff;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra más suave */
+  position: sticky;
+  top: 0;
+  z-index: 100; /* Para que quede por encima al hacer scroll */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
 
-    .logo-container {
-        display: flex;
-        align-items: center;
-    }
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1200px; /* Ancho máximo estándar */
+  margin: 0 auto;
+}
 
-    .imagen-logo {
-        height: 80px;
-        width: 170px;
-        width: auto;
-        object-fit: contain;
-    }
+.logo-container {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
 
-    .explorar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        background-color: white;
-        border: none;
-        padding: 10px 13px;
-        cursor: pointer;
-    }
+.imagen-logo {
+  height: 60px; /* Ajustado para que no sea enorme */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
 
-    .explorar:hover {
-        background-color: #008ca5;
-        border-radius: 6px;
-        color: #fff;
-    }
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
 
-    .explorar:hover img {
-        filter: brightness(0) invert(1);
-    }
+.enlace {
+  text-decoration: none;
+  color: #1f2937;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
 
-    .explorar img {
-        height: 30px;
-    }
+.enlace:hover {
+  color: #2563eb;
+}
 
-    .buscador {
-        display: flex;
-        align-items: center;
-        background-color: #f8f9fa;
-        padding: 8px 8px;
-        border-radius: 6px;
-        width: 750px;
-    }
+/* Botón del menú actualizado al azul nuevo */
+.boton {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-    .lupa {
-        width: 18px;
-        height: 18px;
-        color: #6b7280;
-        margin-right: 10px;
-    }
+.boton:hover {
+  background-color: #1d4ed8;
+}
 
-    .buscador input {
-        border: none;
-        background-color: transparent;
-        outline: none;
-        width: 100%;
-        font-size: 15px;
-        color: #333;
-    }
+/* =========================================
+   2. ESTRUCTURA PRINCIPAL (Main)
+   ========================================= */
+main {
+  background: none;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
 
-    .buscador input::placeholder {
-        color: #888;
-    }
+/* =========================================
+   3. SECCIÓN HERO (La de arriba)
+   ========================================= */
+.hero {
+  background: linear-gradient(to bottom, #f0fdff 0%, #ffffff 100%);
+  width: 100%;
+  padding: 5rem 2rem;
+  display: flex;
+  justify-content: center;
+}
 
-    .buscador:focus-within {
-        background-color: #fff;
-        outline: 2px solid #0097b2;
-        box-shadow: 0 0 8px rgba(0, 151, 178, 0.3);
-    }
+.hero-contenido {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-    .acciones {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+/* Estilos internos del Hero */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eff6ff;
+  color: #2563eb;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  border: 1px solid #dbeafe;
+}
 
-    .enlace {
-        text-decoration: none;
-        color: #000;
-        font-weight: 600;
-        font-size: 14px;
-        padding: 10px 20px;
-        border-radius: 6px;
-        transition: background 0.2s;
-    }
+.etiqueta img {
+  width: 16px;
+  height: 16px;
+}
 
-    .enlace:hover {
-        color: white;
-        background-color: #0097b2;
-    }
+h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
 
-    .boton {
-        background-color: #0097b2;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
+.azul {
+  color: #2563eb;
+}
 
-    .boton:hover {
-        background-color: #008ca5;
-    }
+.subtitulo {
+  font-size: 1.25rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+}
+
+.botones-hero {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-empezar {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-empezar:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secundario {
+  background-color: white;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-secundario:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.beneficios {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.item-beneficio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.icono-check {
+  width: 20px;
+  height: 20px;
+}
+
+.features {
+  background-color: #ffffff;
+  width: 100%;
+  padding: 5rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.features-contenido {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+}
+
+.features-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.features-header p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 3.5rem;
+}
+
+.grid-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.tarjeta {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 12px;
+  padding: 2.5rem 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.tarjeta:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.icono-contenedor {
+  background-color: #eff6ff;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.tarjeta h3 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.tarjeta p {
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.seccion-final {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 2rem 6rem 2rem;
+  background-color: white;
+}
+
+.tarjeta-azul {
+  background-color: #2563eb;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+}
+
+.tarjeta-azul h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.tarjeta-azul p {
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  color: #dbeafe;
+}
+
+.botones-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-blanco {
+  background-color: white;
+  color: #2563eb;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-blanco:hover {
+  transform: scale(1.05);
+}
+
+.btn-borde {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-borde:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
 </style>
