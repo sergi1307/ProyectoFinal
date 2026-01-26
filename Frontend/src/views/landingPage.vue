@@ -11,8 +11,8 @@
       </a>
 
       <div class="acciones">
-        <a href="#" class="enlace">Iniciar Sesión</a>
-        <button class="boton">Registrarse</button>
+        <router-link to="/login" class="enlace">Iniciar Sesión</router-link>
+        <router-link to="#" class="boton">Registrarse</router-link>
       </div>
     </div>
   </nav>
@@ -39,7 +39,7 @@
           <button class="btn-empezar">
             Comenzar gratis <span>&rarr;</span>
           </button>
-          <button class="btn-secundario">Iniciar sesión</button>
+          <router-link to="/login" class="btn-secundario">Iniciar sesión</router-link>
         </div>
 
         <div class="beneficios">
@@ -117,23 +117,10 @@
         </div>
       </div>
     </section>
-
-    <section class="seccion-final">
-      <div class="tarjeta-azul">
-        <h2>¿Listo para comenzar?</h2>
-        <p>
-          Únete a Nexus hoy y descubre un mundo de posibilidades creativas.
-        </p>
-
-        <div class="botones-cta">
-          <button class="btn-blanco">
-            Crear cuenta gratis <span>&rarr;</span>
-          </button>
-          <button class="btn-borde">Ya tengo cuenta</button>
-        </div>
-      </div>
-    </section>
   </main>
+  <footer>
+    <p>&copy; Copyright 2026 ISARIA</p>
+  </footer>
 </template>
 
 <style scoped>
@@ -182,14 +169,19 @@
   color: #1f2937;
   font-weight: 500;
   font-size: 1rem;
-  transition: color 0.2s;
+  transition: all 0.4s;
+  border-radius: 6px;
 }
 
 .enlace:hover {
   color: #2563eb;
+  padding: 0.6rem;
+  background-color: rgba(37, 99, 235, 0.1);
+  border: 1px solid #2563eb;
 }
 
 .boton {
+  text-decoration: none;
   background-color: #2563eb;
   color: white;
   border: none;
@@ -207,7 +199,6 @@
 
 main {
   background: none;
-  width: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -215,22 +206,18 @@ main {
 
 .hero {
   background: linear-gradient(to bottom, #f0fdff 0%, #ffffff 100%);
-  width: 100%;
   padding: 5rem 2rem;
   display: flex;
   justify-content: center;
 }
 
 .hero-contenido {
-  max-width: 900px;
-  width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Estilos internos del Hero */
 .etiqueta {
   display: inline-flex;
   align-items: center;
@@ -300,6 +287,7 @@ h1 {
 
 .btn-secundario {
   background-color: white;
+  text-decoration: none;
   color: #1f2937;
   border: 1px solid #e5e7eb;
   padding: 0.9rem 2rem;
@@ -412,79 +400,13 @@ h1 {
   font-size: 0.95rem;
 }
 
-.seccion-final {
-  width: 100%;
+footer {
+  background-color: #1d4ed8;
   display: flex;
   justify-content: center;
-  padding: 2rem 2rem 6rem 2rem;
-  background-color: white;
-}
-
-.tarjeta-azul {
-  background-color: #2563eb;
-  width: 100%;
-  max-width: 900px;
-  border-radius: 20px;
-  padding: 4rem 2rem;
-  text-align: center;
-  color: white;
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
-}
-
-.tarjeta-azul h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: white;
-}
-
-.tarjeta-azul p {
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
-  color: #dbeafe;
-}
-
-.botones-cta {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-blanco {
-  background-color: white;
-  color: #2563eb;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-blanco:hover {
-  transform: scale(1.05);
-}
-
-.btn-borde {
-  background-color: transparent;
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-borde:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: white;
+  font-style: italic;
+  padding: 2em;
 }
 </style>
