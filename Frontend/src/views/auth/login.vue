@@ -1,104 +1,62 @@
-<script></script>
+<script setup>
+import { ref } from "vue";
+import axios from "axios";
+import "../../assets/css/auth.css";
+
+const email = ref("");
+const password = ref("");
+
+const enviarDatos = async () => {
+  if (!email.value || !password.value) {
+    console.log("Datos introducidos no válidos");
+    return;
+  }
+
+  const payload = {
+    email: email.value,
+    password: password.value,
+  };
+
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/users/login",
+      payload,
+    );
+    console.log("Login realizado con éxito");
+  } catch (error) {
+    console.error("Error en el login:", error);
+  }
+};
+</script>
 
 <template>
-    <main>
-        <form class="container">
-            <h1>Iniciar Sesión</h1>
-            <p>Ingresa tu email y contraseña para acceder</p>
-            <label for="email">Email:</label>
-            <input type="email" id="email" placeholder="example@gmail.com">
+  <main>
+    <form class="container" @submit.prevent="enviarDatos">
+      <h1>Iniciar Sesión</h1>
+      <p>Ingresa tu email y contraseña para acceder</p>
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        v-model="email"
+        placeholder="example@gmail.com"
+      />
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" placeholder="••••••••••">
-    
-            <button type="submit">Iniciar Sesión</button>
+      <label for="password">Contraseña:</label>
+      <input
+        type="password"
+        id="password"
+        v-model="password"
+        placeholder="••••••••••"
+      />
 
-            <div id="frase"></div>
-            <p id="normal">¿No tienes cuenta? <router-link to="/register" id="register">Regístrate</router-link></p>
-        </form>
-    </main>
+      <button type="submit">Iniciar Sesión</button>
+
+      <div id="frase"></div>
+      <p id="normal">
+        ¿No tienes cuenta?
+        <router-link to="/register" id="cambiar">Regístrate</router-link>
+      </p>
+    </form>
+  </main>
 </template>
-
-<style scoped>
-    main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        width: 100%;
-        background-color: #f8fbff;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        width: 90%;
-        max-width: 500px;
-        border-radius: 10px;
-        background-color: #ffffff;
-        padding: 2em;
-        line-height: 2em;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-        transition: all 0.5s;
-    }
-
-    .container:hover {
-        box-shadow: 0px 0px 8px rgb(37, 99, 235);
-    }
-
-    .container h1 {
-        font-size: 1.5em;
-    }
-
-    .container p {
-        color: #313131;
-        font-size: 0.9em;
-    }
-
-    .container label {
-        margin-top: 1em;
-        font-weight: bold;
-    }
-
-    .container input {
-        padding: 0.6em;
-        border-radius: 6px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        color: #313131;
-        transition: all 0.3s;
-    }
-
-    .container input:focus {
-        box-shadow: 0px 0px 4px #2563eb;
-        outline: none;
-    }
-
-    button {
-        padding: 0.6em;
-        margin: 2em 0em;
-        background-color: #2563eb;
-        border:none;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        font-size: 1em;
-    }
-
-    #frase {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-
-    #normal {
-        text-align: center;
-    }
-
-    #normal #register {
-        color: #2563eb;
-        font-weight: bold;
-        text-decoration: none;
-    }
-</style>
