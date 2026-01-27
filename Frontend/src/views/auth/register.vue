@@ -37,6 +37,7 @@ const enviarDatos = async () => {
 
 <template>
   <main>
+    <router-link to="/" class="inicio">Volver al inicio</router-link>
     <form class="container" @submit.prevent="enviarDatos">
       <h1>Crear Cuenta</h1>
       <p>Ingresa tus datos para registrarte</p>

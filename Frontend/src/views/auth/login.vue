@@ -31,6 +31,7 @@ const enviarDatos = async () => {
 
 <template>
   <main>
+    <router-link to="/" class="inicio">Volver al inicio</router-link>
     <form class="container" @submit.prevent="enviarDatos">
       <h1>Iniciar Sesión</h1>
       <p>Ingresa tu email y contraseña para acceder</p>

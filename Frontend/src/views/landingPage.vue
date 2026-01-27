@@ -12,7 +12,7 @@
 
       <div class="acciones">
         <router-link to="/login" class="enlace">Iniciar Sesión</router-link>
-        <router-link to="#" class="boton">Registrarse</router-link>
+        <router-link to="/register" class="boton">Registrarse</router-link>
       </div>
     </div>
   </nav>
@@ -36,10 +36,12 @@
         </p>
 
         <div class="botones-hero">
-          <button class="btn-empezar">
+          <router-link to="/register" class="btn-empezar">
             Comenzar gratis <span>&rarr;</span>
-          </button>
-          <router-link to="/login" class="btn-secundario">Iniciar sesión</router-link>
+          </router-link>
+          <router-link to="/login" class="btn-secundario"
+            >Iniciar sesión</router-link
+          >
         </div>
 
         <div class="beneficios">
@@ -132,8 +134,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
 }
 
 .navbar-container {
@@ -207,6 +210,7 @@ main {
 .hero {
   background: linear-gradient(to bottom, #f0fdff 0%, #ffffff 100%);
   padding: 5rem 2rem;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -264,10 +268,12 @@ h1 {
   margin-bottom: 3rem;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .btn-empezar {
   background-color: #2563eb;
+  text-decoration: none;
   color: white;
   border: none;
   padding: 0.9rem 2rem;
@@ -289,8 +295,8 @@ h1 {
   background-color: white;
   text-decoration: none;
   color: #1f2937;
-  border: 1px solid #e5e7eb;
   padding: 0.9rem 2rem;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -365,7 +371,9 @@ h1 {
   border-radius: 12px;
   padding: 2.5rem 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
