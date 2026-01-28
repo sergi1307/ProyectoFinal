@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: contenedor_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../bd/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  node:
+    build: .
+    container_name: contenedor_node
+    command: ["node", "src/server.js"] 
+    ports:
+      - "${PORT}:3000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
