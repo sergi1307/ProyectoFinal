@@ -19,7 +19,7 @@ const enviarDatos = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/users/login",
+      "http://localhost:3000/api/login",
       payload,
     );
     console.log("Login realizado con éxito");

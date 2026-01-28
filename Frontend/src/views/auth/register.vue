@@ -26,7 +26,7 @@ const enviarDatos = async () => {
     }
 
     try {
-        const response = await axios.post("http://localhost:3000/api/users/register", payload);
+        const response = await axios.post("http://localhost:3000/api/registro", payload);
         console.log("Registro realizado con éxito");
     } catch (error) {
         console.error("Error en el register:", error);
