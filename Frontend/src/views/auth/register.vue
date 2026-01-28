@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import router from '../../routes/routes.js';
 import "../../assets/css/auth.css";
 
 const name = ref('');
@@ -28,6 +29,7 @@ const enviarDatos = async () => {
     try {
         const response = await axios.post("http://localhost:3000/api/registro", payload);
         console.log("Registro realizado con éxito");
+        router.push('/login');
     } catch (error) {
         console.error("Error en el register:", error);
     }

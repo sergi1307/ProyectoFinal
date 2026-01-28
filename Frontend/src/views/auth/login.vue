@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import router from '../../routes/routes.js';
 import "../../assets/css/auth.css";
 
 const email = ref("");
@@ -23,6 +24,8 @@ const enviarDatos = async () => {
       payload,
     );
     console.log("Login realizado con éxito");
+
+    router.push('/general');
   } catch (error) {
     console.error("Error en el login:", error);
   }
