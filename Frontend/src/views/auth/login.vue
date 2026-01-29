@@ -23,6 +23,17 @@ const enviarDatos = async () => {
       "http://localhost:3000/api/login",
       payload,
     );
+
+    const data = await response.json;
+
+    if (response.ok) {
+
+      localStorage.setItem('token', data.token);
+
+      localStorage.setItem('usuario', data.usuario);
+
+    }
+
     console.log("Login realizado con éxito");
 
     router.push('/general');
