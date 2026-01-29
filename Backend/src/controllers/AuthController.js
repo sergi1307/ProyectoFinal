@@ -1,5 +1,10 @@
 import bcrypt from "bcryptjs";
 import { buscarUsuario, crearUsuario } from '../models/Auth.js';
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+
+dotenv.config();
+const claveSecreta = process.env.JWT_SECRET;
 
 export const registro = async (req, res) => {
     try {
@@ -31,9 +36,23 @@ export const login = async (req, res) => {
         if (!esCorrecta) {
             return res.status(401).json({ error: 'Contraseña incorrecta' });
         }
+
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            claveSecreta,
+            { expiresIn: '8h' }
+        );
+
+        
+
         res.status(200).json({
             mensaje: 'Login exitoso',
-            usuario: user
+            token: token,
+            usuario: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
         });
 
     } catch (error) {
