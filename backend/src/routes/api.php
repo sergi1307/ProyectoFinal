@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\Route;
 // ==========================================
 // 1. RUTAS PÚBLICAS
 // ==========================================
-Route::prefix('auth')->group(function () {
-    Route::post('registro', [AuthController::class, 'registro']);
-    Route::post('login', [AuthController::class, 'login']);
+Route::prefix('/auth')->group(function () {
+    Route::post('/registro', [AuthController::class, 'registro']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/verificar-email', [AuthController::class, 'verificarEmail']);
+    Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
 
 // ==========================================
 // 2. RUTAS PROTEGIDAS
 // ==========================================
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
