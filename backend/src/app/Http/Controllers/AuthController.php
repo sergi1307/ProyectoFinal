@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegistroRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,14 +13,8 @@ class AuthController extends Controller
     // ================================
     // REGISTRO
     // ================================
-    public function registro(Request $request)
+    public function registro(RegistroRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6'
-        ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -27,25 +22,20 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'mensaje' => 'Usuario registrado con éxito'
+            'mensaje' => 'Usuario registrado con éxito.'
         ], 201);
     }
 
     // ================================
     // LOGIN
     // ================================
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'error' => 'Credenciales incorrectas'
+                'error' => 'Credenciales incorrectas.'
             ], 401);
         }
 
@@ -61,4 +51,17 @@ class AuthController extends Controller
             ]
         ], 200);
     }
+
+    // ================================
+    // LOGOUT
+    // ================================
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'mensaje' => 'Sesión cerrada con éxito.'
+        ], 200);
+    }
+
 }
