@@ -16,4 +16,5 @@ Route::prefix('auth')->group(function () {
 // 2. RUTAS PROTEGIDAS
 // ==========================================
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
