@@ -1,4 +1,6 @@
-<script></script>
+<script setup>
+import Footer from '@/components/Footer.vue';
+</script>
 <template>
   <nav class="navbar">
     <div class="navbar-container">
@@ -120,9 +122,7 @@
       </div>
     </section>
   </main>
-  <footer>
-    <p>&copy; Copyright 2026 ISARIA</p>
-  </footer>
+  <Footer></Footer>
 </template>
 
 <style scoped>
@@ -406,15 +406,5 @@ h1 {
   color: #6b7280;
   line-height: 1.6;
   font-size: 0.95rem;
-}
-
-footer {
-  background-color: #1d4ed8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-style: italic;
-  padding: 2em;
 }
 </style>

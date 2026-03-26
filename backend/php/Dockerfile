@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # 3. Crear usuario app
-RUN groupadd -g 1000 app && \
-    useradd -u 1000 -g 1000 -m -s /bin/bash app
+RUN groupmod -n app $(getent group 1000 | cut -d: -f1) && \
+    usermod -l app -g app -m -d /home/app $(getent passwd 1000 | cut -d: -f1)
 
 # 4. Preparar el script de entrada
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
