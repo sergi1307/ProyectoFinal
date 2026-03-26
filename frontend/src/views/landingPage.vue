@@ -175,7 +175,6 @@ import Footer from '@/components/Footer.vue';
 </template>
 
 <style scoped>
-/* 1. ESTRUCTURA GENERAL */
 main {
   background: none;
   padding: 0;
@@ -183,7 +182,6 @@ main {
   flex-direction: column;
 }
 
-/* 2. SECCIÓN HERO */
 .hero {
   background: linear-gradient(to bottom, #f0fdff 0%, #ffffff 100%);
   padding: 5rem 2rem;
@@ -303,7 +301,6 @@ h1 {
   height: 20px;
 }
 
-/* 3. SECCIÓN FEATURES */
 .features {
   background-color: #ffffff;
   width: 100%;
@@ -407,7 +404,7 @@ h1 {
 }
 
 .categoria-tarjeta {
-  border: 2px solid #d9dbe0;
+  border: 2px solid #eff6ff;
   border-radius: 12px;
   padding: 2rem;
   display: flex;
@@ -420,7 +417,7 @@ h1 {
 }
 
 .categoria-tarjeta p:first-child {
-  background-color: #d9dbe0;
+  background-color: #eff6ff;
   width: 60px;
   height: 60px;
   display: flex;
