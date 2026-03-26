@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,14 +14,14 @@ class AuthController extends Controller
     public function registro(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6'
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed', 
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
@@ -37,7 +36,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email',
+            'email'    => 'required|string|email',
             'password' => 'required|string'
         ]);
 
@@ -53,11 +52,12 @@ class AuthController extends Controller
 
         return response()->json([
             'mensaje' => 'Login exitoso',
-            'token' => $token,
+            'token'   => $token,
             'usuario' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email
+                'id'    => $user->id_user, 
+                'name'  => $user->name,
+                'email' => $user->email,
+                'role'  => $user->role
             ]
         ], 200);
     }

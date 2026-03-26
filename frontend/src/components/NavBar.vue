@@ -1,18 +1,38 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 
 const { locale } = useI18n();
+const route = useRoute();
+const router = useRouter();
+
 const userRole = ref(null);
 const showDropdown = ref(false);
 
-onMounted(() => {
-  const user = localStorage.getItem('usuario');
-  if (user) {
-    const userData = JSON.parse(user);
-    userRole.value = userData.rol;
+const actualizarEstado = () => {
+  const userRaw = localStorage.getItem('usuario');
+  if (userRaw) {
+    const userData = JSON.parse(userRaw);
+    userRole.value = userData.role; 
+    console.log("NavBar dice: El rol es", userRole.value);
   }
+};
+
+onMounted(() => {
+  actualizarEstado();
+  window.addEventListener('storage', actualizarEstado);
+  window.addEventListener('login-success', actualizarEstado);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('storage', actualizarEstado);
+  window.removeEventListener('login-success', actualizarEstado);
+});
+
+watch(() => route.path, () => {
+  actualizarEstado();
+}, { immediate: true });
 
 const seleccionarIdioma = (code) => {
   locale.value = code;
@@ -24,6 +44,7 @@ const logout = () => {
   localStorage.removeItem('usuario');
   localStorage.removeItem('token');
   userRole.value = null;
+  router.push('/login');
 };
 </script>
 
@@ -37,10 +58,9 @@ const logout = () => {
       <div class="navbar-derecha">
         <div class="idioma-wrapper">
           <div class="iconos-container" @click.stop="showDropdown = !showDropdown">
-            <img src="../assets/iconos/idioma.png" class="icono-idioma" aria-hidden="true"/>
-            <img src="../assets/iconos/idioma-hover.png" class="icono-hover" aria-hidden="true">
+            <img src="../assets/iconos/idioma.png" class="icono-idioma" />
+            <img src="../assets/iconos/idioma-hover.png" class="icono-hover" />
           </div>
-          
           <transition name="fade">
             <div v-if="showDropdown" class="dropdown-idiomas">
               <div @click="seleccionarIdioma('esp')" class="opcion-idioma">ESP</div>
@@ -50,19 +70,21 @@ const logout = () => {
           </transition>
         </div>
 
-        <div v-if="userRole === 'admin'" class="acciones">
-          <div class="cartel admin">👤 {{ $t('nb.adm') }}</div>
-          <button @click="logout" class="boton-salir">{{ $t('nb.out') }}</button>
-        </div>
+        <div class="acciones">
+          <template v-if="userRole">
+            <div v-if="userRole === 'admin'" class="cartel admin">
+              👤 {{ $t('nb.adm') }}
+            </div>
+            <div v-else class="cartel user">
+              👤 {{ $t('nb.usr') }}
+            </div>
+            <button @click="logout" class="boton-salir">{{ $t('nb.out') }}</button>
+          </template>
 
-        <div v-else-if="userRole === 'user'" class="acciones">
-          <div class="cartel user">👤 {{ $t('nb.usr') }}</div>
-          <button @click="logout" class="boton-salir">{{ $t('nb.out') }}</button>
-        </div>
-
-        <div v-else class="acciones">
-          <router-link to="/login" class="enlace">{{ $t('nb.login') }}</router-link>
-          <router-link to="/register" class="boton">{{ $t('nb.reg') }}</router-link>
+          <template v-else>
+            <router-link to="/login" class="enlace">{{ $t('nb.login') }}</router-link>
+            <router-link to="/register" class="boton">{{ $t('nb.reg') }}</router-link>
+          </template>
         </div>
       </div>
     </div>
