@@ -15,6 +15,10 @@ main {
   padding: 0.5em;
 }
 
+.inicio:hover {
+  color: #2563eb;
+}
+
 .container {
   display: flex;
   flex-direction: column;
