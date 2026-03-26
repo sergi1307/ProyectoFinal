@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import axios from 'axios';
 import router from '../../routes/routes.js';
 import "../../assets/css/auth.css";
-import Footer from '@/components/Footer.vue';
 
 const name = ref('');
 const email = ref('');
@@ -65,5 +64,4 @@ const enviarDatos = async () => {
       </p>
     </form>
   </main>
-  <Footer></Footer>
 </template>
