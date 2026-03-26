@@ -1,4 +1,6 @@
-<!-- <script></script> -->
+<script setup>
+
+</script>
 
 <template>
     <footer>
@@ -71,7 +73,8 @@
             </div>            
         </div>
         <div class="derechos">
-            <p>&copy; 2026 Nexus Marketplace. Todos los derechos reservados.</p>
+            <p class="copy">&copy; 2026 Nexus Marketplace. Todos los derechos reservados.</p>
+            <p>Plataforma segura para la compra y venta de productos digitales</p>
         </div>
     </footer>
 </template>
@@ -242,7 +245,13 @@ p {
 
 .derechos p {
   color: #94a3b8;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.derechos p.copy {
+  color: white;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 </style>

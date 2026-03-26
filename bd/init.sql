@@ -1,4 +1,5 @@
--- Active: 1765525331963@@127.0.0.1@3306
+-- Active: 1774523528868@@127.0.0.1@3306
+DROP DATABASE nexus;
 CREATE DATABASE IF NOT EXISTS nexus;
 USE nexus;
 
@@ -9,6 +10,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     avatar VARCHAR(255),
+    role ENUM('user', 'admin') DEFAULT 'user',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
