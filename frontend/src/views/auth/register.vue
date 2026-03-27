@@ -30,9 +30,9 @@ const enviarDatos = async () => {
     try {
         const response = await axios.post("http://localhost:8080/api/auth/registro", payload);
         console.log("Registro realizado con éxito");
-        router.push('/login');
+        router.push(`/verificar-email?email=${email.value}`);
     } catch (error) {
-        console.error("Error en el register:", error);
+        console.error("Error en el register:", error.response.data);
     }
     
 }

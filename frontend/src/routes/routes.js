@@ -3,6 +3,7 @@ import landingPage from '../views/landingPage.vue';
 import login from '../views/auth/login.vue';
 import register from '../views/auth/register.vue';
 import general from '../views/general.vue';
+import Verification from '@/views/auth/verification.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -21,6 +22,11 @@ const router = createRouter({
             path: '/register',
             name: 'register',
             component: register
+        },
+        {
+            path: '/verificar-email',
+            name: 'verificar',
+            component: Verification
         },
         {
             path: '/general',
