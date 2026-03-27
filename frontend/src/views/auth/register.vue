@@ -15,25 +15,40 @@ const errorMsg = ref("");
 const registrarUsuario = async () => {
   errorMsg.value = "";
 
+  // 1. Validación de contraseñas
   if (password.value !== password_confirmation.value) {
     errorMsg.value = "Las contraseñas no coinciden";
     return;
   }
 
-  try {
-    await axios.post("http://127.0.0.1:8080/api/auth/registro", {
-      name: name.value,
-      email: email.value,
-      password: password.value,
-      password_confirmation: password_confirmation.value
-    });
+  // 2. Definir los datos a enviar (payload)
+  const payload = {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    password_confirmation: password_confirmation.value
+  };
 
-    try {
-        const response = await axios.post("http://localhost:8080/api/auth/registro", payload);
-        console.log("Registro realizado con éxito");
-        router.push(`/verificar-email?email=${email.value}`);
-    } catch (error) {
-        console.error("Error en el register:", error.response.data);
+  try {
+    // 3. UNA SOLA PETICIÓN
+    const response = await axios.post("http://localhost:8080/api/auth/registro", payload);
+
+    console.log("Registro realizado con éxito", response.data);
+    
+    // 4. Redirigir a verificación
+    router.push(`/verificar-email?email=${email.value}`);
+
+  } catch (error) {
+    // 5. Captura de errores del backend
+    console.error("Error en el registro:", error.response?.data);
+    
+    if (error.response && error.response.data && error.response.data.mensaje) {
+      errorMsg.value = error.response.data.mensaje;
+    } else if (error.response && error.response.data && error.response.data.errors) {
+      // Por si Laravel devuelve errores de validación (email duplicado, etc)
+      errorMsg.value = Object.values(error.response.data.errors)[0][0];
+    } else {
+      errorMsg.value = "Error al conectar con el servidor";
     }
   }
 };
