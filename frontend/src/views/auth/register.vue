@@ -28,12 +28,12 @@ const registrarUsuario = async () => {
       password_confirmation: password_confirmation.value
     });
 
-    router.push('/login');
-  } catch (error) {
-    if (error.response && error.response.data.errors) {
-      errorMsg.value = Object.values(error.response.data.errors)[0][0];
-    } else {
-      errorMsg.value = "Error al registrar: revisa la conexión o el email duplicado";
+    try {
+        const response = await axios.post("http://localhost:8080/api/auth/registro", payload);
+        console.log("Registro realizado con éxito");
+        router.push(`/verificar-email?email=${email.value}`);
+    } catch (error) {
+        console.error("Error en el register:", error.response.data);
     }
   }
 };
