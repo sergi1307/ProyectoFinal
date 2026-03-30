@@ -57,21 +57,29 @@ const logout = () => {
           <img src="../assets/logos/Logo_gr.png" alt="Logo" class="imagen-logo" />
         </router-link>
 
-        <template v-if="userRole === 'user'">
+        <template v-if="userRole">
           <div class="nav-links">
             <router-link to="/explorar" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               Explorar
             </router-link>
-            <router-link to="/mis-productos" class="nav-item">
+            
+            <router-link v-if="userRole === 'user'" to="/mis-productos" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
               Mis Productos
             </router-link>
+            
+            <template v-if="userRole === 'admin'">
+              <router-link to="/admin" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Admin
+              </router-link>
+            </template>
           </div>
         </template>
       </div>
 
-      <div class="navbar-centro" v-if="userRole === 'user'">
+      <div class="navbar-centro" v-if="userRole">
         <div class="search-wrapper">
           <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" placeholder="Buscar productos..." class="search-input" />
@@ -80,10 +88,17 @@ const logout = () => {
 
       <div class="navbar-derecha">
         <div class="idioma-wrapper">
-          <div class="iconos-container" @click.stop="showDropdown = !showDropdown">
-            <img src="../assets/iconos/idioma.png" class="icono-idioma" />
-            <img src="../assets/iconos/idioma-hover.png" class="icono-hover" />
+          <div class="action-btn" @click.stop="showDropdown = !showDropdown">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 5h12"></path>
+              <path d="M7 2h1"></path>
+              <path d="m4 14 6-6 2-3"></path>
+              <path d="m5 8 6 6"></path>
+              <path d="m22 22-5-10-5 10"></path>
+              <path d="M14 18h6"></path>
+            </svg>
           </div>
+          
           <transition name="fade">
             <div v-if="showDropdown" class="dropdown-idiomas">
               <div @click="seleccionarIdioma('esp')" class="opcion-idioma">ESP</div>
@@ -94,21 +109,23 @@ const logout = () => {
         </div>
 
         <div class="acciones">
-          <template v-if="userRole === 'admin'">
-            <div class="cartel admin">👤 {{ $t('nb.adm') }}</div>
-            <button @click="logout" class="boton-salir">{{ $t('nb.out') }}</button>
-          </template>
-
-          <template v-else-if="userRole === 'user'">
-            <router-link to="/vender" class="boton-vender">
+          <template v-if="userRole">
+            <router-link v-if="userRole === 'user'" to="/vender" class="boton-vender">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="plus-icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Vender
             </router-link>
             
             <div class="icon-actions-group">
-              <router-link to="/favoritos" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
-              <router-link to="/carrito" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></router-link>
-              <router-link to="/perfil" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></router-link>
+              <template v-if="userRole === 'user'">
+                <router-link to="/favoritos" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
+                <router-link to="/carrito" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></router-link>
+              </template>
+              
+              <router-link to="/perfil" class="action-btn">
+                <span v-if="userRole === 'admin'"></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </router-link>
+              
               <button @click="logout" class="action-btn logout-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
             </div>
           </template>
@@ -132,7 +149,7 @@ const logout = () => {
   position: sticky;
   top: 0;
   z-index: 100;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
   box-sizing: border-box;
 }
 
@@ -244,30 +261,6 @@ const logout = () => {
 
 .idioma-wrapper {
   position: relative;
-  cursor: pointer;
-}
-
-.iconos-container {
-  display: flex;
-  align-items: center;
-  height: 25px;
-}
-
-.icono-idioma, .icono-hover {
-  height: 25px;
-  width: auto;
-}
-
-.icono-hover {
-  display: none;
-}
-
-.idioma-wrapper:hover .icono-idioma {
-  display: none;
-}
-
-.idioma-wrapper:hover .icono-hover {
-  display: block;
 }
 
 .dropdown-idiomas {
@@ -281,6 +274,7 @@ const logout = () => {
   border: 1px solid #f3f4f6;
   z-index: 1000;
   overflow: hidden;
+  padding: 0.4rem;
 }
 
 .opcion-idioma {
@@ -290,12 +284,14 @@ const logout = () => {
   font-size: 0.9rem;
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  margin: 0.2rem;
 }
 
 .opcion-idioma:hover {
-  background-color: #f9fafb;
-  color: #2563eb;
+  background-color: #2563eb;
+  color: #ffffff;
 }
 
 .acciones {
@@ -345,6 +341,7 @@ const logout = () => {
   padding: 0.5rem;
   border-radius: 6px;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .action-btn:hover {
@@ -390,29 +387,6 @@ const logout = () => {
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.95rem;
-}
-
-.cartel {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.cartel.admin {
-  background-color: #fef08a;
-  color: #854d0e;
-  border: 1px solid #facc15;
-}
-
-.boton-salir {
-  background-color: transparent;
-  color: #ef4444;
-  border: 1px solid #ef4444;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .fade-enter-active, .fade-leave-active {
