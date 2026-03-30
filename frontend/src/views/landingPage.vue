@@ -61,6 +61,94 @@ import Footer from '@/components/Footer.vue';
       </div>
     </section>
 
+    <section class="destacados">
+      <div class="destacados-contenido">
+        <div class="destacados-header">
+          <div class="titulos-destacados">
+            <h2>Destacados</h2>
+            <p>Los productos más populares del momento</p>
+          </div>
+          <router-link to="/explorar" class="ver-todo">Ver todo &rarr;</router-link>
+        </div>
+
+        <div class="grid-productos">
+          
+          <div class="producto-tarjeta">
+            <div class="img-contenedor">
+              <span class="badge">Cursos</span>
+              <img src="../assets/iconos/curso.jpg" alt="Curso de Diseño" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="producto-info">
+              <h3>Curso Completo de Diseño...</h3>
+              <p class="autor">por Design Academy</p>
+              <div class="producto-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.8 <span class="votos">(342)</span></div>
+                <div class="precio">49.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="producto-tarjeta">
+            <div class="img-contenedor">
+              <span class="badge">eBooks</span>
+              <img src="../assets/iconos/ebook.jpg" alt="eBook Marketing" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="producto-info">
+              <h3>eBook: Marketing Digital...</h3>
+              <p class="autor">por Marketing Pro</p>
+              <div class="producto-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.6 <span class="votos">(189)</span></div>
+                <div class="precio">24.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="producto-tarjeta">
+            <div class="img-contenedor">
+              <span class="badge">Audio</span>
+              <img src="../assets/iconos/musica.jpg" alt="Pack de Audio" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="producto-info">
+              <h3>Pack de Samples de Música...</h3>
+              <p class="autor">por Sound Factory</p>
+              <div class="producto-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.9 <span class="votos">(567)</span></div>
+                <div class="precio">39.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="producto-tarjeta">
+            <div class="img-contenedor">
+              <span class="badge">Software</span>
+              <img src="../assets/iconos/software.jpg" alt="Plantilla Web" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="producto-info">
+              <h3>Plantilla Web Premium</h3>
+              <p class="autor">por Design Academy</p>
+              <div class="producto-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.7 <span class="votos">(234)</span></div>
+                <div class="precio">79.99€</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <section class="features">
       <div class="features-contenido">
         <div class="features-header">
@@ -168,6 +256,50 @@ import Footer from '@/components/Footer.vue';
             <router-link to="/login" class="si-cuenta">Ya tengo cuenta</router-link>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="tendencias">
+      <div class="tendencias-contenido">
+        <div class="tendencias-header">
+          <h2>Tendencias</h2>
+          <p>Lo más buscado esta semana</p>
+        </div>
+
+        <div class="grid-tendencias">
+          <div class="tendencia-tarjeta">
+            <div class="img-tendencia">
+              <img src="../assets/iconos/plantillas.jpg" alt="Plantillas Instagram" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="tendencia-info">
+              <h3>Pack 100 Plantillas de Instagram</h3>
+              <div class="tendencia-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.5</div>
+                <div class="precio">19.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tendencia-tarjeta">
+            <div class="img-tendencia">
+              <img src="../assets/iconos/presets.jpg" alt="Presets Lightroom" />
+              <button class="favorito-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+            </div>
+            <div class="tendencia-info">
+              <h3>Presets Lightroom Profesionales</h3>
+              <div class="tendencia-footer">
+                <div class="rating"><span class="estrella">⭐</span> 4.8</div>
+                <div class="precio">29.99€</div>
+              </div>
+            </div>
+          </div>
+          
+          </div>
       </div>
     </section>
   </main>
@@ -299,6 +431,197 @@ h1 {
 .icono-check {
   width: 20px;
   height: 20px;
+}
+
+.destacados {
+  background-color: #ffffff;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.destacados-contenido {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.destacados-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.titulos-destacados h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.titulos-destacados p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.ver-todo {
+  text-decoration: none;
+  color: #111827;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.2s;
+  padding-bottom: 0.5rem;
+}
+
+.ver-todo:hover {
+  color: #2563eb;
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.producto-tarjeta {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.producto-tarjeta:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.img-contenedor {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  background-color: #f3f4f6;
+  overflow: hidden;
+}
+
+.img-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.producto-tarjeta:hover .img-contenedor img {
+  transform: scale(1.08); 
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #111827;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 2;
+}
+
+.favorito-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px; 
+  margin: 0 !important;
+  padding: 0;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: #111827;
+  opacity: 0; 
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.favorito-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: fill 0.2s, color 0.2s;
+}
+
+.producto-tarjeta:hover .favorito-btn {
+  opacity: 1;
+}
+
+.favorito-btn:hover {
+  transform: scale(1.1);
+  color: #ef4444;
+}
+
+.producto-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.producto-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #1d4ed8;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.autor {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.producto-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.estrella {
+  color: #fbbf24;
+}
+
+.votos {
+  color: #9ca3af;
+  font-weight: normal;
+  font-size: 0.85rem;
+}
+
+.precio {
+  color: #1d4ed8;
+  font-weight: 800;
+  font-size: 1.25rem;
 }
 
 .features {
@@ -514,5 +837,138 @@ h1 {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: #ffffff;
   transform: translateY(-2px);
+}
+
+.tendencias {
+  background-color: #f8faff;
+  padding: 5rem 2rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tendencias-contenido {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.tendencias-header {
+  margin-bottom: 3rem;
+}
+
+.tendencias-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.tendencias-header p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.grid-tendencias {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 1.5rem;
+}
+
+.tendencia-tarjeta {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.tendencia-tarjeta:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.img-tendencia {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+}
+
+.img-tendencia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.tendencia-tarjeta:hover .img-tendencia img {
+  transform: scale(1.1);
+}
+
+.tendencia-info {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.tendencia-info h3 {
+  font-size: 0.95rem;
+  color: #111827;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.tendencia-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.tendencia-footer .rating {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.tendencia-footer .precio {
+  font-weight: 800;
+  color: #1d4ed8;
+  font-size: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .grid-tendencias {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-tendencias {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .grid-productos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-productos {
+    grid-template-columns: 1fr;
+  }
+  .destacados-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 </style>
