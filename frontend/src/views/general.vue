@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from "vue";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 
@@ -13,19 +14,26 @@ const categorias = [
   "Fuentes",
   "Otros",
 ];
+
+const favoritoDestacado1 = ref(false);
+const favoritoDestacado2 = ref(false);
+const favoritoDestacado3 = ref(false);
+const favoritoDestacado4 = ref(false);
+const favoritoTendencia1 = ref(false);
+const favoritoTendencia2 = ref(false);
 </script>
 
 <template>
   <NavBar />
-  <main class="general-container">
-    <section class="explore-hero">
-      <div class="badge-spark">
+  <main class="contenedor-general">
+    <section class="hero-explorar">
+      <div class="etiqueta-brillante">
         <svg
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          class="spark-icon"
+          class="icono-chispa"
         >
           <path
             d="M12 3l1.912 5.886L20 10.8l-5.886 1.912L12 21l-1.912-5.886L4 13.2l5.886-1.912z"
@@ -36,41 +44,50 @@ const categorias = [
 
       <h1>
         Tu contenido digital,<br />
-        <span class="azul-gradient">a un clic de distancia</span>
+        <span class="azul-degradado">a un clic de distancia</span>
       </h1>
 
-      <p class="subtitulo-explorar">
+      <p class="subtitulo-hero">
         Explora miles de recursos creados por creadores independientes
       </p>
 
-      <div class="categories-row">
-        <button v-for="cat in categorias" :key="cat" class="cat-pill">
-          {{ cat }}
+      <div class="fila-categorias">
+        <button
+          v-for="categoria in categorias"
+          :key="categoria"
+          class="boton-categoria"
+        >
+          {{ categoria }}
         </button>
       </div>
     </section>
 
-    <section class="destacados">
-      <div class="destacados-contenido">
-        <div class="destacados-header">
-          <div class="titulos-destacados">
+    <section class="seccion-destacados">
+      <div class="contenido-destacados">
+        <div class="cabecera-destacados">
+          <div class="titulos-seccion">
             <h2>Destacados</h2>
-            <p>Los productos más populares del momento</p>
+            <p class="descripcion-seccion">
+              Los productos más populares del momento
+            </p>
           </div>
-          <router-link to="/explorar" class="ver-todo"
+          <router-link to="/explorar" class="enlace-ver-todo"
             >Ver todo &rarr;</router-link
           >
         </div>
 
-        <div class="grid-productos">
-          <div class="producto-tarjeta" v-for="n in 4" :key="n">
-            <div class="img-contenedor">
-              <span class="badge">Cursos</span>
-              <img src="../assets/iconos/curso.jpg" alt="Producto" />
-              <button class="favorito-btn">
+        <div class="cuadricula-productos">
+          <div class="tarjeta-producto">
+            <div class="contenedor-imagen">
+              <span class="etiqueta-categoria">Cursos</span>
+              <img src="../assets/iconos/curso.jpg" alt="Curso" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoDestacado1 }"
+                @click="favoritoDestacado1 = !favoritoDestacado1"
+              >
                 <svg
                   viewBox="0 0 24 24"
-                  fill="none"
                   stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
@@ -82,12 +99,116 @@ const categorias = [
                 </svg>
               </button>
             </div>
-            <div class="producto-info">
+            <div class="informacion-producto">
               <h3>Curso Completo de Diseño...</h3>
-              <p class="autor">por Design Academy</p>
-              <div class="producto-footer">
-                <div class="rating"><span class="estrella">⭐</span> 4.8</div>
-                <div class="precio">49.99€</div>
+              <p class="nombre-autor">por Design Academy</p>
+              <div class="pie-tarjeta">
+                <div class="valoracion">
+                  <span>⭐</span> 4.8 <span class="cantidad-votos">(342)</span>
+                </div>
+                <div class="precio-producto">49.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tarjeta-producto">
+            <div class="contenedor-imagen">
+              <span class="etiqueta-categoria">eBooks</span>
+              <img src="../assets/iconos/ebook.jpg" alt="eBook" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoDestacado2 }"
+                @click="favoritoDestacado2 = !favoritoDestacado2"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div class="informacion-producto">
+              <h3>eBook: Marketing Digital...</h3>
+              <p class="nombre-autor">por Marketing Pro</p>
+              <div class="pie-tarjeta">
+                <div class="valoracion">
+                  <span>⭐</span> 4.6 <span class="cantidad-votos">(189)</span>
+                </div>
+                <div class="precio-producto">24.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tarjeta-producto">
+            <div class="contenedor-imagen">
+              <span class="etiqueta-categoria">Audio</span>
+              <img src="../assets/iconos/musica.jpg" alt="Audio" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoDestacado3 }"
+                @click="favoritoDestacado3 = !favoritoDestacado3"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div class="informacion-producto">
+              <h3>Pack de Samples de Música...</h3>
+              <p class="nombre-autor">por Sound Factory</p>
+              <div class="pie-tarjeta">
+                <div class="valoracion">
+                  <span>⭐</span> 4.9 <span class="cantidad-votos">(567)</span>
+                </div>
+                <div class="precio-producto">39.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tarjeta-producto">
+            <div class="contenedor-imagen">
+              <span class="etiqueta-categoria">Software</span>
+              <img src="../assets/iconos/software.jpg" alt="Software" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoDestacado4 }"
+                @click="favoritoDestacado4 = !favoritoDestacado4"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div class="informacion-producto">
+              <h3>Plantilla Web Premium</h3>
+              <p class="nombre-autor">por Design Academy</p>
+              <div class="pie-tarjeta">
+                <div class="valoracion">
+                  <span>⭐</span> 4.7 <span class="cantidad-votos">(234)</span>
+                </div>
+                <div class="precio-producto">79.99€</div>
               </div>
             </div>
           </div>
@@ -95,21 +216,39 @@ const categorias = [
       </div>
     </section>
 
-    <section class="tendencias">
-      <div class="tendencias-contenido">
-        <div class="tendencias-header">
-          <h2>Tendencias</h2>
-          <p>Lo más buscado esta semana</p>
+    <section class="anuncio-creadores">
+      <div class="caja-azul-anuncio">
+        <h2>¿Tienes algo que compartir?</h2>
+        <p>
+          Únete a nuestra comunidad de creadores y comienza a vender tus
+          productos digitales hoy mismo.
+        </p>
+        <router-link to="/vender" class="boton-crear-producto">
+          Crear mi primer producto <span>&rarr;</span>
+        </router-link>
+      </div>
+    </section>
+
+    <section class="seccion-tendencias">
+      <div class="contenido-tendencias">
+        <div class="cabecera-tendencias">
+          <div class="titulos-seccion">
+            <h2>Tendencias</h2>
+            <p class="descripcion-seccion">Lo más buscado esta semana</p>
+          </div>
         </div>
 
-        <div class="grid-tendencias">
-          <div class="tendencia-tarjeta" v-for="n in 2" :key="n">
-            <div class="img-tendencia">
-              <img src="../assets/iconos/plantillas.jpg" alt="Tendencia" />
-              <button class="favorito-btn">
+        <div class="cuadricula-tendencias">
+          <div class="tarjeta-tendencia">
+            <div class="contenedor-imagen-tendencia">
+              <img src="../assets/iconos/plantillas.jpg" alt="Instagram" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoTendencia1 }"
+                @click="favoritoTendencia1 = !favoritoTendencia1"
+              >
                 <svg
                   viewBox="0 0 24 24"
-                  fill="none"
                   stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
@@ -121,11 +260,41 @@ const categorias = [
                 </svg>
               </button>
             </div>
-            <div class="tendencia-info">
+            <div class="informacion-tendencia">
               <h3>Pack 100 Plantillas de Instagram</h3>
-              <div class="tendencia-footer">
-                <div class="rating"><span class="estrella">⭐</span> 4.5</div>
-                <div class="precio">19.99€</div>
+              <div class="pie-tarjeta">
+                <div class="valoracion"><span>⭐</span> 4.5</div>
+                <div class="precio-producto">19.99€</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tarjeta-tendencia">
+            <div class="contenedor-imagen-tendencia">
+              <img src="../assets/iconos/presets.jpg" alt="Presets" />
+              <button
+                class="boton-favorito"
+                :class="{ activo: favoritoTendencia2 }"
+                @click="favoritoTendencia2 = !favoritoTendencia2"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div class="informacion-tendencia">
+              <h3>Presets Lightroom Profesionales</h3>
+              <div class="pie-tarjeta">
+                <div class="valoracion"><span>⭐</span> 4.8</div>
+                <div class="precio-producto">29.99€</div>
               </div>
             </div>
           </div>
@@ -137,7 +306,7 @@ const categorias = [
 </template>
 
 <style scoped>
-.general-container {
+.contenedor-general {
   background-color: #ffffff;
   min-height: 100vh;
   display: flex;
@@ -146,7 +315,7 @@ const categorias = [
   width: 100%;
 }
 
-.explore-hero {
+.hero-explorar {
   padding: 6rem 2rem 4rem;
   text-align: center;
   display: flex;
@@ -155,7 +324,7 @@ const categorias = [
   max-width: 1100px;
 }
 
-.badge-spark {
+.etiqueta-brillante {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -168,7 +337,7 @@ const categorias = [
   margin-bottom: 2rem;
 }
 
-.spark-icon {
+.icono-chispa {
   width: 18px;
   height: 18px;
 }
@@ -182,25 +351,25 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
-.azul-gradient {
+.azul-degradado {
   color: #1d4ed8;
 }
 
-.subtitulo-explorar {
+.subtitulo-hero {
   font-size: 1.4rem;
   color: #6b7280;
   margin-bottom: 3rem;
   max-width: 700px;
 }
 
-.categories-row {
+.fila-categorias {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.8rem;
 }
 
-.cat-pill {
+.boton-categoria {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   color: #111827;
@@ -212,15 +381,15 @@ h1 {
   transition: all 0.2s ease;
 }
 
-.cat-pill:hover {
+.boton-categoria:hover {
+  background-color: #2563eb;
+  color: #ffffff;
   border-color: #2563eb;
-  color: #2563eb;
-  background-color: #f0f7ff;
   transform: translateY(-2px);
 }
 
-.destacados,
-.tendencias {
+.seccion-destacados,
+.seccion-tendencias {
   padding: 4rem 2rem;
   display: flex;
   justify-content: center;
@@ -228,53 +397,107 @@ h1 {
   box-sizing: border-box;
 }
 
-.tendencias {
+.seccion-tendencias {
   background-color: #f8faff;
 }
 
-.destacados-contenido,
-.tendencias-contenido {
+.contenido-destacados,
+.contenido-tendencias {
   max-width: 1200px;
   width: 100%;
 }
 
-.destacados-header,
-.tendencias-header {
+.cabecera-destacados,
+.cabecera-tendencias {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 2.5rem;
 }
 
-.titulos-destacados h2,
-.tendencias-header h2 {
+.titulos-seccion h2 {
   font-size: 2.5rem;
   font-weight: 800;
   color: #111827;
   margin-bottom: 0.5rem;
 }
 
-.ver-todo {
+.descripcion-seccion {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.enlace-ver-todo {
   text-decoration: none;
   color: #111827;
   font-weight: 600;
   transition: color 0.2s;
 }
 
-.ver-todo:hover {
+.enlace-ver-todo:hover {
   color: #2563eb;
 }
 
-/* --- GRIDS --- */
-.grid-productos,
-.grid-tendencias {
+.anuncio-creadores {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.caja-azul-anuncio {
+  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #1d4ed8 100%);
+  border-radius: 20px;
+  padding: 4rem;
+  color: white;
+  text-align: left;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
+
+.caja-azul-anuncio h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  color: white;
+}
+
+.caja-azul-anuncio p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+}
+
+.boton-crear-producto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #dbeafe;
+  color: #1e40af;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.boton-crear-producto:hover {
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.cuadricula-productos,
+.cuadricula-tendencias {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
-.producto-tarjeta,
-.tendencia-tarjeta {
+.tarjeta-producto,
+.tarjeta-tendencia {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   overflow: hidden;
@@ -285,37 +508,37 @@ h1 {
   position: relative;
 }
 
-.producto-tarjeta:hover,
-.tendencia-tarjeta:hover {
+.tarjeta-producto:hover,
+.tarjeta-tendencia:hover {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
-.img-contenedor,
-.img-tendencia {
+.contenedor-imagen,
+.contenedor-imagen-tendencia {
   position: relative;
   height: 180px;
   overflow: hidden;
   background: #f3f4f6;
 }
 
-.img-tendencia {
+.contenedor-imagen-tendencia {
   height: 250px;
 }
 
-.img-contenedor img,
-.img-tendencia img {
+.contenedor-imagen img,
+.contenedor-imagen-tendencia img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
 
-.producto-tarjeta:hover img,
-.tendencia-tarjeta:hover img {
+.tarjeta-producto:hover img,
+.tarjeta-tendencia:hover img {
   transform: scale(1.08);
 }
 
-.favorito-btn {
+.boton-favorito {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -332,25 +555,41 @@ h1 {
   transition: all 0.2s ease;
   z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 !important;
 }
 
-.favorito-btn svg {
+.boton-favorito svg {
   width: 18px;
   height: 18px;
   color: #111827;
+  fill: transparent;
+  transition:
+    color 0.2s,
+    fill 0.2s;
 }
 
-.producto-tarjeta:hover .favorito-btn,
-.tendencia-tarjeta:hover .favorito-btn {
+.tarjeta-producto:hover .boton-favorito,
+.tarjeta-tendencia:hover .boton-favorito {
   opacity: 1;
 }
 
-.favorito-btn:hover {
-  color: #ef4444;
-  transform: scale(1.1);
+.boton-favorito.activo,
+.boton-favorito:hover {
+  opacity: 1;
 }
 
-.badge {
+.boton-favorito.activo svg,
+.boton-favorito:hover svg {
+  color: #ef4444;
+  fill: #ef4444;
+}
+
+.boton-favorito:not(.activo) svg {
+  color: #111827;
+  fill: transparent;
+}
+
+.etiqueta-categoria {
   position: absolute;
   top: 8px;
   left: 8px;
@@ -362,8 +601,8 @@ h1 {
   z-index: 2;
 }
 
-.producto-info,
-.tendencia-info {
+.informacion-producto,
+.informacion-tendencia {
   padding: 1.5rem;
   flex-grow: 1;
   display: flex;
@@ -372,19 +611,17 @@ h1 {
 
 h3 {
   font-size: 1.1rem;
-  color: #1d4ed8;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
-.autor {
+.nombre-autor {
   color: #6b7280;
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
 }
 
-.producto-footer,
-.tendencia-footer {
+.pie-tarjeta {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -393,15 +630,22 @@ h3 {
   padding-top: 1rem;
 }
 
-.precio {
+.cantidad-votos {
+  color: #9ca3af;
+  font-weight: normal;
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
+
+.precio-producto {
   color: #1d4ed8;
   font-weight: 800;
   font-size: 1.2rem;
 }
 
 @media (max-width: 1024px) {
-  .grid-productos,
-  .grid-tendencias {
+  .cuadricula-productos,
+  .cuadricula-tendencias {
     grid-template-columns: repeat(2, 1fr);
   }
   h1 {
@@ -410,20 +654,26 @@ h3 {
 }
 
 @media (max-width: 768px) {
-  .explore-hero {
+  .hero-explorar {
     padding-top: 4rem;
   }
-  .categories-row {
+  .fila-categorias {
     gap: 0.5rem;
+  }
+  .caja-azul-anuncio {
+    padding: 2.5rem;
+  }
+  .caja-azul-anuncio h2 {
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 640px) {
-  .grid-productos,
-  .grid-tendencias {
+  .cuadricula-productos,
+  .cuadricula-tendencias {
     grid-template-columns: 1fr;
   }
-  .destacados-header {
+  .cabecera-destacados {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;

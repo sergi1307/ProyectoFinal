@@ -645,7 +645,7 @@ h1 {
 }
 
 .comenzar-contenido {
-  background: linear-gradient(-45deg, #3b82f6 0%, #2563eb 45%, #1d4ed8 100%);
+  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #1d4ed8 100%);
   border-radius: 25px;
   padding: 5rem;
   text-align: center;
