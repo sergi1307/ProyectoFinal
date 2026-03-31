@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
@@ -15,7 +15,6 @@ const actualizarEstado = () => {
   if (userRaw) {
     const userData = JSON.parse(userRaw);
     userRole.value = userData.role; 
-    console.log("NavBar dice: El rol es", userRole.value);
   }
 };
 
@@ -61,18 +60,18 @@ const logout = () => {
           <div class="nav-links">
             <router-link to="/explorar" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              Explorar
+              {{ $t('explorar.featured') }}
             </router-link>
             
             <router-link v-if="userRole === 'user'" to="/mis-productos" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-              Mis Productos
+              {{ $t('navbar.products') }}
             </router-link>
             
             <template v-if="userRole === 'admin'">
               <router-link to="/admin" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                Admin
+                {{ $t('navbar.admin') }}
               </router-link>
             </template>
           </div>
@@ -82,7 +81,7 @@ const logout = () => {
       <div class="navbar-centro" v-if="userRole">
         <div class="search-wrapper">
           <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" placeholder="Buscar productos..." class="search-input" />
+          <input type="text" :placeholder="$t('navbar.search')" class="search-input" />
         </div>
       </div>
 
@@ -97,6 +96,7 @@ const logout = () => {
               <path d="m22 22-5-10-5 10"></path>
               <path d="M14 18h6"></path>
             </svg>
+            <span style="margin-left: 5px; font-size: 0.8rem; font-weight: bold;">{{ locale.toUpperCase() }}</span>
           </div>
           
           <transition name="fade">
@@ -112,7 +112,7 @@ const logout = () => {
           <template v-if="userRole">
             <router-link v-if="userRole === 'user'" to="/vender" class="boton-vender">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="plus-icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              Vender
+              {{ $t('navbar.sell') }}
             </router-link>
             
             <div class="icon-actions-group">
@@ -122,17 +122,18 @@ const logout = () => {
               </template>
               
               <router-link to="/perfil" class="action-btn">
-                <span v-if="userRole === 'admin'"></span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               </router-link>
               
-              <button @click="logout" class="action-btn logout-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+              <button @click="logout" class="action-btn logout-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </button>
             </div>
           </template>
 
           <template v-else>
-            <router-link to="/login" class="enlace">{{ $t('nb.login') }}</router-link>
-            <router-link to="/register" class="boton-registro">{{ $t('nb.reg') }}</router-link>
+            <router-link to="/login" class="enlace">{{ $t('navbar.login') }}</router-link>
+            <router-link to="/register" class="boton-registro">{{ $t('navbar.register') }}</router-link>
           </template>
         </div>
       </div>

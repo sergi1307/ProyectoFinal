@@ -1,80 +1,68 @@
 <script setup>
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <template>
     <footer>
         <div class="contenedor-principal">
             <div id="sobreNosotros">
-                <h3>Sobre Nosotros</h3>
-                <p>El marketplace líder de productos digitales donde creadores y compradores se conectan
-                    para comercializar cursos, ebooks, software, plantillas, iconos y más.
-                </p>
+                <h3>{{ $t('footer.aboutTitle') }}</h3>
+                <p>{{ $t('footer.aboutText') }}</p>
                 <div class="redes-sociales">
-                  <a href="#">
-                    <img src="../assets/iconos/Facebook.png" alt="Facebook" class="img-normal">
-                    <img src="../assets/iconos/Facebook-hover.png" alt="Facebook" class="img-hover" aria-hidden="true">
-                  </a>
-                  <a href="#">
-                    <img src="../assets/iconos/X.png" alt="X" class="img-normal">
-                    <img src="../assets/iconos/X-hover.png" alt="X" class="img-hover" aria-hidden="true">
-                  </a>
-                  <a href="#">
-                    <img src="../assets/iconos/Instagram.png" alt="Instagram" class="img-normal">
-                    <img src="../assets/iconos/Instagram-hover.png" alt="Instagram" class="img-hover" aria-hidden="true">
-                  </a>
-                  <a href="#">
-                    <img src="../assets/iconos/Tiktok.png" alt="Tiktok" class="img-normal">
-                    <img src="../assets/iconos/Tiktok-hover.png" alt="Tiktok" class="img-hover" aria-hidden="true">
-                  </a>
+                  <a href="#"><img src="../assets/iconos/Facebook.png" alt="Facebook" class="img-normal"><img src="../assets/iconos/Facebook-hover.png" alt="Facebook" class="img-hover" aria-hidden="true"></a>
+                  <a href="#"><img src="../assets/iconos/X.png" alt="X" class="img-normal"><img src="../assets/iconos/X-hover.png" alt="X" class="img-hover" aria-hidden="true"></a>
+                  <a href="#"><img src="../assets/iconos/Instagram.png" alt="Instagram" class="img-normal"><img src="../assets/iconos/Instagram-hover.png" alt="Instagram" class="img-hover" aria-hidden="true"></a>
+                  <a href="#"><img src="../assets/iconos/Tiktok.png" alt="Tiktok" class="img-normal"><img src="../assets/iconos/Tiktok-hover.png" alt="Tiktok" class="img-hover" aria-hidden="true"></a>
                 </div>
             </div>
 
             <div id="legal">
-                <h3>Legal</h3>
-                <a href="">Términos de Servicio</a>
-                <a href="">Política de Privacidad</a>
-                <a href="">Política de Cookies</a>
-                <a href="">Política de reembolsos</a>
-                <a href="">Acuerdo de Vendedor</a>
+                <h3>{{ $t('footer.legalTitle') }}</h3>
+                <a href="">{{ $t('footer.terms') }}</a>
+                <a href="">{{ $t('footer.privacy') }}</a>
+                <a href="">{{ $t('footer.cookies') }}</a>
+                <a href="">{{ $t('footer.refunds') }}</a>
+                <a href="">{{ $t('footer.sellerAgreement') }}</a>
             </div>
 
             <div id="soporteTecnico">
-                <h3>Soporte Técnico</h3>
+                <h3>{{ $t('footer.supportTitle') }}</h3>
                 <div class="email">
                     <img src="../assets/iconos/email.png" alt="Email">
-                    <p>Email:</p>
-                    <a href="">soporte@nexus.com</a>
+                    <p>{{ $t('auth.email') }}:</p>
+                    <a href="mailto:soporte@nexus.com">soporte@nexus.com</a>
                 </div>
                 
                 <div class="telefono">
                     <img src="../assets/iconos/telefono.png" alt="Teléfono">
-                    <p>Teléfono:</p>
-                    <a href="">+34 900 123 456</a>
-                    <p>Lun-Vie: 9:00 - 18:00 CET</p>
+                    <p>{{ $t('footer.phone') }}:</p>
+                    <a href="tel:+34900123456">+34 900 123 456</a>
+                    <p>{{ $t('footer.hours') }}</p>
                 </div>
 
                 <div id="incidencias">
                     <button>
                         <img src="../assets/iconos/incidencias.png" alt="Incidencias" class="img-normal" aria-hidden="true">
-                        <img src="../assets/iconos/incidencias-hover.png" alt="Tiktok" class="img-hover" aria-hidden="true">
-                        Enviar Incidencia
+                        <img src="../assets/iconos/incidencias-hover.png" alt="Incidencias" class="img-hover" aria-hidden="true">
+                        {{ $t('footer.sendIncident') }}
                     </button>
                 </div>
             </div>
 
             <div id="recursos">
-                <h3>Recursos</h3>
-                <a href="">Centro de Ayuda</a>
-                <a href="">Guía del Vendedor</a>
-                <a href="">Guía del Comprador</a>
-                <a href="">API Documentación</a>
-                <a href="">Blog</a>
+                <h3>{{ $t('footer.resourcesTitle') }}</h3>
+                <a href="">{{ $t('footer.helpCenter') }}</a>
+                <a href="">{{ $t('footer.sellerGuide') }}</a>
+                <a href="">{{ $t('footer.buyerGuide') }}</a>
+                <a href="">{{ $t('footer.apiDocs') }}</a>
+                <a href="">{{ $t('footer.blog') }}</a>
             </div>            
         </div>
+
         <div class="derechos">
-            <p class="copy">&copy; 2026 Nexus Marketplace. Todos los derechos reservados.</p>
-            <p>Plataforma segura para la compra y venta de productos digitales</p>
+            <p class="copy">&copy; 2026 Nexus Marketplace. {{ $t('footer.allRights') }}</p>
+            <p>{{ $t('footer.securePlatform') }}</p>
         </div>
     </footer>
 </template>
@@ -83,7 +71,7 @@
 footer {
   background-color: #0f172a;
   color: #94a3b8;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   padding: 4rem 2rem 2rem 2rem;
 }
 

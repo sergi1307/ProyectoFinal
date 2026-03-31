@@ -1,6 +1,9 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -10,52 +13,39 @@ import Footer from '@/components/Footer.vue';
       <div class="hero-contenido">
         <div class="etiqueta">
           <img src="../assets/iconos/estrella.png" alt="Estrella" />
-          <span>Bienvenido a Nexus</span>
+          <span>{{ $t('home.welcome') }}</span>
         </div>
 
         <h1>
-          El marketplace para <br />
-          <span class="azul">creadores digitales</span>
+          {{ $t('home.heroTitle') }} <br />
+          <span class="azul">{{ $t('home.heroTitleAzul') }}</span>
         </h1>
 
         <p class="subtitulo">
-          Compra, vende y descubre productos digitales únicos creados por una
-          comunidad global de talento independiente.
+          {{ $t('home.heroSub') }}
         </p>
 
         <div class="botones-hero">
           <router-link to="/register" class="btn-empezar">
-            Comenzar gratis <span>&rarr;</span>
+            {{ $t('home.startFree') }} <span>&rarr;</span>
           </router-link>
           <router-link to="/login" class="btn-secundario">
-            Iniciar sesión
+            {{ $t('navbar.login') }}
           </router-link>
         </div>
 
         <div class="beneficios">
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Sin comisiones ocultas</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.noHidden') }}</span>
           </div>
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Pago seguro</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.securePay') }}</span>
           </div>
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Descarga instantánea</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.instant') }}</span>
           </div>
         </div>
       </div>
@@ -64,45 +54,27 @@ import Footer from '@/components/Footer.vue';
     <section class="features">
       <div class="features-contenido">
         <div class="features-header">
-          <h2>¿Por qué elegir Nexus?</h2>
-          <p>
-            La plataforma diseñada para impulsar tu creatividad y negocio
-            digital
-          </p>
+          <h2>{{ $t('home.whyNexus') }}</h2>
+          <p>{{ $t('home.whyNexusSub') }}</p>
         </div>
 
         <div class="grid-tarjetas">
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">⚡</span>
-            </div>
-            <h3>Rápido y fácil</h3>
-            <p>
-              Configura tu tienda en minutos. Sube tus productos digitales y
-              empieza a vender al instante.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">⚡</span></div>
+            <h3>{{ $t('home.fast') }}</h3>
+            <p>{{ $t('home.fastDesc') }}</p>
           </div>
 
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">🛡️</span>
-            </div>
-            <h3>100% Seguro</h3>
-            <p>
-              Transacciones protegidas y datos encriptados. Tu seguridad es
-              nuestra prioridad.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">🛡️</span></div>
+            <h3>{{ $t('home.safe') }}</h3>
+            <p>{{ $t('home.safeDesc') }}</p>
           </div>
 
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">🌍</span>
-            </div>
-            <h3>Comunidad global</h3>
-            <p>
-              Únete a miles de creadores y compradores de todo el mundo
-              compartiendo su pasión.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">🌍</span></div>
+            <h3>{{ $t('home.global') }}</h3>
+            <p>{{ $t('home.globalDesc') }}</p>
           </div>
         </div>
       </div>
@@ -111,61 +83,66 @@ import Footer from '@/components/Footer.vue';
     <section class="categorias">
       <div class="categorias-contenido">
         <div class="categorias-header">
-          <h2>Explora por categoría</h2>
-          <p>Descubre productos digitales en todas las categorías</p>
+          <h2>{{ $t('home.exploreCat') }}</h2>
+          <p>{{ $t('home.exploreCatSub') }}</p>
         </div>
 
         <div class="grid-tarjetas-cat">
           <div class="cat-tarjetas">
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Cursos</p>
+              <p>{{ $t('categorias.cursos') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>eBooks</p>
+              <p>{{ $t('categorias.ebooks') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Software</p>
+              <p>{{ $t('categorias.software') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Plantillas</p>
+              <p>{{ $t('categorias.plantillas') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Audio</p>
+              <p>{{ $t('categorias.audio') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Fotografía</p>
+              <p>{{ $t('categorias.fotografia') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Vídeo</p>
+              <p>{{ $t('categorias.video') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Fuentes</p>
+              <p>{{ $t('categorias.fuentes') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Otros</p>
+              <p>{{ $t('categorias.otros') }}</p>
             </div>
           </div>
         </div>
       </div>
     </section>
+
     <section class="comenzar">
       <div class="comenzar-contenido">
         <div class="comenzar-header">
-          <h1 class="titulo-comenzar">¿Listo para comenzar?</h1>
-          <p class="p-comenzar">Únete a Nexus hoy y descubre un mundo de posibilidades creativas.</p>
+          <h1 class="titulo-comenzar">{{ $t('home.ready') }}</h1>
+          <p class="p-comenzar">{{ $t('home.readySub') }}</p>
 
           <div class="botones-comenzar">
-            <router-link to="/register" class="no-cuenta">Crear cuenta gratis →</router-link>
-            <router-link to="/login" class="si-cuenta">Ya tengo cuenta</router-link>
+            <router-link to="/register" class="no-cuenta">
+              {{ $t('home.startFree') }} &rarr;
+            </router-link>
+            <router-link to="/login" class="si-cuenta">
+              {{ $t('auth.haveAccount') }}
+            </router-link>
           </div>
         </div>
       </div>

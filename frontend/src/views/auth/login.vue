@@ -2,9 +2,12 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import "../../assets/css/auth.css";
+import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 
+const { t } = useI18n();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
@@ -33,32 +36,48 @@ const enviarDatos = async () => {
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      errorMsg.value = "Email o contraseña incorrectos";
+      errorMsg.value = t('auth.errorLogin');
     } else {
-      errorMsg.value = "Error de conexión con el servidor";
+      errorMsg.value = t('auth.errorConn');
     }
   }
 };
 </script>
 
 <template>
+  <NavBar></NavBar>
   <main>
-    <router-link to="/" class="inicio">Volver al inicio</router-link>
+    <router-link to="/" class="inicio">{{ $t('auth.backHome') }}</router-link>
     <form class="container" @submit.prevent="enviarDatos">
-      <h1>Iniciar Sesión</h1>
-      <p v-if="errorMsg" style="color: #ef4444; text-align: center; margin-bottom: 1rem;">
+      <h1>{{ $t('auth.titleLogin') }}</h1>
+      
+      <p v-if="errorMsg" style="color: #ef4444; text-align: center; margin-bottom: 1rem; font-weight: 600;">
         {{ errorMsg }}
       </p>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" v-model="email" placeholder="example@gmail.com" required />
+      <label for="email">{{ $t('auth.email') }}:</label>
+      <input 
+        type="email" 
+        id="email" 
+        v-model="email" 
+        :placeholder="$t('auth.emailPlaceholder')"
+        required 
+      />
 
-      <label for="password">Contraseña:</label>
-      <input type="password" id="password" v-model="password" placeholder="••••••••••" required />
+      <label for="password">{{ $t('auth.password') }}:</label>
+      <input 
+        type="password" 
+        id="password" 
+        v-model="password" 
+        placeholder="••••••••••" 
+        required 
+      />
 
-      <button type="submit">Iniciar Sesión</button>
+      <button type="submit">{{ $t('auth.titleLogin') }}</button>
+      
       <p id="normal">
-        ¿No tienes cuenta? <router-link to="/register" id="cambiar">Regístrate</router-link>
+        {{ $t('auth.noAccount') }} 
+        <router-link to="/register" id="cambiar">{{ $t('navbar.register') }}</router-link>
       </p>
     </form>
   </main>
