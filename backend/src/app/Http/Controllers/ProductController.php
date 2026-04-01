@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function me(Request $request)
+    {
+        $user = Auth::user();
+
+        $productos = Product::where('user_id', $user->id)
+            ->with('categories')
+            ->latest()
+            ->get();
+        
+        return response()->json($productos);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

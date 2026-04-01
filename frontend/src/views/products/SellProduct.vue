@@ -169,7 +169,6 @@ onMounted(() => obtenerCategorias());
 <style scoped lang="scss">
 @use "@/assets/scss/variables" as *;
 
-// LA CLAVE: Ancho máximo de 1200px para que se vea ancho de verdad
 .super-wide-container {
   width: 100%;
   max-width: 1200px; 
@@ -180,7 +179,7 @@ onMounted(() => obtenerCategorias());
 .wide-card {
   background: white;
   border-radius: 20px;
-  padding: 4rem; // Mucho espacio interno
+  padding: 4rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
   border: 1px solid #eee;
 }
@@ -205,7 +204,6 @@ onMounted(() => obtenerCategorias());
   }
 }
 
-// Dos columnas anchas para precio y categorías
 .two-columns {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -231,7 +229,6 @@ onMounted(() => obtenerCategorias());
   }
 }
 
-// Grid para los archivos
 .upload-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

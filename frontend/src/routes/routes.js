@@ -6,6 +6,7 @@ import general from '../views/general.vue';
 import Verification from '@/views/auth/verification.vue';
 
 import SellProduct from '@/views/products/SellProduct.vue';
+import MyProducts from '@/views/products/MyProducts.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -39,6 +40,11 @@ const router = createRouter({
             path: '/vender',
             name: 'vender',
             component: SellProduct
+        },
+        {
+            path: '/mis-productos',
+            name: 'mis-productos',
+            component: MyProducts
         }
     ]
 })
