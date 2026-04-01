@@ -1,0 +1,30 @@
+@use 'variables' as *;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: $bg-color;
+    color: $text-main;
+}
+
+.btn-volver {
+    background: none;
+    border: none;
+    color: $text-main;
+    font-weight: bold;
+    font-size: 0.9em;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: $primary-blue;
+    }
+}
