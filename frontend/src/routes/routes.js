@@ -5,6 +5,8 @@ import register from '../views/auth/register.vue';
 import general from '../views/general.vue';
 import Verification from '@/views/auth/verification.vue';
 
+import SellProduct from '@/views/products/SellProduct.vue';
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -32,6 +34,11 @@ const router = createRouter({
             path: '/general',
             name: 'general',
             component: general
+        },
+        {
+            path: '/vender',
+            name: 'vender',
+            component: SellProduct
         }
     ]
 })
