@@ -56,7 +56,7 @@ const messages = {
     explorar: {
       heroTitle: 'Tu contenido digital, a un clic de distancia',
       discover: 'Descubre productos digitales únicos',
-      featured: 'Destacados',
+      featured: 'Explorar',
       trends: 'Tendencias',
       seeAll: 'Ver todo',
       creators: '¿Tienes algo que compartir?',
@@ -160,7 +160,7 @@ const messages = {
     explorar: {
       heroTitle: 'El teu contingut digital, a un clic de distància',
       discover: 'Descobrix productes digitals únics',
-      featured: 'Destacats',
+      featured: 'Explorar',
       trends: 'Tendències',
       seeAll: 'Veure tot',
       creators: 'Tens algo que compartir?',
@@ -264,7 +264,7 @@ const messages = {
     explorar: {
       heroTitle: 'Your digital content, one click away',
       discover: 'Discover unique digital products',
-      featured: 'Featured',
+      featured: 'Explore',
       trends: 'Trending',
       seeAll: 'See all',
       creators: 'Have something to share?',
