@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -14,9 +16,16 @@ Route::prefix('/auth')->group(function () {
     Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
 
+Route::get('/categories', [CategoryController::class, 'index']);
+
 // ==========================================
 // 2. RUTAS PROTEGIDAS
 // ==========================================
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('/products')->group(function () {
+        Route::get('/me', [ProductController::class, 'me']);
+        Route::post('/store', [ProductController::class, 'store']);
+    });
 });
