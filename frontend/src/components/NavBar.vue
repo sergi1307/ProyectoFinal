@@ -204,7 +204,7 @@ const logout = () => {
 }
 
 .nav-item:hover {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: #ffffff;
 }
 
@@ -233,7 +233,7 @@ const logout = () => {
 
 .search-wrapper:focus-within {
   background-color: #ffffff;
-  box-shadow: 0 0 0 2px #2563eb;
+  box-shadow: 0 0 0 2px #0cc0df;
 }
 
 .search-icon {
@@ -291,7 +291,7 @@ const logout = () => {
 }
 
 .opcion-idioma:hover {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: #ffffff;
 }
 
@@ -305,7 +305,7 @@ const logout = () => {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: white;
   text-decoration: none;
   padding: 0.6rem 1.2rem;
@@ -316,7 +316,7 @@ const logout = () => {
 }
 
 .boton-vender:hover {
-  background-color: #1d4ed8;
+  background-color: #00869e;
 }
 
 .plus-icon {
@@ -346,7 +346,7 @@ const logout = () => {
 }
 
 .action-btn:hover {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: #ffffff;
 }
 
@@ -373,21 +373,31 @@ const logout = () => {
   color: #1f2937;
   font-weight: 500;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
 }
 
 .enlace:hover {
-  color: #2563eb;
+  background-color: #0097b2;
+  color: #ffffff;
 }
 
 .boton-registro {
   text-decoration: none;
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: white;
   padding: 0.6rem 1.5rem;
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.boton-registro:hover {
+  background-color: #00869e;
 }
 
 .fade-enter-active, .fade-leave-active {

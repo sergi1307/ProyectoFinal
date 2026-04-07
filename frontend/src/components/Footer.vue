@@ -108,7 +108,7 @@ p {
 }
 
 .contenedor-principal a:hover {
-  color: #2563eb;
+  color: #0cc0df;
 }
 
 #sobreNosotros p {
@@ -194,12 +194,11 @@ p {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: background-color 0.2s, color 0.2s;
 }
 
 #incidencias button:hover {
   background-color: #f1f5f9;
-  color: #2563eb;
+  color: #0cc0df;
 }
 
 #incidencias button img {

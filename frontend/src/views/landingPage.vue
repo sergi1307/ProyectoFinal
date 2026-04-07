@@ -12,7 +12,7 @@ const { t } = useI18n();
     <section class="hero">
       <div class="hero-contenido">
         <div class="etiqueta">
-          <img src="../assets/iconos/estrella.png" alt="Estrella" />
+          <img src="../assets/iconos/brillos.png" alt="Estrella" class="brillos"/>
           <span>{{ $t('home.welcome') }}</span>
         </div>
 
@@ -178,19 +178,19 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: #f0fdff;
+  color: #0097b2;
   padding: 0.5rem 1rem;
   border-radius: 50px;
   font-weight: 500;
   font-size: 0.9rem;
   margin-bottom: 2rem;
-  border: 1px solid #dbeafe;
+  border: 1px solid #5ce1e6;
 }
 
 .etiqueta img {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 h1 {
@@ -203,7 +203,7 @@ h1 {
 }
 
 .azul {
-  color: #2563eb;
+  color: #0097b2;
 }
 
 .subtitulo {
@@ -237,24 +237,43 @@ h1 {
 }
 
 .btn-empezar {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: white;
   border: none;
 }
 
 .btn-empezar:hover {
-  background-color: #1d4ed8;
+  background-color: #00869e;
 }
 
 .btn-secundario {
-  background-color: white;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #0097b2;
+  border: 2px solid #0097b2;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-secundario:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: #f0fdff;
+  border-color: #0cc0df;
+  color: #0cc0df;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(12, 192, 223, 0.15);
+}
+
+.btn-secundario:active {
+  transform: translateY(0);
 }
 
 .beneficios {
@@ -321,7 +340,7 @@ h1 {
 }
 
 .ver-todo:hover {
-  color: #2563eb;
+  color: #0097b2;
 }
 
 .grid-productos {
@@ -341,7 +360,7 @@ h1 {
 }
 
 .producto-tarjeta:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 20px rgba(12, 192, 223, 0.15);
 }
 
 .img-contenedor {
@@ -424,7 +443,7 @@ h1 {
 .producto-info h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #1d4ed8;
+  color: #0097b2;
   font-weight: 700;
   line-height: 1.4;
 }
@@ -464,7 +483,7 @@ h1 {
 }
 
 .precio {
-  color: #1d4ed8;
+  color: #0097b2;
   font-weight: 800;
   font-size: 1.25rem;
 }
@@ -519,11 +538,11 @@ h1 {
 
 .tarjeta:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(12, 192, 223, 0.2);
 }
 
 .icono-contenedor {
-  background-color: #eff6ff;
+  background-color: #defbff;
   width: 60px;
   height: 60px;
   border-radius: 12px;
@@ -572,7 +591,7 @@ h1 {
 }
 
 .categoria-tarjeta {
-  border: 2px solid #eff6ff;
+  border: 2px solid #defbff;
   border-radius: 12px;
   padding: 2rem;
   display: flex;
@@ -585,7 +604,7 @@ h1 {
 }
 
 .categoria-tarjeta p:first-child {
-  background-color: #eff6ff;
+  background-color: #defbff;
   width: 60px;
   height: 60px;
   display: flex;
@@ -610,7 +629,7 @@ h1 {
 }
 
 .categoria-tarjeta:hover {
-  border: 2px solid #1d4ed8;
+  border: 2px solid #0097b2;
   background-color: #f8faff;
   transform: translateY(-4px);
 }
@@ -622,12 +641,12 @@ h1 {
 }
 
 .comenzar-contenido {
-  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #1d4ed8 100%);
+  background: linear-gradient(90deg, #0097b2 0%, #0cc0df 50%, #0097b2 100%);
   border-radius: 25px;
   padding: 5rem;
   text-align: center;
   color: #ffffff;
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 151, 178, 0.2);
 }
 
 .titulo-comenzar {
@@ -663,7 +682,7 @@ h1 {
 
 .no-cuenta {
   background-color: #ffffff;
-  color: #2563eb;
+  color: #0097b2;
   border: none;
 }
 

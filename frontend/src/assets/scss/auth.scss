@@ -13,6 +13,11 @@ main {
     font-size: 0.8em;
     color: #4a4949;
     padding: 0.5em;
+    transition: color 0.3s ease;
+}
+
+.inicio:hover {
+    color: #0097b2; 
 }
 
 .container {
@@ -29,7 +34,7 @@ main {
 }
 
 .container:hover {
-    box-shadow: 0px 0px 8px rgb(37, 99, 235);
+    box-shadow: 0px 0px 8px #0cc0df;
 }
 
 .container h1 {
@@ -55,19 +60,29 @@ main {
 }
 
 .container input:focus {
-    box-shadow: 0px 0px 4px #2563eb;
+    box-shadow: 0px 0px 4px #0cc0df;
     outline: none;
 }
 
 button {
     padding: 0.6em;
     margin: 2em 0em;
-    background-color: #2563eb;
+    background-color: #0097b2;
     border: none;
     border-radius: 8px;
     color: white;
     font-weight: bold;
     font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #00869e;
+}
+
+button:active {
+    transform: scale(0.98);
 }
 
 #frase {
@@ -83,7 +98,12 @@ button {
 }
 
 #normal #cambiar {
-    color: #2563eb;
+    color: #0097b2;
     font-weight: bold;
     text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#normal #cambiar:hover {
+    color: #0cc0df;
 }

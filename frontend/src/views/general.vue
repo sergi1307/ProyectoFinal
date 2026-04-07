@@ -31,9 +31,7 @@ const favoritoTendencia2 = ref(false);
   <main class="contenedor-general">
     <section class="hero-explorar">
       <div class="etiqueta-brillante">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icono-chispa">
-          <path d="M12 3l1.912 5.886L20 10.8l-5.886 1.912L12 21l-1.912-5.886L4 13.2l5.886-1.912z" />
-        </svg>
+        <img src="../assets/iconos/brillos.png" class="icono-brillo"/>
         <span>{{ $t('explorar.discover') }}</span>
       </div>
 
@@ -224,8 +222,8 @@ const favoritoTendencia2 = ref(false);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: #f0fdff;
+  color: #0097b2;
   padding: 0.6rem 1.2rem;
   border-radius: 50px;
   font-weight: 600;
@@ -233,7 +231,7 @@ const favoritoTendencia2 = ref(false);
   margin-bottom: 2rem;
 }
 
-.icono-chispa {
+.icono-brillo {
   width: 18px;
   height: 18px;
 }
@@ -248,7 +246,7 @@ h1 {
 }
 
 .azul-degradado {
-  color: #1d4ed8;
+  color: #0097b2;
 }
 
 .subtitulo-hero {
@@ -278,9 +276,9 @@ h1 {
 }
 
 .boton-categoria:hover {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: #ffffff;
-  border-color: #2563eb;
+  border-color: #0097b2;
   transform: translateY(-2px);
 }
 
@@ -332,7 +330,7 @@ h1 {
 }
 
 .enlace-ver-todo:hover {
-  color: #2563eb;
+  color: #0097b2;
 }
 
 .anuncio-creadores {
@@ -344,12 +342,12 @@ h1 {
 }
 
 .caja-azul-anuncio {
-  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #1d4ed8 100%);
+  background: linear-gradient(90deg, #0097b2 0%, #0cc0df 50%, #0097b2 100%);
   border-radius: 20px;
   padding: 4rem;
   color: white;
   text-align: left;
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 151, 178, 0.2);
 }
 
 .caja-azul-anuncio h2 {
@@ -370,8 +368,8 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: #f0fdff;
+  color: #0097b2;
   text-decoration: none;
   padding: 1rem 2rem;
   border-radius: 10px;
@@ -381,7 +379,8 @@ h1 {
 }
 
 .boton-crear-producto:hover {
-  background-color: #eff6ff;
+  background-color: #ffffff;
+  color: #0cc0df;
   transform: translateY(-2px);
 }
 
@@ -406,7 +405,7 @@ h1 {
 
 .tarjeta-producto:hover,
 .tarjeta-tendencia:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 20px rgba(12, 192, 223, 0.15);
 }
 
 .contenedor-imagen,
@@ -534,7 +533,7 @@ h3 {
 }
 
 .precio-producto {
-  color: #1d4ed8;
+  color: #0097b2;
   font-weight: 800;
   font-size: 1.2rem;
 }
