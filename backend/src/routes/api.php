@@ -18,6 +18,7 @@ Route::prefix('/auth')->group(function () {
     Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
 
+Route::get('/products', [ProductController::class, 'index']); 
 Route::get('/categories', [CategoryController::class, 'index']);
 
 // ==========================================
@@ -33,4 +34,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/incidents', [IncidentController::class, 'store']);
     Route::get('/incidents', [IncidentController::class, 'index']);
+    Route::put('/incidents/{id}', [IncidentController::class, 'update']);
 });
