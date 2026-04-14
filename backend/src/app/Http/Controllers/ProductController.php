@@ -57,4 +57,18 @@ class ProductController extends Controller
 
         return response()->json(['message' => '¡Éxito!'], 201);
     }
+
+    public function toggleFavorite(Request $request, Product $product)
+    {
+        $user = $request->user();
+
+        $user->favorites()->toggle($product->id);
+
+        $isFavorite = $user->favorites()->where('product_id', $product->id)->exists();
+
+        return response()->json([
+            'message' => $isFavorite ? 'Añadido a favoritos' : 'Eliminado de favoritos',
+            'is_favorite' => $isFavorite,
+        ]);
+    }
 }

@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/store', [ProductController::class, 'store']);
     });
 
+    Route::post('/products/{product}/favorite', [ProductController::class, 'toggleFavorite']);
+
     Route::post('/incidents', [IncidentController::class, 'store']);
     Route::get('/incidents', [IncidentController::class, 'index']);
 });
