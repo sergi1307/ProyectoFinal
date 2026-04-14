@@ -81,6 +81,16 @@ const toggleFavorito = (producto) => {
   producto.isFavorite = !producto.isFavorite;
 };
 
+const limpiarFiltros = () => {
+  ordenSeleccionado.value = "Destacados";
+  categoriasSeleccionadas.value = [];
+  calificacionSeleccionada.value = "Todas las calificaciones";
+  precioMin.value = 0;
+  precioMax.value = 1000;
+  console.log("Filtros reseteados. Orden actual:", ordenSeleccionado.value);
+  mostrarFiltros.value = false;
+};
+
 const productosFiltrados = computed(() => {
   return productos.value;
 });
@@ -259,6 +269,9 @@ onMounted(cargarDatos);
       <div class="panel-footer">
         <button class="btn-ver-prod" @click="mostrarFiltros = false">
           Ver {{ productosFiltrados.length }} Productos
+        </button>
+        <button class="btn-limpiar" @click="limpiarFiltros">
+          Limpiar filtros
         </button>
       </div>
     </aside>
@@ -655,5 +668,24 @@ main {
 
 .btn-ver-prod:hover {
   background: #00869e;
+}
+
+.btn-limpiar {
+  width: 100%;
+  padding: 14px;
+  margin: 0;
+  border: 2px solid #0097b2; 
+  background: white;
+  color: #0097b2;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-limpiar:hover {
+  background: #00869e;
+  border-color: #00869e;
+  color: white;
 }
 </style>
