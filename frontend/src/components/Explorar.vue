@@ -50,6 +50,23 @@ const estiloBarra = computed(() => {
   };
 });
 
+const usuarioActual = ref(null);
+
+const obtenerUsuarioLogueado = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const res = await axios.get('http://localhost:8080/api/user', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }); 
+    usuarioActual.value = res.data;
+  } catch (error) {
+    console.error("Error al identificar usuario:", error.response?.status);
+    usuarioActual.value = null;
+  }
+};
+
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
     precioMin.value = precioMax.value - 50;
@@ -92,13 +109,45 @@ const limpiarFiltros = () => {
 };
 
 const productosFiltrados = computed(() => {
-  return productos.value;
+  return productos.value.filter(p => {
+    const idDuenoProducto = Number(p.user_id || p.user?.id);
+    const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
+
+    const esMio = idMio && idDuenoProducto === idMio;
+  
+    const cumpleCategoria = categoriasSeleccionadas.value.length === 0 || 
+                            p.categories?.some(c => categoriasSeleccionadas.value.includes(c.id));
+    
+    const cumplePrecio = p.price >= precioMin.value && p.price <= precioMax.value;
+    
+    const ratingMinimo = calificaciones.find(c => c.label === calificacionSeleccionada.value)?.value;
+    const cumpleRating = ratingMinimo === 'todas' || Number(p.rating || 0) >= ratingMinimo;
+
+    return !esMio && cumpleCategoria && cumplePrecio && cumpleRating;
+  }).sort((a, b) => {
+    if (ordenSeleccionado.value === "Precio: Menor a Mayor") return a.price - b.price;
+    if (ordenSeleccionado.value === "Precio: Mayor a Menor") return b.price - a.price;
+    if (ordenSeleccionado.value === "Mejor calificados") return b.rating - a.rating;
+    return 0;
+  });
 });
 
 const obtenerImagen = (url) =>
   url ? `http://localhost:8080/storage/${url}` : "/placeholder.png";
 
-onMounted(cargarDatos);
+onMounted(async () => {
+  cargando.value = true;
+  try {
+    await Promise.all([
+      cargarDatos(),
+      obtenerUsuarioLogueado()
+    ]);
+  } catch (error) {
+    console.error("Error en la carga:", error);
+  } finally {
+    cargando.value = false;
+  }
+});
 </script>
 
 <template>
