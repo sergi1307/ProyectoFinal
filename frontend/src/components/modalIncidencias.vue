@@ -36,6 +36,7 @@ const closeModal = () => {
 
 const handleSubmit = async () => {
   const token = localStorage.getItem('token');
+  
   try {
     const response = await axios.post('http://localhost:8080/api/incidents', {
       asunto: form.asunto,
@@ -43,11 +44,12 @@ const handleSubmit = async () => {
       descripcion: form.descripcion
     }, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json'
       }
     });
 
-    if (response.status === 201) {
+    if (response.status === 201 || response.status === 200) {
       toast.success("Incidencia enviada correctamente", {
         position: "top-center",
         timeout: 2000,
@@ -60,7 +62,10 @@ const handleSubmit = async () => {
       setTimeout(() => {
         closeModal();
       }, 1000);
+    } else {
+      console.log("Respuesta extraña del servidor:", response);
     }
+
   } catch (error) {
     console.error("Error real del servidor:", error.response?.data || error.message);
     toast.error("Error al conectar con el servidor", {
