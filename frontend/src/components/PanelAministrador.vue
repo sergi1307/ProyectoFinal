@@ -155,45 +155,48 @@ onMounted(() => {
           <p v-if="incidencias.length === 0" class="empty-state-text">No hay incidencias</p>
           
           <table v-else class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Asunto</th>
-                <th>Estado</th>
-                <th style="text-align: center;">Acciones</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="incidencia in incidencias" :key="incidencia.id">
-                <td class="id-cell">#{{ incidencia.id }}</td>
-                <td>{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
-                <td><strong>{{ incidencia.subject }}</strong></td>
-                <td>
-                  <span :class="['status-badge', incidencia.status.replace(' ', '-')]">
-                    {{ incidencia.status }}
-                  </span>
-                </td>
-                <td style="text-align: center;">
-                  <div class="edit-dropdown">
-                    <button class="pencil-btn">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </svg>
-                    </button>
-                    <div class="dropdown-menu">
-                      <button @click="cambiarEstado(incidencia.id, 'pendiente')">Pendiente</button>
-                      <button @click="cambiarEstado(incidencia.id, 'en proceso')">En proceso</button>
-                      <button @click="cambiarEstado(incidencia.id, 'resuelta')">Resuelta</button>
-                      <button @click="cambiarEstado(incidencia.id, 'cerrada')">Cerrada</button>
-                    </div>
-                  </div>
-                </td>
-                <td>{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
-              </tr>
-            </tbody>
-          </table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Usuario</th>
+      <th>Asunto</th>
+      <th>Descripción</th> <th>Estado</th>
+      <th style="text-align: center;">Acciones</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="incidencia in incidencias" :key="incidencia.id">
+      <td class="id-cell">#{{ incidencia.id }}</td>
+      <td>{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
+      <td><strong>{{ incidencia.subject }}</strong></td>
+      
+      <td>{{ incidencia.description }}</td>
+      
+      <td>
+        <span :class="['status-badge', incidencia.status.replace(' ', '-')]">
+          {{ incidencia.status }}
+        </span>
+      </td>
+      <td style="text-align: center;">
+        <div class="edit-dropdown">
+          <button class="pencil-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <button @click="cambiarEstado(incidencia.id, 'pendiente')">Pendiente</button>
+            <button @click="cambiarEstado(incidencia.id, 'en proceso')">En proceso</button>
+            <button @click="cambiarEstado(incidencia.id, 'resuelta')">Resuelta</button>
+            <button @click="cambiarEstado(incidencia.id, 'cerrada')">Cerrada</button>
+          </div>
+        </div>
+      </td>
+      <td>{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
+    </tr>
+  </tbody>
+</table>
         </div>
       </div>
 
@@ -335,7 +338,7 @@ onMounted(() => {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 18px;
-  padding: 80px 20px;
+  padding: 20px 20px;
   text-align: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
@@ -368,6 +371,13 @@ onMounted(() => {
 .id-cell {
   font-weight: bold;
   color: #0097b2;
+}
+
+.data-table td:nth-child(4) {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pencil-btn {
