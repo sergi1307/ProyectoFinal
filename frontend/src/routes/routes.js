@@ -7,6 +7,7 @@ import Verification from '@/views/auth/verification.vue';
 import PanelAministrador from '@/components/PanelAministrador.vue';
 import SellProduct from '@/views/products/SellProduct.vue';
 import MyProducts from '@/views/products/MyProducts.vue';
+import legal from '@/views/footer/legal.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -15,6 +16,11 @@ const router = createRouter({
             path: '/',
             name: 'landing',
             component: landingPage
+        },
+        {
+            path: '/legal',
+            name: 'legal',
+            component: legal
         },
         {
             path: '/login',

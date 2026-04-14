@@ -52,7 +52,7 @@ const logout = () => {
     <div class="navbar-container">
       
       <div class="navbar-izquierda">
-        <router-link to="/" class="logo-container">
+        <router-link :to="userRole ? '/general' : '/'" class="logo-container">
           <img src="../assets/logos/Logo_gr.png" alt="Logo" class="imagen-logo" />
         </router-link>
 

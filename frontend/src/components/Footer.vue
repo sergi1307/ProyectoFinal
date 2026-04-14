@@ -55,13 +55,28 @@ const isModalOpen = ref(false);
       </div>
 
       <div id="legal">
-        <h3>{{ $t("footer.legalTitle") }}</h3>
-        <a href="">{{ $t("footer.terms") }}</a>
-        <a href="">{{ $t("footer.privacy") }}</a>
-        <a href="">{{ $t("footer.cookies") }}</a>
-        <a href="">{{ $t("footer.refunds") }}</a>
-        <a href="">{{ $t("footer.sellerAgreement") }}</a>
-      </div>
+  <h3>{{ $t("footer.legalTitle") }}</h3>
+  
+  <router-link :to="{ name: 'legal', query: { section: 'tos' } }">
+    {{ $t("footer.terms") }}
+  </router-link>
+  
+  <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">
+    {{ $t("footer.privacy") }}
+  </router-link>
+  
+  <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">
+    {{ $t("footer.cookies") }}
+  </router-link>
+  
+  <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">
+    {{ $t("footer.refunds") }}
+  </router-link>
+  
+  <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">
+    {{ $t("footer.sellerAgreement") }}
+  </router-link>
+</div>
 
       <div id="soporteTecnico">
         <h3>{{ $t("footer.supportTitle") }}</h3>

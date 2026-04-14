@@ -103,6 +103,60 @@ const messages = {
       blog: 'Blog',
       allRights: 'Todos los derechos reservados.',
       securePlatform: 'Plataforma segura para la compra y venta de productos digitales'
+    },
+    legal: {
+      mainTitle: 'Centro de Transparencia Legal',
+      lastUpdate: 'Última actualización: 14 de Abril, 2026',
+      footer_q: '¿Dudas sobre estos términos o casos de uso específicos?',
+      tos: {
+        title: '1. Términos de Servicio',
+        s1_h: '1.1 Naturaleza del Servicio e Intermediación Digital',
+        s1_p: 'Nexus (en adelante, "la Plataforma") actúa de forma exclusiva como un proveedor de servicios de intermediación técnica y comercial entre creadores de contenido (en adelante, "Usuarios Vendedores") y consumidores (en adelante, "Usuarios Compradores"). La Plataforma facilita la infraestructura tecnológica para el alojamiento, exhibición y comercialización de activos digitales. En ningún caso Nexus es propietario, creador ni responsable directo de los productos transaccionados. La relación contractual de compraventa se formaliza estricta y directamente entre el Vendedor y el Comprador.',
+        s2_h: '1.2 Sistema de Tarifas y Comisiones',
+        s2_p1: 'El uso básico de la plataforma para la exploración de productos es gratuito. No obstante, por cada transacción completada con éxito, Nexus devengará una comisión de intermediación del',
+        s2_p2: 'sobre el precio bruto de venta. Esta tarifa cubre los costes de pasarela de pago, alojamiento y mantenimiento técnico. La comisión se detraerá de forma automática e irrevocable en el momento de procesar el pago mediante nuestros proveedores autorizados (ej. Stripe, PayPal).',
+        s3_h: '1.3 Uso Aceptable y Suspensión de Cuentas',
+        s3_p: 'El Usuario se compromete a hacer un uso lícito y ético de la Plataforma. Queda terminantemente prohibida la distribución de software malicioso, contenido que incite al odio, material protegido por derechos de autor sin autorización, o cualquier activo que vulnere las leyes vigentes. Nexus se reserva el derecho de suspender o eliminar, sin previo aviso, cualquier cuenta que incumpla estas directrices, así como de retener los fondos asociados en caso de sospecha fundada de fraude.'
+      },
+      privacy: {
+        title: '2. Política de Privacidad',
+        s1_h: '2.1 Base Legal y Tratamiento de Datos',
+        s1_p: 'En estricto cumplimiento del Reglamento General de Protección de Datos (RGPD) y legislaciones aplicables, informamos que los datos personales recabados (nombre, correo electrónico, dirección IP y metadatos de transacción) serán tratados bajo la base jurídica de la ejecución del contrato de intermediación. Estos datos son indispensables para procesar los pagos, prevenir el fraude y garantizar la entrega del producto digital.',
+        s2_h: '2.2 Cesión a Terceros',
+        s2_p: 'Nexus no comercializa ni cede bases de datos a terceros para fines publicitarios. Tus datos únicamente serán compartidos con las pasarelas de pago para ejecutar la transacción y con el Usuario Vendedor (solo los datos de contacto imprescindibles) para garantizar la correcta entrega del activo y la prestación de soporte posventa.',
+        s3_h: '2.3 Ejercicio de Derechos (ARCO)',
+        s3_p: 'Todo usuario tiene derecho a solicitar el acceso, rectificación, cancelación, oposición, limitación y portabilidad de sus datos personales. Para ejercer estos derechos, el usuario deberá enviar una solicitud formal a nuestro departamento de privacidad a través de privacidad@nexus.com, adjuntando prueba de identidad válida.'
+      },
+      cookies: {
+        title: '3. Política de Cookies',
+        intro: 'Con el fin de ofrecer un servicio óptimo, Nexus utiliza dispositivos de almacenamiento y recuperación de datos (cookies) en el equipo terminal del usuario. Estas tecnologías nos permiten recordar preferencias de sesión, gestionar el carrito de la compra y mantener un entorno de pago seguro.',
+        th1: 'Categoría', th2: 'Finalidad Principal', th3: 'Duración',
+        cat1_t: 'Técnicas / Estrictamente Necesarias', cat1_p: 'Permitir la navegación, autenticación de usuarios y mantenimiento del carrito de compras. No requieren consentimiento previo al ser vitales para el servicio.',
+        cat2_t: 'Seguridad y Prevención', cat2_p: 'Monitoreo de comportamientos anómalos para prevenir ataques automatizados y fraudes en las pasarelas de pago (Compliment PCI DSS).',
+        cat3_t: 'Analíticas', cat3_p: 'Cuantificación del número de usuarios y medición estadística del uso de la web para mejorar la interfaz y oferta comercial.',
+        dur_s: 'Sesión', dur_a: '1 Año', dur_m: '6 Meses',
+        footer: 'El usuario puede, en cualquier momento, configurar su navegador para bloquear o alertar sobre la presencia de estas cookies, si bien esto podría afectar drásticamente a la funcionalidad de la plataforma, impidiendo la realización de compras.'
+      },
+      refunds: {
+        title: '4. Política de Reembolsos y Desistimiento',
+        alert_h: 'Excepción legal al Derecho de Desistimiento:',
+        alert_p: 'De conformidad con la normativa de defensa de los consumidores, en contratos de suministro de contenido digital no prestado en soporte material, el derecho de desistimiento desaparece en el momento en que el usuario inicia la descarga o accede al producto. Al realizar la compra, aceptas expresamente esta condición.',
+        s1_h: '4.1 Condiciones para Resoluciones y Disputas',
+        s1_p: 'A pesar de la pérdida del derecho de desistimiento por la naturaleza digital del producto, Nexus actuará como mediador de buena fe si se presenta alguna de las siguientes circunstancias excepcionales:',
+        li1: 'El archivo digital descargado está corrupto, dañado o presenta errores técnicos insubsanables que impiden su uso.',
+        li2: 'El contenido entregado difiere sustancial y demostrablemente de la descripción, imágenes o promesas técnicas publicadas por el vendedor en la página del producto.',
+        footer: 'El comprador dispondrá de un plazo máximo de 14 días naturales desde la compra para abrir una reclamación a través de nuestro Centro de Soporte. Nexus evaluará las pruebas aportadas por ambas partes y dictaminará la resolución aplicable (reembolso íntegro o denegación).'
+      },
+      vendor: {
+        title: '5. Acuerdo de Vendedor (Vendor Agreement)',
+        s1_h: '5.1 Garantía de Titularidad y Propiedad Intelectual',
+        s1_p: 'El Usuario Vendedor declara, garantiza y asume la responsabilidad exclusiva de que posee todas las licencias, derechos de autor, marcas comerciales y permisos necesarios para comercializar, distribuir y otorgar sublicencias de los productos subidos a Nexus. El Vendedor exime y mantendrá total e incondicionalmente indemne a la Plataforma frente a cualquier litigio, demanda, daño o reclamación de terceros derivada de la infracción de derechos de propiedad intelectual.',
+        s2_h: '5.2 Retención de Fondos y Liquidaciones',
+        s2_p1: 'Con el objetivo de salvaguardar la integridad del ecosistema, prevenir fraudes, blanqueo de capitales y gestionar posibles solicitudes de reembolso por parte de los compradores, Nexus aplicará un periodo de retención de seguridad sobre los ingresos generados. Los fondos correspondientes a una venta (descontando la comisión de la Plataforma) estarán disponibles para su retirada tras un periodo de',
+        s2_p2: 'días desde la confirmación de la transacción.',
+        s3_h: '5.3 Responsabilidad Fiscal',
+        s3_p: 'La Plataforma facilita la intermediación, pero el Vendedor opera como entidad o profesional independiente. Es responsabilidad única, exclusiva e indelegable del Vendedor determinar, autoliquidar y abonar ante las autoridades competentes cualquier impuesto, tasa o arancel (incluyendo el IVA o impuestos sobre ventas) derivado de sus ingresos a través de Nexus, según la jurisdicción que le sea aplicable.'
+      }
     }
   },
   val: {
@@ -207,6 +261,60 @@ const messages = {
       blog: 'Blog',
       allRights: 'Tots els drets reservats.',
       securePlatform: 'Plataforma segura per a la compra i venda de productes digitals'
+    },
+    legal: {
+      mainTitle: 'Centre de Transparència Legal',
+      lastUpdate: 'Última actualització: 14 d\'Abril, 2026',
+      footer_q: 'Dubtes sobre estos termes o casos d\'ús específics?',
+      tos: {
+        title: '1. Termes de Servici',
+        s1_h: '1.1 Naturalesa del Servici i Intermediació Digital',
+        s1_p: 'Nexus (en endavant, "la Plataforma") actua de forma exclusiva com un proveïdor de servicis d\'intermediació tècnica i comercial entre creadors de contingut (en endavant, "Usuaris Venedors") i consumidors (en endavant, "Usuaris Compradors"). La Plataforma facilita la infraestructura tecnològica per a l\'allotjament, exhibició i comercialització d\'actius digitals. En cap cas Nexus és propietari, creador ni responsable directe dels productes transaccionats. La relació contractual de compravenda es formalitza estricta i directament entre el Venedor i el Comprador.',
+        s2_h: '1.2 Sistema de Tarifes i Comissions',
+        s2_p1: 'L\'ús bàsic de la plataforma per a l\'exploració de productes és gratuït. No obstant això, per cada transacció completada amb èxit, Nexus meritarà una comissió d\'intermediació del',
+        s2_p2: 'sobre el preu brut de venda. Esta tarifa cobreix els costos de passarel·la de pagament, allotjament i manteniment tècnic. La comissió es detraurà de forma automàtica i irrevocable en el moment de processar el pagament mitjançant els nostres proveïdors autoritzats (ex. Stripe, PayPal).',
+        s3_h: '1.3 Ús Acceptable i Suspensió de Comptes',
+        s3_p: 'L\'Usuari es compromet a fer un ús lícit i ètic de la Plataforma. Queda terminantment prohibida la distribució de programari maliciós, contingut que incite a l\'odi, material protegit per drets d\'autor sense autorització, o qualsevol actiu que vulnere les lleis vigents. Nexus es reserva el dret de suspendre o eliminar, sense avís previ, qualsevol compte que incomplisca estes directrius, així com de retindre els fons associats en cas de sospita fundada de frau.'
+      },
+      privacy: {
+        title: '2. Política de Privacitat',
+        s1_h: '2.1 Base Legal i Tractament de Dades',
+        s1_p: 'En estricte compliment del Reglament General de Protecció de Dades (RGPD) i legislacions aplicables, informem que les dades personals recollides (nom, correu electrònic, adreça IP i metadades de transacció) seran tractades sota la base jurídica de l\'execució del contracte d\'intermediació. Estes dades són indispensables per a processar els pagaments, previndre el frau i garantir l\'entrega del producte digital.',
+        s2_h: '2.2 Cessió a Tercers',
+        s2_p: 'Nexus no comercializa ni cedeix bases de dades a tercers per a fins publicitaris. Les teues dades únicament seran compartides amb les passarel·les de pagament per a executar la transacció i amb l\'Usuari Venedor (només les dades de contacte imprescindibles) per a garantir la correcta entrega de l\'actiu i la prestació de suport postvenda.',
+        s3_h: '2.3 Exercici de Drets (ARCO)',
+        s3_p: 'Tot usuari té dret a sol·licitar l\'accés, rectificació, cancel·lació, oposició, limitació i portabilitat de les seues dades personals. Per a exercir estos drets, l\'usuari haurà d\'enviar una sol·licitud formal al nostre departament de privacitat a través de privacidad@nexus.com, adjuntant prova d\'identitat vàlida.'
+      },
+      cookies: {
+        title: '3. Política de Cookies',
+        intro: 'Amb la finalitat d\'oferir un servici òptim, Nexus utilitza dispositius d\'emmagatzematge i recuperació de dades (cookies) en l\'equip terminal de l\'usuari. Estes tecnologies ens permeten recordar preferències de sessió, gestionar el carret de la compra i mantindre un entorn de pagament segur.',
+        th1: 'Categoria', th2: 'Finalitat Principal', th3: 'Durada',
+        cat1_t: 'Tècniques / Estrictament Necessàries', cat1_p: 'Permetre la navegació, autenticació d\'usuaris i manteniment del carret de compres. No requereixen consentiment previ en ser vitals per al servici.',
+        cat2_t: 'Seguretat i Prevenció', cat2_p: 'Monitoratge de comportaments anómals per a previndre atacs automatitzats i fraus en les passarel·les de pagament (Compliment PCI DSS).',
+        cat3_t: 'Analítiques', cat3_p: 'Quantificació del nombre d\'usuaris i mesurament estadístic de l\'ús de la web per a millorar la interfície i oferta comercial.',
+        dur_s: 'Sessió', dur_a: '1 Any', dur_m: '6 Mesos',
+        footer: 'L\'usuari pot, en qualsevol moment, configurar el seu navegador per a bloquejar o alertar sobre la presència d\'estes cookies, si bé això podria afectar dràsticament la funcionalitat de la plataforma, impedint la realització de compres.'
+      },
+      refunds: {
+        title: '4. Política de Reemborsaments i Desistiment',
+        alert_h: 'Excepció legal al Dret de Desistiment:',
+        alert_p: 'De conformitat amb la normativa de defensa dels consumidors, en contractes de subministrament de contingut digital no prestat en suport material, el dret de desistiment desapareix en el moment en què l\'usuari inicia la descàrrega o accedeix al producte. En realitzar la compra, acceptes expressament esta condició.',
+        s1_h: '4.1 Condicions per a Resolucions i Disputes',
+        s1_p: 'A pesar de la pèrdua del dret de desistiment per la naturalesa digital del producte, Nexus actuarà com a mediador de bona fe si es presenta alguna de les següents circumstàncies excepcionals:',
+        li1: 'L\'arxiu digital descarregat està corrupte, danyat o presenta errors tècnics insubsanables que impedeixen el seu ús.',
+        li2: 'El contingut entregat difereix substancialment i demostrable de la descripció, imatges o promeses tècniques publicades pel venedor en la pàgina del producte.',
+        footer: 'El comprador disposarà d\'un termini màxim de 14 dies naturals des de la compra per a obrir una reclamació a través del nostre Centre de Suport. Nexus avaluarà les proves aportades per ambdues parts i dictaminarà la resolució aplicable (reemborsament íntegre o denegació).'
+      },
+      vendor: {
+        title: '5. Acord de Venedor (Vendor Agreement)',
+        s1_h: '5.1 Garantia de Titularitat i Propietat Intel·lectual',
+        s1_p: 'L\'Usuari Venedor declara, garanteix i assumeix la responsabilitat exclusiva que posseeix totes les llicències, drets d\'autor, marques comercials i permisos necessaris per a comercialitzar, distribuir i atorgar subllicències dels productes pujats a Nexus. El Venedor eximeix i mantindrà total i incondicionalment indemne a la Plataforma enfront de qualsevol litigi, demanda, dany o reclamació de tercers derivada de la infracció de drets de propietat intel·lectual.',
+        s2_h: '5.2 Retenció de Fons i Liquidacions',
+        s2_p1: 'Amb l\'objectiu de salvaguardar la integritat de l\'ecosistema, previndre fraus, blanqueig de capitals i gestionar possibles sol·licituds de reemborsament per part dels compradors, Nexus aplicarà un període de retenció de seguretat sobre els ingressos generats. Els fons corresponents a una venda (descomptant la comissió de la Plataforma) estaran disponibles per a la seua retirada després d\'un període de',
+        s2_p2: 'dies des de la confirmació de la transacció.',
+        s3_h: '5.3 Responsabilitat Fiscal',
+        s3_p: 'La Plataforma facilita la intermediació, però el Venedor opera com a entitat o professional independent. És responsabilitat única, exclusiva i indelegable del Venedor determinar, autoliquidar i abonar davant les autoritats competents qualsevol impost, taxa o aranzel (incloent-hi l\'IVA o impostos sobre vendes) derivat dels seus ingressos a través de Nexus, segons la jurisdicció que li siga aplicable.'
+      }
     }
   },
   eng: {
@@ -311,6 +419,60 @@ const messages = {
       blog: 'Blog',
       allRights: 'All rights reserved.',
       securePlatform: 'Secure platform for buying and selling digital products'
+    },
+    legal: {
+      mainTitle: 'Legal Transparency Center',
+      lastUpdate: 'Last update: April 14, 2026',
+      footer_q: 'Questions about these terms or specific use cases?',
+      tos: {
+        title: '1. Terms of Service',
+        s1_h: '1.1 Service Nature & Digital Intermediation',
+        s1_p: 'Nexus (hereinafter, "the Platform") acts exclusively as a technical and commercial intermediation service provider between content creators (hereinafter, "Sellers") and consumers (hereinafter, "Buyers"). The Platform provides the technological infrastructure for hosting, display, and commercialization of digital assets. In no case is Nexus the owner, creator, or directly responsible for transacted products. The contractual purchase-sale relationship is formalized strictly and directly between the Seller and the Buyer.',
+        s2_h: '1.2 Fee System and Commissions',
+        s2_p1: 'The basic use of the platform for product exploration is free. However, for each successfully completed transaction, Nexus will accrue an intermediation commission of',
+        s2_p2: 'on the gross sale price. This fee covers payment gateway, hosting, and technical maintenance costs. The commission will be automatically and irrevocably deducted at the time of processing the payment through our authorized providers (e.g., Stripe, PayPal).',
+        s3_h: '1.3 Acceptable Use and Account Suspension',
+        s3_p: 'The User agrees to make lawful and ethical use of the Platform. The distribution of malicious software, content that incites hatred, material protected by copyright without authorization, or any asset that violates current laws is strictly prohibited. Nexus reserves the right to suspend or remove, without prior notice, any account that violates these guidelines, as well as to withhold associated funds in case of founded suspicion of fraud.'
+      },
+      privacy: {
+        title: '2. Privacy Policy',
+        s1_h: '2.1 Legal Basis and Data Processing',
+        s1_p: 'In strict compliance with the General Data Protection Regulation (GDPR) and applicable legislations, we inform you that the personal data collected (name, email, IP address, and transaction metadata) will be processed under the legal basis of the execution of the intermediation contract. This data is essential for processing payments, preventing fraud, and ensuring the delivery of the digital product.',
+        s2_h: '2.2 Disclosure to Third Parties',
+        s2_p: 'Nexus does not sell or lease databases to third parties for advertising purposes. Your data will only be shared with payment gateways to execute the transaction and with the Seller (only essential contact data) to ensure correct asset delivery and the provision of after-sales support.',
+        s3_h: '2.3 Exercise of Rights (ARCO)',
+        s3_p: 'Every user has the right to request access, rectification, cancellation, opposition, limitation, and portability of their personal data. To exercise these rights, the user must send a formal request to our privacy department via privacidad@nexus.com, attaching a valid proof of identity.'
+      },
+      cookies: {
+        title: '3. Cookies Policy',
+        intro: 'To offer an optimal service, Nexus uses data storage and retrieval devices (cookies) on the user\'s terminal equipment. These technologies allow us to remember session preferences, manage the shopping cart, and maintain a secure payment environment.',
+        th1: 'Category', th2: 'Main Purpose', th3: 'Duration',
+        cat1_t: 'Technical / Strictly Necessary', cat1_p: 'Allow navigation, user authentication, and shopping cart maintenance. They do not require prior consent as they are vital for the service.',
+        cat2_t: 'Security and Prevention', cat2_p: 'Monitoring anomalous behaviors to prevent automated attacks and fraud in payment gateways (PCI DSS compliance).',
+        cat3_t: 'Analytics', cat3_p: 'Quantification of the number of users and statistical measurement of web use to improve the interface and commercial offer.',
+        dur_s: 'Session', dur_a: '1 Year', dur_m: '6 Months',
+        footer: 'The user can, at any time, configure their browser to block or alert about the presence of these cookies, although this could drastically affect the functionality of the platform, preventing purchases.'
+      },
+      refunds: {
+        title: '4. Refund and Withdrawal Policy',
+        alert_h: 'Legal Exception to the Right of Withdrawal:',
+        alert_p: 'In accordance with consumer protection regulations, in supply contracts for digital content not provided on a material medium, the right of withdrawal disappears at the time the user starts the download or accesses the product. By making the purchase, you expressly accept this condition.',
+        s1_h: '4.1 Conditions for Resolutions and Disputes',
+        s1_p: 'Despite the loss of the right of withdrawal due to the digital nature of the product, Nexus will act as a good faith mediator if any of the following exceptional circumstances arise:',
+        li1: 'The downloaded digital file is corrupt, damaged, or has irreparable technical errors that prevent its use.',
+        li2: 'The delivered content differs substantially and demonstrably from the description, images, or technical promises published by the seller on the product page.',
+        footer: 'The buyer will have a maximum period of 14 calendar days from the purchase to open a claim through our Support Center. Nexus will evaluate the evidence provided by both parties and issue the applicable resolution (full refund or denial).'
+      },
+      vendor: {
+        title: '5. Seller Agreement (Vendor Agreement)',
+        s1_h: '5.1 Guarantee of Ownership and Intellectual Property',
+        s1_p: 'The Seller declares, guarantees, and assumes exclusive responsibility that they possess all licenses, copyrights, trademarks, and necessary permissions to market, distribute, and grant sublicenses of the products uploaded to Nexus. The Seller exempts and will keep Nexus fully and unconditionally harmless from any litigation, lawsuit, damage, or claim from third parties derived from the infringement of intellectual property rights.',
+        s2_h: '5.2 Funds Retention and Settlements',
+        s2_p1: 'With the aim of safeguarding the ecosystem integrity, preventing fraud, money laundering, and managing potential refund requests from buyers, Nexus will apply a security retention period on the earnings generated. The funds corresponding to a sale (deducting the Platform commission) will be available for withdrawal after a period of',
+        s2_p2: 'days from the confirmation of the transaction.',
+        s3_h: '5.3 Tax Responsibility',
+        s3_p: 'The Platform facilitates intermediation, but the Seller operates as an independent entity or professional. It is the sole, exclusive, and non-delegable responsibility of the Seller to determine, self-assess, and pay to the competent authorities any tax, fee, or duty (including VAT or sales taxes) derived from their income through Nexus, according to the jurisdiction that applies to them.'
+      }
     }
   }
 };
