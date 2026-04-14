@@ -1,9 +1,11 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\IncidentController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -28,4 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [ProductController::class, 'me']);
         Route::post('/store', [ProductController::class, 'store']);
     });
+
+    Route::post('/incidents', [IncidentController::class, 'store']);
+    Route::get('/incidents', [IncidentController::class, 'index']);
 });

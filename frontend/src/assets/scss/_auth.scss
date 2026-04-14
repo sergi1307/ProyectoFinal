@@ -1,4 +1,4 @@
-@use '@/assets/scss/variables' as *;
+@use 'variables' as *;
 
 .auth-layout {
     display: flex;
@@ -14,6 +14,11 @@
     font-size: 0.8em;
     color: #4a4949;
     padding: 0.5em;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: $primary-blue;
+    }
 }
 
 .container {
@@ -29,7 +34,7 @@
     transition: all 0.5s;
 
     &:hover {
-        box-shadow: 0px 0px 8px $primary-blue;
+        box-shadow: 0px 0px 8px $primary-glow; 
     }
 
     h1 {
@@ -57,5 +62,10 @@
         color: $primary-blue;
         font-weight: bold;
         text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: $primary-glow;
+        }
     }
 }

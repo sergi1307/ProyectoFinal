@@ -1,6 +1,9 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -9,53 +12,40 @@ import Footer from '@/components/Footer.vue';
     <section class="hero">
       <div class="hero-contenido">
         <div class="etiqueta">
-          <img src="../assets/iconos/estrella.png" alt="Estrella" />
-          <span>Bienvenido a Nexus</span>
+          <img src="../assets/iconos/brillos.png" alt="Estrella" class="brillos"/>
+          <span>{{ $t('home.welcome') }}</span>
         </div>
 
         <h1>
-          El marketplace para <br />
-          <span class="azul">creadores digitales</span>
+          {{ $t('home.heroTitle') }} <br />
+          <span class="azul">{{ $t('home.heroTitleAzul') }}</span>
         </h1>
 
         <p class="subtitulo">
-          Compra, vende y descubre productos digitales únicos creados por una
-          comunidad global de talento independiente.
+          {{ $t('home.heroSub') }}
         </p>
 
         <div class="botones-hero">
           <router-link to="/register" class="btn-empezar">
-            Comenzar gratis <span>&rarr;</span>
+            {{ $t('home.startFree') }} <span>&rarr;</span>
           </router-link>
           <router-link to="/login" class="btn-secundario">
-            Iniciar sesión
+            {{ $t('navbar.login') }}
           </router-link>
         </div>
 
         <div class="beneficios">
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Sin comisiones ocultas</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.noHidden') }}</span>
           </div>
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Pago seguro</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.securePay') }}</span>
           </div>
           <div class="item-beneficio">
-            <img
-              src="../assets/iconos/check.png"
-              alt="check"
-              class="icono-check"
-            />
-            <span>Descarga instantánea</span>
+            <img src="../assets/iconos/check.png" alt="check" class="icono-check" />
+            <span>{{ $t('home.instant') }}</span>
           </div>
         </div>
       </div>
@@ -64,45 +54,27 @@ import Footer from '@/components/Footer.vue';
     <section class="features">
       <div class="features-contenido">
         <div class="features-header">
-          <h2>¿Por qué elegir Nexus?</h2>
-          <p>
-            La plataforma diseñada para impulsar tu creatividad y negocio
-            digital
-          </p>
+          <h2>{{ $t('home.whyNexus') }}</h2>
+          <p>{{ $t('home.whyNexusSub') }}</p>
         </div>
 
         <div class="grid-tarjetas">
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">⚡</span>
-            </div>
-            <h3>Rápido y fácil</h3>
-            <p>
-              Configura tu tienda en minutos. Sube tus productos digitales y
-              empieza a vender al instante.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">⚡</span></div>
+            <h3>{{ $t('home.fast') }}</h3>
+            <p>{{ $t('home.fastDesc') }}</p>
           </div>
 
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">🛡️</span>
-            </div>
-            <h3>100% Seguro</h3>
-            <p>
-              Transacciones protegidas y datos encriptados. Tu seguridad es
-              nuestra prioridad.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">🛡️</span></div>
+            <h3>{{ $t('home.safe') }}</h3>
+            <p>{{ $t('home.safeDesc') }}</p>
           </div>
 
           <div class="tarjeta">
-            <div class="icono-contenedor">
-              <span style="font-size: 1.5rem">🌍</span>
-            </div>
-            <h3>Comunidad global</h3>
-            <p>
-              Únete a miles de creadores y compradores de todo el mundo
-              compartiendo su pasión.
-            </p>
+            <div class="icono-contenedor"><span style="font-size: 1.5rem">🌍</span></div>
+            <h3>{{ $t('home.global') }}</h3>
+            <p>{{ $t('home.globalDesc') }}</p>
           </div>
         </div>
       </div>
@@ -111,61 +83,66 @@ import Footer from '@/components/Footer.vue';
     <section class="categorias">
       <div class="categorias-contenido">
         <div class="categorias-header">
-          <h2>Explora por categoría</h2>
-          <p>Descubre productos digitales en todas las categorías</p>
+          <h2>{{ $t('home.exploreCat') }}</h2>
+          <p>{{ $t('home.exploreCatSub') }}</p>
         </div>
 
         <div class="grid-tarjetas-cat">
           <div class="cat-tarjetas">
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Cursos</p>
+              <p>{{ $t('categorias.cursos') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>eBooks</p>
+              <p>{{ $t('categorias.ebooks') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Software</p>
+              <p>{{ $t('categorias.software') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Plantillas</p>
+              <p>{{ $t('categorias.plantillas') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Audio</p>
+              <p>{{ $t('categorias.audio') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Fotografía</p>
+              <p>{{ $t('categorias.fotografia') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Vídeo</p>
+              <p>{{ $t('categorias.video') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Fuentes</p>
+              <p>{{ $t('categorias.fuentes') }}</p>
             </div>
             <div class="categoria-tarjeta">
               <p><img src="../assets/iconos/estrellas.png" alt="estrella"></p>
-              <p>Otros</p>
+              <p>{{ $t('categorias.otros') }}</p>
             </div>
           </div>
         </div>
       </div>
     </section>
+
     <section class="comenzar">
       <div class="comenzar-contenido">
         <div class="comenzar-header">
-          <h1 class="titulo-comenzar">¿Listo para comenzar?</h1>
-          <p class="p-comenzar">Únete a Nexus hoy y descubre un mundo de posibilidades creativas.</p>
+          <h1 class="titulo-comenzar">{{ $t('home.ready') }}</h1>
+          <p class="p-comenzar">{{ $t('home.readySub') }}</p>
 
           <div class="botones-comenzar">
-            <router-link to="/register" class="no-cuenta">Crear cuenta gratis →</router-link>
-            <router-link to="/login" class="si-cuenta">Ya tengo cuenta</router-link>
+            <router-link to="/register" class="no-cuenta">
+              {{ $t('home.startFree') }} &rarr;
+            </router-link>
+            <router-link to="/login" class="si-cuenta">
+              {{ $t('auth.haveAccount') }}
+            </router-link>
           </div>
         </div>
       </div>
@@ -201,19 +178,19 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: #f0fdff;
+  color: #0097b2;
   padding: 0.5rem 1rem;
   border-radius: 50px;
   font-weight: 500;
   font-size: 0.9rem;
   margin-bottom: 2rem;
-  border: 1px solid #dbeafe;
+  border: 1px solid #5ce1e6;
 }
 
 .etiqueta img {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 h1 {
@@ -226,7 +203,7 @@ h1 {
 }
 
 .azul {
-  color: #2563eb;
+  color: #0097b2;
 }
 
 .subtitulo {
@@ -260,24 +237,43 @@ h1 {
 }
 
 .btn-empezar {
-  background-color: #2563eb;
+  background-color: #0097b2;
   color: white;
   border: none;
 }
 
 .btn-empezar:hover {
-  background-color: #1d4ed8;
+  background-color: #00869e;
 }
 
 .btn-secundario {
-  background-color: white;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #0097b2;
+  border: 2px solid #0097b2;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-secundario:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: #f0fdff;
+  border-color: #0cc0df;
+  color: #0cc0df;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(12, 192, 223, 0.15);
+}
+
+.btn-secundario:active {
+  transform: translateY(0);
 }
 
 .beneficios {
@@ -344,7 +340,7 @@ h1 {
 }
 
 .ver-todo:hover {
-  color: #2563eb;
+  color: #0097b2;
 }
 
 .grid-productos {
@@ -364,7 +360,7 @@ h1 {
 }
 
 .producto-tarjeta:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 20px rgba(12, 192, 223, 0.15);
 }
 
 .img-contenedor {
@@ -447,7 +443,7 @@ h1 {
 .producto-info h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #1d4ed8;
+  color: #0097b2;
   font-weight: 700;
   line-height: 1.4;
 }
@@ -487,7 +483,7 @@ h1 {
 }
 
 .precio {
-  color: #1d4ed8;
+  color: #0097b2;
   font-weight: 800;
   font-size: 1.25rem;
 }
@@ -542,11 +538,11 @@ h1 {
 
 .tarjeta:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(12, 192, 223, 0.2);
 }
 
 .icono-contenedor {
-  background-color: #eff6ff;
+  background-color: #defbff;
   width: 60px;
   height: 60px;
   border-radius: 12px;
@@ -595,7 +591,7 @@ h1 {
 }
 
 .categoria-tarjeta {
-  border: 2px solid #eff6ff;
+  border: 2px solid #defbff;
   border-radius: 12px;
   padding: 2rem;
   display: flex;
@@ -608,7 +604,7 @@ h1 {
 }
 
 .categoria-tarjeta p:first-child {
-  background-color: #eff6ff;
+  background-color: #defbff;
   width: 60px;
   height: 60px;
   display: flex;
@@ -633,7 +629,7 @@ h1 {
 }
 
 .categoria-tarjeta:hover {
-  border: 2px solid #1d4ed8;
+  border: 2px solid #0097b2;
   background-color: #f8faff;
   transform: translateY(-4px);
 }
@@ -645,12 +641,12 @@ h1 {
 }
 
 .comenzar-contenido {
-  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #1d4ed8 100%);
+  background: linear-gradient(90deg, #0097b2 0%, #0cc0df 50%, #0097b2 100%);
   border-radius: 25px;
   padding: 5rem;
   text-align: center;
   color: #ffffff;
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 151, 178, 0.2);
 }
 
 .titulo-comenzar {
@@ -686,7 +682,7 @@ h1 {
 
 .no-cuenta {
   background-color: #ffffff;
-  color: #2563eb;
+  color: #0097b2;
   border: none;
 }
 

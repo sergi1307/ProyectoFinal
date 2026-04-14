@@ -1,29 +1,18 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '../src/routes/routes.js'
-import { createI18n } from 'vue-i18n'
+import i18n from './i18n.js'
+import axios from 'axios'
+import Toast from "vue-toastification"
+import "vue-toastification/dist/index.css"
 
-const messages = {
-  esp: {
-    nb: { login: 'Iniciar Sesión', reg: 'Registrarse', out: 'Cerrar Sesión', adm: 'Eres Administrador', usr: 'Eres Usuario' }
-  },
-  val: {
-    nb: { login: 'Iniciar Sessió', reg: 'Registrar-se', out: 'Tancar Sessió', adm: 'Ets Administrador', usr: 'Ets Usuari' }
-  },
-  eng: {
-    nb: { login: 'Login', reg: 'Register', out: 'Logout', adm: 'You are Admin', usr: 'You are User' }
-  }
-}
-
-const i18n = createI18n({
-  legacy: false, 
-  locale: localStorage.getItem('idioma') || 'esp',
-  messages
-})
+axios.defaults.baseURL = 'http://127.0.0.1:8000' 
+axios.defaults.withCredentials = true 
 
 const app = createApp(App)
 
 app.use(router)
 app.use(i18n)
+app.use(Toast)
 
 app.mount('#app')
