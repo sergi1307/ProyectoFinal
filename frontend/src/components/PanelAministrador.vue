@@ -1,9 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import NavBar from './NavBar.vue';
 import Footer from './Footer.vue';
 
 const activeTab = ref('incidencias');
+
+const incidencias = ref([]); 
 
 const tabs = [
   { id: 'incidencias', label: 'Incidencias' },
@@ -22,10 +25,43 @@ const stats = ref({
   resueltas: 0,
   cerradas: 0
 });
+
+const cargarIncidencias = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  try {
+    const response = await axios.get('http://localhost:8080/api/incidents', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json'
+      }
+    });
+
+    incidencias.value = response.data;
+    
+    actualizarEstadisticas();
+  } catch (error) {
+    console.error("Error al cargar las incidencias:", error);
+  }
+};
+
+const actualizarEstadisticas = () => {
+  const data = incidencias.value;
+  stats.value.total = data.length;
+  stats.value.abiertas = data.filter(i => i.status === 'pendiente').length;
+  stats.value.progreso = data.filter(i => i.status === 'en proceso').length; 
+  stats.value.resueltas = data.filter(i => i.status === 'resuelta').length;
+  stats.value.cerradas = data.filter(i => i.status === 'cerrada').length;
+};
+
+onMounted(() => {
+  cargarIncidencias();
+});
 </script>
 
 <template>
-    <NavBar></NavBar>
+  <NavBar></NavBar>
   <div class="admin-panel">
     
     <div class="submenu-container">
@@ -89,7 +125,30 @@ const stats = ref({
         </div>
 
         <div class="main-container">
-          <p class="empty-state-text">No hay incidencias</p>
+          <p v-if="incidencias.length === 0" class="empty-state-text">No hay incidencias</p>
+          
+          <table v-else class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 1rem;">
+            <thead>
+              <tr>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">ID</th>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Usuario</th>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Asunto</th>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Descripción</th>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Estado</th>
+                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="incidencia in incidencias" :key="incidencia.id">
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">#{{ incidencia.id }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;"><strong>{{ incidencia.subject }}</strong></td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ incidencia.description }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-transform: capitalize;">{{ incidencia.status }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

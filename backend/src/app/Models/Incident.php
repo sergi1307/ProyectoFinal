@@ -12,7 +12,6 @@ class Incident extends Model
     protected $fillable = [
         'user_id',
         'subject',
-        'priority',
         'description',
         'status',
     ];

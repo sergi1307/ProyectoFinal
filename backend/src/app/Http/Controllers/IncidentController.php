@@ -21,14 +21,12 @@ class IncidentController extends Controller
     {
         $validated = $request->validate([
             'asunto'      => 'required|string|max:255',
-            'prioridad'   => 'required|in:baja,media,alta',
             'descripcion' => 'required|string',
         ]);
 
         $incident = Incident::create([
             'user_id'     => Auth::id(), 
             'subject'     => $validated['asunto'],
-            'priority'    => $validated['prioridad'],
             'description' => $validated['descripcion'],
             'status'      => 'pendiente',
         ]);

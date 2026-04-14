@@ -58,7 +58,7 @@ const logout = () => {
 
         <template v-if="userRole">
           <div class="nav-links">
-            <router-link to="/explorar" class="nav-item">
+            <router-link v-if="userRole !== 'admin'" to="/explorar" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               {{ $t('explorar.featured') }}
             </router-link>
@@ -78,7 +78,7 @@ const logout = () => {
         </template>
       </div>
 
-      <div class="navbar-centro" v-if="userRole">
+      <div class="navbar-centro" v-if="userRole && userRole !== 'admin'">
         <div class="search-wrapper">
           <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" :placeholder="$t('navbar.search')" class="search-input" />

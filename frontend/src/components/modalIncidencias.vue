@@ -15,7 +15,6 @@ const toast = useToast();
 
 const form = reactive({
   asunto: "",
-  prioridad: "media",
   descripcion: "",
 });
 
@@ -24,7 +23,6 @@ watch(
   (newVal) => {
     if (newVal) {
       form.asunto = "";
-      form.prioridad = "media";
       form.descripcion = "";
     }
   },
@@ -40,7 +38,6 @@ const handleSubmit = async () => {
   try {
     const response = await axios.post('http://localhost:8080/api/incidents', {
       asunto: form.asunto,
-      prioridad: form.prioridad,
       descripcion: form.descripcion
     }, {
       headers: {
@@ -105,20 +102,6 @@ const handleSubmit = async () => {
                   placeholder="Describe brevemente el problema"
                   required
                 />
-              </div>
-
-              <div class="form-group">
-                <label for="prioridad">Prioridad</label>
-                <div class="select-wrapper">
-                  <select id="prioridad" v-model="form.prioridad" required>
-                    <option value="" disabled selected>
-                      Selecciona una prioridad
-                    </option>
-                    <option value="baja">Baja</option>
-                    <option value="media">Media</option>
-                    <option value="alta">Alta</option>
-                  </select>
-                </div>
               </div>
 
               <div class="form-group">
