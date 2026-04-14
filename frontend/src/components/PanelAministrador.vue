@@ -38,11 +38,38 @@ const cargarIncidencias = async () => {
       }
     });
 
-    incidencias.value = response.data;
+    const datosOrdenados = response.data.sort((a, b) => a.id - b.id);
+    
+    incidencias.value = datosOrdenados;
     
     actualizarEstadisticas();
   } catch (error) {
     console.error("Error al cargar las incidencias:", error);
+  }
+};
+
+const cambiarEstado = async (id, nuevoEstado) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await axios.put(`http://localhost:8080/api/incidents/${id}`, 
+      { status: nuevoEstado },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
+
+    if (response.status === 200 || response.status === 204) {
+      const index = incidencias.value.findIndex(i => i.id === id);
+      if (index !== -1) {
+        incidencias.value[index].status = nuevoEstado;
+        actualizarEstadisticas();
+      }
+    }
+  } catch (error) {
+    console.error("Error al actualizar la base de datos:", error.response?.data || error.message);
   }
 };
 
@@ -127,28 +154,49 @@ onMounted(() => {
         <div class="main-container">
           <p v-if="incidencias.length === 0" class="empty-state-text">No hay incidencias</p>
           
-          <table v-else class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 1rem;">
-            <thead>
-              <tr>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">ID</th>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Usuario</th>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Asunto</th>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Descripción</th>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Estado</th>
-                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="incidencia in incidencias" :key="incidencia.id">
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">#{{ incidencia.id }}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;"><strong>{{ incidencia.subject }}</strong></td>
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ incidencia.description }}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-transform: capitalize;">{{ incidencia.status }}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #f1f5f9;">{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <table v-else class="data-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Usuario</th>
+      <th>Asunto</th>
+      <th>Descripción</th> <th>Estado</th>
+      <th style="text-align: center;">Acciones</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="incidencia in incidencias" :key="incidencia.id">
+      <td class="id-cell">#{{ incidencia.id }}</td>
+      <td>{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
+      <td><strong>{{ incidencia.subject }}</strong></td>
+      
+      <td>{{ incidencia.description }}</td>
+      
+      <td>
+        <span :class="['status-badge', incidencia.status.replace(' ', '-')]">
+          {{ incidencia.status }}
+        </span>
+      </td>
+      <td style="text-align: center;">
+        <div class="edit-dropdown">
+          <button class="pencil-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <button @click="cambiarEstado(incidencia.id, 'pendiente')">Pendiente</button>
+            <button @click="cambiarEstado(incidencia.id, 'en proceso')">En proceso</button>
+            <button @click="cambiarEstado(incidencia.id, 'resuelta')">Resuelta</button>
+            <button @click="cambiarEstado(incidencia.id, 'cerrada')">Cerrada</button>
+          </div>
+        </div>
+      </td>
+      <td>{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
+    </tr>
+  </tbody>
+</table>
         </div>
       </div>
 
@@ -290,7 +338,7 @@ onMounted(() => {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 18px;
-  padding: 80px 20px;
+  padding: 20px 20px;
   text-align: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
@@ -303,6 +351,145 @@ onMounted(() => {
 
 .fade-in {
   animation: fadeIn 0.3s ease-out;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #313131;
+}
+
+.data-table th {
+  background-color: #f8fbff;
+  color: #6b7280;
+  padding: 12px;
+  border-bottom: 2px solid #0097b2;
+  font-size: 0.9rem;
+}
+
+.id-cell {
+  font-weight: bold;
+  color: #0097b2;
+}
+
+.data-table td:nth-child(4) {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pencil-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: #6b7280;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.pencil-btn:hover {
+  color: #0097b2;
+  background-color: #f0fdff;
+  border-color: #5ce1e6;
+  box-shadow: 0 0 8px rgba(12, 192, 223, 0.2);
+}
+
+.edit-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.pencil-btn {
+  background: none;
+  border: none;
+  color: #0097b2 !important;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+}
+
+.pencil-btn:hover {
+  background-color: #f0fdff;
+  color: #00869e !important;
+  box-shadow: 0 0 10px rgba(12, 192, 223, 0.2);
+}
+
+.dropdown-menu {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 80%;
+  right: 0;
+  background-color: #ffffff;
+  min-width: 125px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  border: 1px solid #0097b2;
+  z-index: 9999;
+  padding: 0; 
+  margin-top: 2px;
+  overflow: hidden;
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+}
+
+.edit-dropdown:hover .dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropdown-menu button {
+  padding: 20px 12px;
+  margin: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #313131 !important;
+  font-size: 0.80rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+  border-radius: 0;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f0fdff;
+  color: #0097b2 !important;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.pendiente {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.status-badge.en-proceso {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.status-badge.resuelta {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.status-badge.cerrada {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 @keyframes fadeIn {

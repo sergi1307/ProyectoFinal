@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function index()
+    {
+        return Product::with(['categories', 'user'])->latest()->get();
+    }
+
     public function me(Request $request)
     {
         $user = Auth::user();
@@ -26,6 +31,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
+            'descripcion' => 'required|string',
             'precio' => 'required|numeric',
             'categorias' => 'required|array',
             'file_real' => 'required|file',

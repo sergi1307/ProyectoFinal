@@ -32,7 +32,11 @@ const enviarDatos = async () => {
       window.dispatchEvent(new Event('login-success'));
       window.dispatchEvent(new Event('storage'));
 
-      router.push('/general');
+      if (data.usuario.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/general');
+      }
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
