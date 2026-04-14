@@ -260,7 +260,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 0.7rem;
 }
 
 .boton-categoria {
