@@ -66,12 +66,19 @@ const cargarDatos = async () => {
   try {
     cargando.value = true;
     const resProd = await axios.get('http://localhost:8080/api/products');
-    productos.value = resProd.data;
+    productos.value = resProd.data.map(p => ({
+      ...p,
+      isFavorite: false 
+    }));
   } catch (error) {
     console.error("Error al cargar productos:", error);
   } finally {
     cargando.value = false;
   }
+};
+
+const toggleFavorito = (producto) => {
+  producto.isFavorite = !producto.isFavorite;
 };
 
 const productosFiltrados = computed(() => {
@@ -122,32 +129,26 @@ onMounted(cargarDatos);
           <span class="etiqueta-categoria" v-if="producto.categories?.length">{{
             producto.categories[0].name
           }}</span>
-          <button class="fav-btn">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-              />
+            <button 
+            class="boton-favorito" 
+            :class="{ activo: producto.isFavorite }" 
+            @click="toggleFavorito(producto)">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </button>
         </div>
         <div class="info-producto">
           <h3>{{ producto.title }}</h3>
           <p class="desc">{{ producto.description }}</p>
+          
           <div class="meta">
             <span class="estrellas">★ {{ producto.rating || "5.0" }}</span>
-            <span class="reviews"
-              >({{ producto.reviews_count || 0 }} reseñas)</span
-            >
+            <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
           </div>
+
           <p class="autor">
-            Por <span>{{ producto.user?.name }}</span>
+            Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span>
           </p>
         </div>
       </div>
@@ -266,6 +267,10 @@ onMounted(cargarDatos);
 </template>
 
 <style scoped>
+main {
+ align-items: baseline;
+}
+
 .explorar-contenedor {
   padding: 2rem;
   background: #f8fbff;
@@ -349,19 +354,55 @@ onMounted(cargarDatos);
   font-weight: 700;
 }
 
-.fav-btn {
+.boton-favorito {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;
+  right: 8px;
   background: white;
   border: none;
-  width: 34px;
-  height: 34px;
   border-radius: 50%;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 !important;
+}
+
+.boton-favorito svg {
+  width: 18px;
+  height: 18px;
+  color: #111827;
+  fill: transparent;
+  transition:
+    color 0.2s,
+    fill 0.2s;
+}
+
+.boton-favorito,
+.boton-favorito {
+  opacity: 1;
+}
+
+.boton-favorito.activo,
+.boton-favorito:hover {
+  opacity: 1;
+}
+
+.boton-favorito.activo svg,
+.boton-favorito:hover svg {
+  color: #ef4444;
+  fill: #ef4444;
+}
+
+.boton-favorito:not(.activo) svg {
+  color: #111827;
+  fill: transparent;
 }
 
 .info-producto {
