@@ -28,7 +28,7 @@ onMounted(cargarProductos);
 </script>
 
 <template>
-  <NavBar />
+  <NavBar></NavBar>
   <div class="mis-productos-page">
     <div class="container-wide">
       <div class="header-section">
@@ -49,10 +49,28 @@ onMounted(cargarProductos);
       </div>
     </div>
   </div>
-  <Footer />
+  <Footer></Footer>
 </template>
 
 <style scoped lang="scss">
+.btn-create{
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #0097b2;
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.btn-create:hover{
+  background-color: #00869e;
+}
+
 .container-wide {
   max-width: 1200px;
   margin: 2rem auto;
