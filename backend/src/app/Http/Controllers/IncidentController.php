@@ -37,4 +37,13 @@ class IncidentController extends Controller
             'data'    => $incident
         ], 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $incident = Incident::findOrFail($id);
+        $incident->status = $request->status;
+        $incident->save();
+
+        return response()->json($incident, 200);
+    }
 }

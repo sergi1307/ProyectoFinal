@@ -33,4 +33,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/incidents', [IncidentController::class, 'store']);
     Route::get('/incidents', [IncidentController::class, 'index']);
+    Route::put('/incidents/{id}', [IncidentController::class, 'update']);
 });
