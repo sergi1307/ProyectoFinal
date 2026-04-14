@@ -7,6 +7,7 @@ import Verification from '@/views/auth/verification.vue';
 import PanelAministrador from '@/components/PanelAministrador.vue';
 import SellProduct from '@/views/products/SellProduct.vue';
 import MyProducts from '@/views/products/MyProducts.vue';
+import Explorar from '@/components/Explorar.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -45,6 +46,11 @@ const router = createRouter({
             path: '/mis-productos',
             name: 'mis-productos',
             component: MyProducts
+        },
+        {
+            path: '/explorar',
+            name: 'Explorar',
+            component: Explorar
         },
         {
             path: '/admin',
