@@ -153,13 +153,29 @@ onMounted(cargarDatos);
           <p class="desc">{{ producto.description }}</p>
           
           <div class="meta">
-            <span class="estrellas">★ {{ producto.rating || "5.0" }}</span>
+            <span class="contenedor-estrellas">
+              <span class="estrella">&#9733;</span> <span class="puntuacion">{{ producto.rating || "5.0" }}</span>
+            </span>
             <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
           </div>
 
           <p class="autor">
             Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span>
           </p>
+
+          <hr class="linea-separacion">
+
+          <div class="pie-tarjeta">
+            <span class="precio">{{ producto.price || '0.00' }}€</span>
+            <button class="btn-comprar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              Agregar
+            </button>
+          </div>
         </div>
       </div>
     </main>
@@ -444,9 +460,24 @@ main {
   margin-bottom: 10px;
 }
 
-.estrellas {
+.contenedor-estrellas {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.estrella {
+  color: #FFC107;
+  font-size: 1.2rem;
+  line-height: 1;
+  position: relative; top: -1px;
+}
+
+.puntuacion {
   font-weight: 700;
   color: #313131;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .reviews {
@@ -557,6 +588,50 @@ main {
   border: 0;
   border-top: 1px solid #f1f5f9;
   margin: 25px 0;
+}
+
+.linea-separacion {
+  border: 0;
+  border-top: 1px solid #e1e5e8;
+  margin: 1rem 0;
+}
+
+.pie-tarjeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.precio {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0097b2;
+  margin: 0;
+}
+
+.btn-comprar {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0097b2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-comprar:hover {
+  background-color: #00869e;
+}
+
+.btn-comprar svg {
+  width: 16px;
+  height: 16px;
 }
 
 .contenedor-rango {
