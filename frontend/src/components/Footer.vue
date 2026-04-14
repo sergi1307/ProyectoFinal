@@ -1,10 +1,25 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import ModalIncidencias from "./modalIncidencias.vue";
 
+const esAdmin = ref(false);
 const { t } = useI18n();
 const isModalOpen = ref(false);
+
+const verificarRol = async () => {
+  const usuarioRaw = JSON.parse(localStorage.getItem("usuario"));
+
+  if (usuarioRaw) {
+    esAdmin.value = usuarioRaw.role === "admin";
+
+    console.log(esAdmin.value);
+  }
+}
+
+onMounted(() => {
+  verificarRol();
+});
 </script>
 
 <template>
@@ -55,28 +70,28 @@ const isModalOpen = ref(false);
       </div>
 
       <div id="legal">
-  <h3>{{ $t("footer.legalTitle") }}</h3>
-  
-  <router-link :to="{ name: 'legal', query: { section: 'tos' } }">
-    {{ $t("footer.terms") }}
-  </router-link>
-  
-  <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">
-    {{ $t("footer.privacy") }}
-  </router-link>
-  
-  <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">
-    {{ $t("footer.cookies") }}
-  </router-link>
-  
-  <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">
-    {{ $t("footer.refunds") }}
-  </router-link>
-  
-  <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">
-    {{ $t("footer.sellerAgreement") }}
-  </router-link>
-</div>
+        <h3>{{ $t("footer.legalTitle") }}</h3>
+        
+        <router-link :to="{ name: 'legal', query: { section: 'tos' } }">
+          {{ $t("footer.terms") }}
+        </router-link>
+        
+        <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">
+          {{ $t("footer.privacy") }}
+        </router-link>
+        
+        <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">
+          {{ $t("footer.cookies") }}
+        </router-link>
+        
+        <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">
+          {{ $t("footer.refunds") }}
+        </router-link>
+        
+        <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">
+          {{ $t("footer.sellerAgreement") }}
+        </router-link>
+      </div>
 
       <div id="soporteTecnico">
         <h3>{{ $t("footer.supportTitle") }}</h3>
@@ -93,7 +108,7 @@ const isModalOpen = ref(false);
           <p>{{ $t("footer.hours") }}</p>
         </div>
 
-        <div id="incidencias">
+        <div v-if="!esAdmin" id="incidencias">
           <button @click="isModalOpen = true">
             <svg
               class="icono-incidencia"
@@ -126,7 +141,7 @@ const isModalOpen = ref(false);
           </button>
         </div>
 
-        <ModalIncidencias :isOpen="isModalOpen" @close="isModalOpen = false" />
+        <ModalIncidencias v-if="!esAdmin" :isOpen="isModalOpen" @close="isModalOpen = false" />
       </div>
 
       <div id="recursos">
