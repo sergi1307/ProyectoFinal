@@ -40,7 +40,7 @@ const obtenerImagen = (ruta) => {
 <template>
     <div class="producto-card">
         <button 
-            v-if="esMiProducto"
+            v-if="!esMiProducto"
             class="btn-favorito" 
             :class="{ 'is-active': isFavorite }"
             @click.stop="emit('favorito', producto.id)"
@@ -95,51 +95,50 @@ const obtenerImagen = (ruta) => {
 
 .producto-card {
   background: white;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid #edf2f7;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  height: 100%;
+  width: 100%;
+  max-width: 260px;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.06);
     border-color: #e2e8f0;
   }
 }
 
 .categorias-wrapper {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 3px;
   z-index: 2;
-  max-width: 80% ;
+  max-width: 85%;
 }
 
 .categoria-badge {
   background: rgba($primary-blue, 0.85);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
   color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.65rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .card-image {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   background: #f1f5f9;
   img {
     width: 100%;
@@ -149,57 +148,60 @@ const obtenerImagen = (ruta) => {
 }
 
 .card-body {
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .info-principal {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
   .producto-titulo {
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #1a202c;
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .producto-desc {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #718096;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
+    line-height: 1.4;
   }
 }
 
 .precio-container {
   margin-top: auto;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: baseline;
-  gap: 2px;
+  gap: 1px;
   color: $primary-blue;
-  .moneda { font-size: 1.6rem; font-weight: 600; }
-  .monto { font-size: 1.6rem; font-weight: 800; }
+  .moneda { font-size: 1.1rem; font-weight: 600; }
+  .monto { font-size: 1.2rem; font-weight: 800; }
 }
 
 .card-actions {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.4rem;
   align-items: center;
 
   .btn-action {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid transparent;
-    padding: 0.6rem;
-    height: 42px;
+    padding: 0.4rem;
+    height: 34px;
   }
 
   .btn-ver {
@@ -207,9 +209,10 @@ const obtenerImagen = (ruta) => {
     background: #f8fafc;
     border-color: #e2e8f0;
     color: #475569;
-    gap: 8px;
+    gap: 4px;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    svg { width: 16px; height: 16px; }
     &:hover {
       background: white;
       border-color: $primary-blue;
@@ -217,8 +220,12 @@ const obtenerImagen = (ruta) => {
     }
   }
 
+  .btn-edit, .btn-delete {
+    width: 34px;
+    svg { width: 14px; height: 14px; }
+  }
+
   .btn-edit {
-    width: 42px;
     background: #fffbeb;
     border-color: #fef3c7;
     color: #d97706;
@@ -226,7 +233,6 @@ const obtenerImagen = (ruta) => {
   }
 
   .btn-delete {
-    width: 42px;
     background: #fef2f2;
     border-color: #fee2e2;
     color: #ef4444;
@@ -236,38 +242,37 @@ const obtenerImagen = (ruta) => {
 
 .btn-favorito {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   z-index: 3;
   background: white;
   border: none;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: #718096;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  svg { width: 16px; height: 16px; }
 
   &:hover {
     transform: scale(1.1);
-    color: #ef4444; // Rojo al pasar el ratón
+    color: #ef4444;
   }
 
   &.is-active {
     color: #ef4444;
     background: white;
-    animation: heartBeat 0.3s ease-in-out;
   }
 }
 
-// Animación opcional para cuando se marca
 @keyframes heartBeat {
   0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
+  50% { transform: scale(1.2); }
   100% { transform: scale(1.1); }
 }
 </style>

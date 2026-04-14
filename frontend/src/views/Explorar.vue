@@ -1,20 +1,21 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
-import NavBar from "./NavBar.vue";
-import Footer from "./Footer.vue";
+import NavBar from "../components/NavBar.vue";
+import Footer from "../components/Footer.vue";
+import ProductCard from "../components/products/ProductCard.vue";
 
 const productos = ref([]);
 const categorias = ref([
-  { id: 1, name: 'Cursos' },
-  { id: 2, name: 'eBooks' },
-  { id: 3, name: 'Software' },
-  { id: 4, name: 'Plantillas' },
-  { id: 5, name: 'Audio' },
-  { id: 6, name: 'Fotografía' },
-  { id: 7, name: 'Video' },
-  { id: 8, name: 'Fuentes' },
-  { id: 9, name: 'Otros' }
+  { id: 1, name: "Cursos" },
+  { id: 2, name: "eBooks" },
+  { id: 3, name: "Software" },
+  { id: 4, name: "Plantillas" },
+  { id: 5, name: "Audio" },
+  { id: 6, name: "Fotografía" },
+  { id: 7, name: "Video" },
+  { id: 8, name: "Fuentes" },
+  { id: 9, name: "Otros" },
 ]);
 
 const cargando = ref(true);
@@ -46,7 +47,7 @@ const estiloBarra = computed(() => {
   const dep1 = (precioMin.value / maxTotal) * 100;
   const dep2 = (precioMax.value / maxTotal) * 100;
   return {
-    background: `linear-gradient(to right, #e2e8f0 ${dep1}%, #0097b2 ${dep1}%, #0097b2 ${dep2}%, #e2e8f0 ${dep2}%)`
+    background: `linear-gradient(to right, #e2e8f0 ${dep1}%, #0097b2 ${dep1}%, #0097b2 ${dep2}%, #e2e8f0 ${dep2}%)`,
   };
 });
 
@@ -65,11 +66,17 @@ const validarPreciosMax = () => {
 const cargarDatos = async () => {
   try {
     cargando.value = true;
-    const resProd = await axios.get('http://localhost:8080/api/products');
-    productos.value = resProd.data.map(p => ({
-      ...p,
-      isFavorite: false 
-    }));
+    
+    const resProd = await axios.get('http://localhost:8080/api/products/index', {
+      headers: { 
+        Authorization: `Bearer ${localStorage.getItem('token')}` 
+      }
+    });
+    
+    productos.value = resProd.data;
+
+    console.log("Productos recibidos (ya filtrados):", productos.value.length);
+
   } catch (error) {
     console.error("Error al cargar productos:", error);
   } finally {
@@ -77,81 +84,93 @@ const cargarDatos = async () => {
   }
 };
 
-const toggleFavorito = (producto) => {
-  producto.isFavorite = !producto.isFavorite;
+const toggleFavorito = async (productId) => {
+  try {
+    const res = await axios.post(
+      `http://localhost:8080/api/products/${productId}/favorite`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
+
+    const producto = productos.value.find((p) => p.id === productId);
+    if (producto) {
+      producto.is_favorite = res.data.is_favorite;
+    }
+  } catch (error) {
+    console.error("Error al procesar favorito:", error);
+  }
 };
 
 const productosFiltrados = computed(() => {
-  return productos.value;
-});
+  let resultado = [...productos.value];
 
-const obtenerImagen = (url) =>
-  url ? `http://localhost:8080/storage/${url}` : "/placeholder.png";
+  // Filtro por precio
+  resultado = resultado.filter(
+    (p) => p.price >= precioMin.value && p.price <= precioMax.value,
+  );
+
+  // Filtro por categorías
+  if (categoriasSeleccionadas.value.length > 0) {
+    resultado = resultado.filter((p) =>
+      p.categories.some((cat) =>
+        categoriasSeleccionadas.value.includes(cat.id),
+      ),
+    );
+  }
+
+  return resultado;
+});
 
 onMounted(cargarDatos);
 </script>
 
 <template>
-    <NavBar></NavBar>
+  <NavBar></NavBar>
   <div class="explorar-contenedor">
     <header class="cabecera-explorar">
-        <div class="info-titulo">
-            <h2 class="titulo-seccion">Explorar Productos</h2>
-            <p class="contador-productos">
-            {{ productosFiltrados.length }} productos encontrados
-            </p>
-        </div>
-        
-        <button class="boton-filtros-disparador" @click="mostrarFiltros = true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
-            </svg>
-            Filtros
-        </button>
+      <div class="info-titulo">
+        <h2 class="titulo-seccion">Explorar Productos</h2>
+        <p class="contador-productos">
+          {{ productosFiltrados.length }} productos encontrados
+        </p>
+      </div>
+
+      <button class="boton-filtros-disparador" @click="mostrarFiltros = true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="4" y1="21" x2="4" y2="14"></line>
+          <line x1="4" y1="10" x2="4" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12" y2="3"></line>
+          <line x1="20" y1="21" x2="20" y2="16"></line>
+          <line x1="20" y1="12" x2="20" y2="3"></line>
+          <line x1="1" y1="14" x2="7" y2="14"></line>
+          <line x1="9" y1="8" x2="15" y2="8"></line>
+          <line x1="17" y1="16" x2="23" y2="16"></line>
+        </svg>
+        Filtros
+      </button>
     </header>
 
     <main v-if="!cargando" class="rejilla-productos">
-      <div
+      <ProductCard
         v-for="producto in productosFiltrados"
         :key="producto.id"
-        class="tarjeta-producto"
-      >
-        <div class="contenedor-imagen">
-          <img :src="obtenerImagen(producto.image_url)" :alt="producto.title" />
-          <span class="etiqueta-categoria" v-if="producto.categories?.length">{{
-            producto.categories[0].name
-          }}</span>
-            <button 
-            class="boton-favorito" 
-            :class="{ activo: producto.isFavorite }" 
-            @click="toggleFavorito(producto)">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="info-producto">
-          <h3>{{ producto.title }}</h3>
-          <p class="desc">{{ producto.description }}</p>
-          
-          <div class="meta">
-            <span class="estrellas">★ {{ producto.rating || "5.0" }}</span>
-            <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
-          </div>
-
-          <p class="autor">
-            Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span>
-          </p>
-        </div>
-      </div>
+        :producto="producto"
+        :isFavorite="producto.is_favorite"
+        @favorito="toggleFavorito"
+        @ver="$router.push(`/producto/${$event}`)"
+      />
     </main>
 
     <div
@@ -204,35 +223,33 @@ onMounted(cargarDatos);
         <hr class="linea" />
 
         <section class="seccion-f">
-            <h4>Rango de Precio</h4>
-            <div class="contenedor-rango">
-                <div class="barra-progreso" :style="estiloBarra"></div>
-                
-                <input 
-                type="range" 
-                v-model.number="precioMin" 
-                min="0" 
-                :max="maxTotal" 
-                step="10"
-                @input="validarPrecios"
-                class="input-rango"
-                />
-                <input 
-                type="range" 
-                v-model.number="precioMax" 
-                min="0" 
-                :max="maxTotal" 
-                step="10"
-                @input="validarPreciosMax"
-                class="input-rango"
-                />
-            </div>
-
-            <div class="price-inputs">
-                <span class="box">{{ precioMin }}€</span>
-                <span class="separador">-</span>
-                <span class="box">{{ precioMax }}€</span>
-            </div>
+          <h4>Rango de Precio</h4>
+          <div class="contenedor-rango">
+            <div class="barra-progreso" :style="estiloBarra"></div>
+            <input
+              type="range"
+              v-model.number="precioMin"
+              min="0"
+              :max="maxTotal"
+              step="10"
+              @input="validarPrecios"
+              class="input-rango"
+            />
+            <input
+              type="range"
+              v-model.number="precioMax"
+              min="0"
+              :max="maxTotal"
+              step="10"
+              @input="validarPreciosMax"
+              class="input-rango"
+            />
+          </div>
+          <div class="price-inputs">
+            <span class="box">{{ precioMin }}€</span>
+            <span class="separador">-</span>
+            <span class="box">{{ precioMax }}€</span>
+          </div>
         </section>
 
         <hr class="linea" />
@@ -267,14 +284,25 @@ onMounted(cargarDatos);
 </template>
 
 <style scoped>
+/* Respetando tus estilos originales intactos */
 main {
- align-items: baseline;
+  align-items: baseline;
 }
 
-.explorar-contenedor {
-  padding: 2rem;
-  background: #f8fbff;
-  min-height: 100vh;
+.explorar-contenedor, .favoritos-contenedor {
+  /* Reducimos el padding superior de 2rem/3rem a 1rem */
+  padding: 1rem 2rem 2rem 2rem; 
+}
+
+.rejilla-productos, .rejilla-favoritos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+  /* Reducimos el espacio entre tarjetas de 2rem a 1.2rem */
+  gap: 1.2rem; 
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Forzamos a que se peguen arriba */
+  align-items: start; 
 }
 
 .cabecera-explorar {
@@ -301,7 +329,7 @@ main {
   gap: 12px;
   padding: 8px 18px;
   background-color: #0097b2;
-  border: 1px solid rgba(0, 151, 178, 0.2); 
+  border: 1px solid rgba(0, 151, 178, 0.2);
   border-radius: 10px;
   color: white;
   font-size: 0.95rem;
@@ -310,145 +338,12 @@ main {
 }
 
 .boton-filtros-disparador:hover {
-  background-color:#00869e;
+  background-color: #00869e;
   border-color: white;
 }
 
 .boton-filtros-disparador svg {
   color: white;
-}
-
-.rejilla-productos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.tarjeta-producto {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.contenedor-imagen {
-  position: relative;
-  height: 220px;
-}
-
-.contenedor-imagen img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.etiqueta-categoria {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #0097b2;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.boton-favorito {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: white;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.2s ease;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 !important;
-}
-
-.boton-favorito svg {
-  width: 18px;
-  height: 18px;
-  color: #111827;
-  fill: transparent;
-  transition:
-    color 0.2s,
-    fill 0.2s;
-}
-
-.boton-favorito,
-.boton-favorito {
-  opacity: 1;
-}
-
-.boton-favorito.activo,
-.boton-favorito:hover {
-  opacity: 1;
-}
-
-.boton-favorito.activo svg,
-.boton-favorito:hover svg {
-  color: #ef4444;
-  fill: #ef4444;
-}
-
-.boton-favorito:not(.activo) svg {
-  color: #111827;
-  fill: transparent;
-}
-
-.info-producto {
-  padding: 1.2rem;
-}
-
-.info-producto h3 {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-}
-
-.desc {
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.estrellas {
-  font-weight: 700;
-  color: #313131;
-}
-
-.reviews {
-  color: #9ca3af;
-  font-size: 0.85rem;
-}
-
-.autor {
-  font-size: 0.85rem;
-  color: #6b7280;
-}
-
-.autor span {
-  font-weight: 600;
-  color: #313131;
 }
 
 .overlay-oscuro {
@@ -481,7 +376,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f1f5f9; 
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .header-txt {
@@ -580,7 +475,7 @@ main {
   border-radius: 50%;
   background: #ffffff;
   border: 2px solid #0097b2;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.1s;

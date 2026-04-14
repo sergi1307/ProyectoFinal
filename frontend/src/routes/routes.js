@@ -7,8 +7,9 @@ import Verification from '@/views/auth/verification.vue';
 import PanelAministrador from '@/components/PanelAministrador.vue';
 import SellProduct from '@/views/products/SellProduct.vue';
 import MyProducts from '@/views/products/MyProducts.vue';
-import Explorar from '@/components/Explorar.vue';
+import Explorar from '@/views/Explorar.vue';
 import legal from '@/views/footer/legal.vue';
+import Favorites from '@/views/products/Favorites.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -57,6 +58,11 @@ const router = createRouter({
             path: '/explorar',
             name: 'Explorar',
             component: Explorar
+        },
+        {
+            path: '/favoritos',
+            name: 'Favoritos',
+            component: Favorites
         },
         {
             path: '/admin',

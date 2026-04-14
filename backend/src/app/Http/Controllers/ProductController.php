@@ -10,9 +10,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Product::with(['categories', 'user'])->latest()->get();
+        $userId = auth('sanctum')->id();
+
+        $query = Product::with(['categories', 'user'])
+            ->where('active', true)
+            ->where('user_id', '!=', $userId);
+
+        if ($userId) {
+            $query->withExists(['favoritedBy as is_favorite' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }]);
+        }
+
+        return $query->latest()->get();
     }
 
     public function me(Request $request)
@@ -76,5 +88,20 @@ class ProductController extends Controller
             'message' => $isFavorite ? 'Añadido a favoritos' : 'Eliminado de favoritos',
             'is_favorite' => $isFavorite,
         ]);
+    }
+
+    public function getFavorites(Request $request)
+    {
+        $user = $request->user();
+        
+        $favoritos = $user->favorites()
+            ->with(['categories', 'user'])
+            ->withExists(['favoritedBy as is_favorite' => function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])
+            ->latest()
+            ->get();
+
+        return response()->json($favoritos);
     }
 }
