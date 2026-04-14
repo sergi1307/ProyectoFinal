@@ -1,0 +1,114 @@
+@use 'variables' as *;
+
+
+.favoritos-contenedor {
+    max-width: 1200px;
+    margin: 0 auto; 
+    padding: 2rem 1.5rem; 
+}
+
+.cabecera-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    margin-bottom: 3rem; 
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .info-titulo {
+        .titulo-principal {
+            font-size: 2rem; 
+            font-weight: 800;
+            color: $text-main;
+            margin: 0 0 0.5rem 0 !important;
+            line-height: 1.2;
+        }
+
+        .subtitulo {
+            color: $text-muted;
+            font-size: 1rem; 
+            margin: 0 !important;
+            line-height: 1.2;
+        }
+    }
+}
+
+.contenido-principal {
+    width: 100%;
+    min-height: 550px;
+    display: block;
+
+    .rejilla-favoritos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        align-items: start;
+    }
+
+    .estado-vacio {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 1rem;
+        text-align: center;
+
+        .ilustracion {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            color: #e2e8f0;
+
+            svg { 
+                width: 60px; 
+            }
+        }
+
+        h3 { 
+            font-size: 1.5rem; 
+            color: $text-main; 
+            margin-bottom: 1rem; 
+        }
+        
+        p { 
+            color: $text-muted; 
+            margin-bottom: 2rem; 
+            max-width: 400px; 
+        }
+
+        .btn-explorar {
+            background-color: $primary-blue;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid transparent; 
+            border-radius: $border-radius-md;
+            font-weight: bold;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: normal; 
+            transition: $transition-base;
+            box-sizing: border-box;
+
+            &:hover {
+                background-color: $primary-hover;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 151, 178, 0.2);
+            }
+        }
+    }
+}
+
+.loader-contenedor {
+    text-align: center;
+    padding: 5rem;
+    color: $primary-blue;
+    font-weight: 600;
+}

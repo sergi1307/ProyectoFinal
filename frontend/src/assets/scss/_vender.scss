@@ -1,0 +1,252 @@
+// _vender.scss
+@use 'variables' as *;
+
+// 1. Estructura base anti-saltos (Igual que en Explorar, Favoritos y Mis Productos)
+.vender-page {
+    background-color: $bg-color;
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+
+    .vender-contenedor {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 1.5rem; // El padding mágico para que no salte
+    }
+}
+
+// Reemplaza el bloque .form-nav antiguo por este:
+.form-nav {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+
+    .btn-back-visual {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background-color: $bg-card; // Blanco
+        color: $text-main;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px; // Forma de píldora
+        border: 1px solid #e5e7eb;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: $transition-base;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+
+        svg {
+            width: 18px;
+            height: 18px;
+            transition: stroke 0.3s ease;
+        }
+
+        &:hover {
+            background-color: $primary-blue;
+            color: white;
+            border-color: $primary-blue;
+            transform: translateX(-5px); // Animación hacia la izquierda
+            box-shadow: 0 4px 10px rgba(0, 151, 178, 0.2);
+
+            svg {
+                stroke: white; // El icono se vuelve blanco al hacer hover
+            }
+        }
+    }
+}
+
+.wide-card {
+    background: $bg-card;
+    border-radius: 20px;
+    padding: 4rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+
+    .header-text {
+        text-align: center;
+        margin-bottom: 3rem;
+        
+        h1 { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            color: $text-main; 
+            margin: 0 0 0.5rem 0 !important; // Matamos los márgenes fantasma
+            line-height: 1.2;
+        }
+        
+        p { 
+            color: $text-muted; 
+            font-size: 1.1rem; 
+            margin: 0;
+        }
+    }
+
+    .input-block {
+        margin-bottom: 2rem;
+        
+        label { 
+            display: block; 
+            font-weight: 700; 
+            color: $text-main; 
+            margin-bottom: 0.8rem; 
+        }
+        
+        input[type="text"], 
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            background: #f7fafc;
+            font-size: 1rem;
+            color: $text-main;
+            transition: $transition-base;
+            
+            &:focus { 
+                outline: none; 
+                border-color: $primary-blue; 
+                background: white; 
+                box-shadow: 0 0 0 3px rgba(0, 151, 178, 0.1);
+            }
+        }
+    }
+
+    .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 3rem;
+    }
+
+    .pills-flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        
+        .pill {
+            cursor: pointer;
+            
+            input { 
+                display: none; 
+            }
+            
+            span { 
+                padding: 0.6rem 1.4rem; 
+                background: #edf2f7; 
+                color: $text-main;
+                border-radius: 100px; 
+                font-size: 0.9rem;
+                display: inline-block;
+                transition: $transition-base;
+            }
+            
+            input:checked + span { 
+                background: $primary-blue; 
+                color: white; 
+                font-weight: 600;
+            }
+        }
+    }
+
+    .upload-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .upload-zone {
+        position: relative;
+        height: 100px;
+        border: 2px dashed #cbd5e0;
+        border-radius: 15px;
+        background: #fdfdfd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition-base;
+        
+        input { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            opacity: 0; 
+            cursor: pointer; 
+            z-index: 2;
+        }
+        
+        .zone-info { 
+            color: $text-muted; 
+            font-weight: 600; 
+            z-index: 1;
+        }
+
+        &:hover {
+            border-color: $primary-blue;
+            background: #f0fafd;
+        }
+
+        &.done { 
+            border-color: #48bb78; 
+            background: #f0fff4; 
+            
+            .zone-info { 
+                color: #2f855a; 
+            } 
+        }
+    }
+
+    .full-preview {
+        margin-top: 2rem;
+        text-align: center;
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 15px;
+        
+        img { 
+            max-width: 100%; 
+            max-height: 400px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    }
+
+    .actions {
+        margin-top: 4rem;
+        
+        .btn-main {
+            width: 100%;
+            padding: 1.5rem;
+            background: $primary-blue;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: $transition-base;
+            
+            &:hover:not(:disabled) { 
+                background: $primary-hover; 
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0, 151, 178, 0.2);
+            }
+
+            &:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    @media (max-width: 900px) {
+        padding: 2rem;
+        
+        .two-columns, 
+        .upload-grid { 
+            grid-template-columns: 1fr; 
+            gap: 1.5rem;
+        }
+    }
+}

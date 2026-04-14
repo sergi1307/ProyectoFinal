@@ -22,6 +22,7 @@ const cargarProductos = async () => {
 
 const handleEliminar = async (id) => {
   if (!confirm("¿Seguro que quieres borrar este producto?")) return;
+  // Aquí iría la lógica de axios.delete...
 };
 
 onMounted(cargarProductos);
@@ -51,24 +52,3 @@ onMounted(cargarProductos);
   </div>
   <Footer />
 </template>
-
-<style scoped lang="scss">
-.container-wide {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-}
-
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-}
-
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-}
-</style>

@@ -90,193 +90,84 @@ onMounted(() => obtenerCategorias());
 
 <template>
   <NavBar />
-  <div class="super-wide-container">
-    <header class="form-nav">
-      <button @click="volver" class="btn-back">← Volver</button>
-    </header>
+  
+  <div class="vender-page">
+    <div class="vender-contenedor">
+      
+      <header class="form-nav">
+        <button @click="volver" class="btn-back-visual">← Volver</button>
+      </header>
 
-    <main class="wide-card">
-      <div class="header-text">
-        <h1>Crear Nuevo Producto</h1>
-        <p>Introduce los detalles de tu producto digital a continuación</p>
-      </div>
-
-      <form @submit.prevent="crearProducto">
-        
-        <div class="input-block">
-          <label for="nombre">Nombre del Producto *</label>
-          <input id="nombre" v-model="producto.nombre" type="text" placeholder="Ej: Curso de Programación Avanzada" required />
+      <main class="wide-card">
+        <div class="header-text">
+          <h1>Crear Nuevo Producto</h1>
+          <p>Introduce los detalles de tu producto digital a continuación</p>
         </div>
 
-        <div class="input-block">
-          <label for="descripcion">Descripción *</label>
-          <textarea id="descripcion" v-model="producto.descripcion" placeholder="Explica de qué trata tu producto..." rows="6" required></textarea>
-        </div>
-
-        <div class="two-columns">
+        <form @submit.prevent="crearProducto">
+          
           <div class="input-block">
-            <label for="precio">Precio (€) *</label>
-            <input id="precio" v-model="producto.precio" type="number" step="0.01" min="0" placeholder="0.00" required />
+            <label for="nombre">Nombre del Producto *</label>
+            <input id="nombre" v-model="producto.nombre" type="text" placeholder="Ej: Curso de Programación Avanzada" required />
           </div>
+
           <div class="input-block">
-            <label>Categorías *</label>
-            <div class="pills-flex">
-              <label v-for="cat in categoriasDisponibles" :key="cat.id" class="pill">
-                <input type="checkbox" :value="cat.id" v-model="producto.categorias" />
-                <span>{{ cat.name }}</span>
-              </label>
+            <label for="descripcion">Descripción *</label>
+            <textarea id="descripcion" v-model="producto.descripcion" placeholder="Explica de qué trata tu producto..." rows="6" required></textarea>
+          </div>
+
+          <div class="two-columns">
+            <div class="input-block">
+              <label for="precio">Precio (€) *</label>
+              <input id="precio" v-model="producto.precio" type="number" step="0.01" min="0" placeholder="0.00" required />
             </div>
-          </div>
-        </div>
-
-        <div class="upload-grid">
-          <div class="input-block">
-            <label>Archivo Digital (ZIP, PDF, etc.) *</label>
-            <div :class="['upload-zone', { 'done': archivoReal }]">
-              <input type="file" @change="manejarSubidaArchivoReal" required />
-              <div class="zone-info">
-                <span>{{ archivoReal ? '✅ Archivo cargado' : '📁 Seleccionar archivo' }}</span>
+            <div class="input-block">
+              <label>Categorías *</label>
+              <div class="pills-flex">
+                <label v-for="cat in categoriasDisponibles" :key="cat.id" class="pill">
+                  <input type="checkbox" :value="cat.id" v-model="producto.categorias" />
+                  <span>{{ cat.name }}</span>
+                </label>
               </div>
             </div>
           </div>
 
-          <div class="input-block">
-            <label>Imagen de Portada (JPG, PNG)</label>
-            <div :class="['upload-zone', { 'done': archivoImagen }]">
-              <input type="file" accept="image/*" @change="manejarSubidaImagen" />
-              <div class="zone-info">
-                <span>{{ archivoImagen ? '🖼️ Imagen cargada' : '📸 Seleccionar imagen' }}</span>
+          <div class="upload-grid">
+            <div class="input-block">
+              <label>Archivo Digital (ZIP, PDF, etc.) *</label>
+              <div :class="['upload-zone', { 'done': archivoReal }]">
+                <input type="file" @change="manejarSubidaArchivoReal" required />
+                <div class="zone-info">
+                  <span>{{ archivoReal ? '✅ Archivo cargado' : '📁 Seleccionar archivo' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-block">
+              <label>Imagen de Portada (JPG, PNG)</label>
+              <div :class="['upload-zone', { 'done': archivoImagen }]">
+                <input type="file" accept="image/*" @change="manejarSubidaImagen" />
+                <div class="zone-info">
+                  <span>{{ archivoImagen ? '🖼️ Imagen cargada' : '📸 Seleccionar imagen' }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div v-if="vistaPrevia" class="full-preview">
-          <img :src="vistaPrevia" alt="Preview" />
-        </div>
+          <div v-if="vistaPrevia" class="full-preview">
+            <img :src="vistaPrevia" alt="Preview" />
+          </div>
 
-        <div class="actions">
-          <button type="submit" class="btn-main" :disabled="cargando">
-            {{ cargando ? "Guardando..." : "Crear Producto" }}
-          </button>
-        </div>
-      </form>
-    </main>
+          <div class="actions">
+            <button type="submit" class="btn-main" :disabled="cargando">
+              {{ cargando ? "Guardando..." : "Crear Producto" }}
+            </button>
+          </div>
+        </form>
+      </main>
+
+    </div>
   </div>
+  
   <Footer />
 </template>
-
-<style scoped lang="scss">
-@use "@/assets/scss/variables" as *;
-
-.super-wide-container {
-  width: 100%;
-  max-width: 1200px; 
-  margin: 2rem auto;
-  padding: 0 2rem;
-}
-
-.wide-card {
-  background: white;
-  border-radius: 20px;
-  padding: 4rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
-}
-
-.header-text {
-  margin-bottom: 3rem;
-  h1 { font-size: 2.2rem; font-weight: 800; color: #1a202c; }
-  p { color: #718096; font-size: 1.1rem; }
-}
-
-.input-block {
-  margin-bottom: 2rem;
-  label { display: block; font-weight: 700; color: #2d3748; margin-bottom: 0.8rem; }
-  input, textarea {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #edf2f7;
-    border-radius: 12px;
-    background: #f7fafc;
-    font-size: 1rem;
-    &:focus { outline: none; border-color: $primary-blue; background: white; }
-  }
-}
-
-.two-columns {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 3rem;
-}
-
-.pills-flex {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  .pill {
-    cursor: pointer;
-    input { display: none; }
-    span { 
-      padding: 0.6rem 1.4rem; 
-      background: #edf2f7; 
-      border-radius: 100px; 
-      font-size: 0.9rem;
-      display: inline-block;
-      transition: 0.2s;
-    }
-    input:checked + span { background: $primary-blue; color: white; }
-  }
-}
-
-.upload-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.upload-zone {
-  position: relative;
-  height: 100px;
-  border: 2px dashed #cbd5e0;
-  border-radius: 15px;
-  background: #fdfdfd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-  .zone-info { color: #718096; font-weight: 600; }
-  &.done { border-color: #48bb78; background: #f0fff4; .zone-info { color: #2f855a; } }
-}
-
-.full-preview {
-  margin-top: 2rem;
-  text-align: center;
-  background: #f8fafc;
-  padding: 2rem;
-  border-radius: 15px;
-  img { max-width: 100%; max-height: 400px; border-radius: 10px; }
-}
-
-.actions {
-  margin-top: 4rem;
-  .btn-main {
-    width: 100%;
-    padding: 1.5rem;
-    background: $primary-blue;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    font-size: 1.2rem;
-    font-weight: 800;
-    cursor: pointer;
-    &:hover { background: darken($primary-blue, 5%); }
-  }
-}
-
-@media (max-width: 900px) {
-  .two-columns, .upload-grid { grid-template-columns: 1fr; }
-  .wide-card { padding: 2rem; }
-}
-</style>
