@@ -51,7 +51,7 @@ const enviarDatos = async () => {
 <template>
   <NavBar></NavBar>
   <main>
-    <router-link to="/" class="inicio">{{ $t('auth.backHome') }}</router-link>
+    <router-link to="/" class="inicio">←  {{ $t('auth.backHome') }}</router-link>
     <form class="container" @submit.prevent="enviarDatos">
       <h1>{{ $t('auth.titleLogin') }}</h1>
       
