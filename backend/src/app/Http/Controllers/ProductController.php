@@ -52,6 +52,10 @@ class ProductController extends Controller
 
         if ($request->hasFile('file_real')) {
             $rutaArchivo = $request->file('file_real')->store('products/files', 'local');
+            
+            if (!$rutaArchivo) {
+                return response()->json(['message' => 'El archivo llegó, pero Laravel no tiene permisos para guardarlo en el disco.'], 500);
+            }
         } else {
             return response()->json(['message' => 'No se pudo leer el archivo file_real'], 422);
         }
@@ -59,6 +63,10 @@ class ProductController extends Controller
         $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('products/images', 'public');
+            
+            if (!$rutaImagen) {
+                return response()->json(['message' => 'La imagen llegó, pero Laravel no tiene permisos para guardarla.'], 500);
+            }
         }
 
         $product = Product::create([

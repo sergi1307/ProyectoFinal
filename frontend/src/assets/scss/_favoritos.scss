@@ -40,9 +40,10 @@
 
     .rejilla-favoritos {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1rem;
-        align-items: start;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        justify-items: center;
+        justify-content: center;
     }
 
     .estado-vacio {

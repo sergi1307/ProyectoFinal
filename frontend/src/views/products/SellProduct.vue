@@ -72,7 +72,10 @@ const crearProducto = async () => {
 
   try {
     await axios.post(`http://localhost:8080/api/products/store`, formData, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
     });
     router.push("/mis-productos");
   } catch (error) {

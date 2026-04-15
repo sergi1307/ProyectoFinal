@@ -45,6 +45,7 @@ onMounted(cargarProductos);
           v-for="item in productos" 
           :key="item.id" 
           :producto="item" 
+          :es-propio="true"
           @eliminar="handleEliminar"
         />
       </div>
