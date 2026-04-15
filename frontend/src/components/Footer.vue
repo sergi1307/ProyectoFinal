@@ -15,7 +15,7 @@ const verificarRol = async () => {
 
     console.log(esAdmin.value);
   }
-}
+};
 
 onMounted(() => {
   verificarRol();
@@ -71,23 +71,23 @@ onMounted(() => {
 
       <div id="legal">
         <h3>{{ $t("footer.legalTitle") }}</h3>
-        
+
         <router-link :to="{ name: 'legal', query: { section: 'tos' } }">
           {{ $t("footer.terms") }}
         </router-link>
-        
+
         <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">
           {{ $t("footer.privacy") }}
         </router-link>
-        
+
         <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">
           {{ $t("footer.cookies") }}
         </router-link>
-        
+
         <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">
           {{ $t("footer.refunds") }}
         </router-link>
-        
+
         <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">
           {{ $t("footer.sellerAgreement") }}
         </router-link>
@@ -95,17 +95,12 @@ onMounted(() => {
 
       <div id="soporteTecnico">
         <h3>{{ $t("footer.supportTitle") }}</h3>
+
         <div class="email">
           <img src="../assets/iconos/email.png" alt="Email" />
           <p>{{ $t("auth.email") }}:</p>
           <a href="mailto:soporte@nexus.com">soporte@nexus.com</a>
-        </div>
-
-        <div class="telefono">
-          <img src="../assets/iconos/telefono.png" alt="Teléfono" />
-          <p>{{ $t("footer.phone") }}:</p>
-          <a href="tel:+34900123456">+34 900 123 456</a>
-          <p>{{ $t("footer.hours") }}</p>
+          <p class="horario">{{ $t("footer.hours") }}</p>
         </div>
 
         <div v-if="!esAdmin" id="incidencias">
@@ -141,7 +136,11 @@ onMounted(() => {
           </button>
         </div>
 
-        <ModalIncidencias v-if="!esAdmin" :isOpen="isModalOpen" @close="isModalOpen = false" />
+        <ModalIncidencias
+          v-if="!esAdmin"
+          :isOpen="isModalOpen"
+          @close="isModalOpen = false"
+        />
       </div>
 
       <div id="recursos">
@@ -246,8 +245,7 @@ p {
   display: block;
 }
 
-.email,
-.telefono {
+.email {
   display: grid;
   grid-template-columns: 24px 1fr;
   gap: 0.2rem 0.8rem;
@@ -255,29 +253,28 @@ p {
   align-items: start;
 }
 
-.email img,
-.telefono img {
+.email img {
   grid-column: 1;
-  grid-row: 1 / span 3;
+  grid-row: 1 / span 3; /* Hace que el icono ocupe la altura de las 3 líneas de texto */
   width: 25px;
   height: 25px;
   object-fit: contain;
 }
 
-.email p,
-.telefono p {
+.email p {
   color: #ffffff;
   margin-bottom: 0;
 }
 
-.email a,
-.telefono p:last-child {
+.email a {
   color: #94a3b8;
   margin-bottom: 0;
 }
 
-.telefono p:last-child {
+.email .horario {
+  color: #94a3b8;
   font-size: 0.8rem;
+  margin-top: 0.2rem;
 }
 
 #incidencias button {
