@@ -1,0 +1,200 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #f8fbff;
+  color: #313131;
+}
+
+.btn-volver {
+  background: none;
+  border: none;
+  color: #313131;
+  font-weight: bold;
+  font-size: 0.9em;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+.btn-volver:hover {
+  color: #0097b2;
+}
+
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.inicio {
+  padding: 0.6em;
+  margin: 2em 0em;
+  background-color: #0097b2;
+  border: none;
+  border-radius: 8px;
+  color: #f8fbff !important;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.inicio:hover {
+  color: #f8fbff;
+  background-color: #00869e;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  padding: 2em;
+  line-height: 2em;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s;
+}
+.container:hover {
+  box-shadow: 0px 0px 8px #0cc0df;
+}
+.container h1 {
+  font-size: 1.5em;
+}
+.container p {
+  color: #313131;
+  font-size: 0.9em;
+}
+
+#frase {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+#normal {
+  text-align: center;
+}
+#normal #cambiar {
+  color: #0097b2;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+#normal #cambiar:hover {
+  color: #0cc0df;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  font-weight: bold;
+  color: #313131;
+  font-size: 0.9em;
+}
+.form-group small {
+  color: #6b7280;
+  font-size: 0.8em;
+}
+.form-group input[type=text],
+.form-group input[type=password],
+.form-group input[type=email],
+.form-group input[type=number],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  color: #313131;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  outline: none;
+}
+.form-group input[type=text]::placeholder,
+.form-group input[type=password]::placeholder,
+.form-group input[type=email]::placeholder,
+.form-group input[type=number]::placeholder,
+.form-group textarea::placeholder,
+.form-group select::placeholder {
+  color: #94a3b8;
+}
+.form-group input[type=text]:focus,
+.form-group input[type=password]:focus,
+.form-group input[type=email]:focus,
+.form-group input[type=number]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  background-color: #ffffff;
+  border-color: #0cc0df;
+  box-shadow: 0px 0px 4px #0cc0df;
+}
+.form-group textarea {
+  resize: vertical;
+}
+.form-group input[type=file] {
+  padding: 0.6rem;
+  background-color: #ffffff;
+  border: 2px dashed #cbd5e1;
+  cursor: pointer;
+  color: #6b7280;
+}
+.form-group input[type=file]:hover {
+  border-color: #0097b2;
+  background-color: #f8fbff;
+}
+.form-group input[type=file]::file-selector-button {
+  background-color: #0097b2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+.form-group input[type=file]::file-selector-button:hover {
+  background-color: #00869e;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #0097b2;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn-submit:hover:not(:disabled) {
+  background-color: #00869e;
+}
+.btn-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn-submit:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+/*# sourceMappingURL=main.css.map */
