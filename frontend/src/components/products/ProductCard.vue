@@ -147,8 +147,9 @@ button{
     box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 280px;
+  width: 100% !important;
+  margin: 0 !important;
+  max-width: none !important;
 
   &:hover {
     transform: translateY(-5px);
