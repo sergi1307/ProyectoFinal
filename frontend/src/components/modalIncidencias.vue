@@ -79,7 +79,7 @@ const handleSubmit = async () => {
         <div class="modal-content" role="dialog" aria-modal="true">
           <div class="modal-header">
             <h2>
-                <img src="../assets/logos/Logo_gr.png" alt="Logo de Nexus">
+                <img src="../assets/logos/logo_bln.png" alt="Logo de Nexus">
                 Enviar Incidencia de Soporte
             </h2>
             <button
@@ -133,9 +133,9 @@ const handleSubmit = async () => {
 
 <style scoped>
 h2 img {
-  width: 120px;
+  width: 150px;
   height: 60px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .modal-overlay {
