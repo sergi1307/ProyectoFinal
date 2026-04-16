@@ -18,7 +18,7 @@ Route::prefix('/auth')->group(function () {
     Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
 
-Route::get('/products', [ProductController::class, 'index']); 
+Route::get('/products', [ProductController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 // ==========================================
