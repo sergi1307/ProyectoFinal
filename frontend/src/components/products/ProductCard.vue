@@ -1,5 +1,6 @@
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
+import { defineProps, defineEmits, computed, ref } from "vue";
+import axios from "axios";
 
 const props = defineProps({
   producto: {
@@ -16,7 +17,11 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["eliminar", "ver", "editar", "favorito"]);
+// 1. Añadimos 'agregado' a la lista de emits
+const emit = defineEmits(["eliminar", "ver", "editar", "favorito", "agregado"]);
+
+// 2. Estado para saber si está cargando
+const agregando = ref(false);
 
 const obtenerUsuarioId = () => {
   const userData = localStorage.getItem("usuario");
@@ -62,6 +67,30 @@ const obtenerImagen = (ruta) => {
   if (ruta.startsWith("http")) return ruta;
   return `http://localhost:8080/storage/${ruta}`;
 };
+
+// 3. Función real para añadir al backend
+const agregarAlCarrito = async () => {
+  try {
+    agregando.value = true;
+    const token = localStorage.getItem("token");
+    
+    await axios.post('http://localhost:8080/api/cart', {
+      product_id: props.producto.id,
+      quantity: 1
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // Avisamos a la vista principal
+    emit('agregado', props.producto.id);
+    
+  } catch (error) {
+    console.error("Error al agregar al carrito:", error);
+    alert("Hubo un error al agregar el producto. Quizás tu sesión expiró.");
+  } finally {
+    agregando.value = false;
+  }
+};
 </script>
 
 <template>
@@ -104,9 +133,14 @@ const obtenerImagen = (ruta) => {
       <div class="pie-tarjeta">
         <div class="precio-producto">{{ producto.price }}€</div>
         
-        <button v-if="!esMiProducto" class="btn-comprar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-          Agregar
+        <button 
+          v-if="!esMiProducto" 
+          class="btn-comprar" 
+          @click.stop="agregarAlCarrito"
+          :disabled="agregando"
+        >
+          <svg v-if="!agregando" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span>{{ agregando ? 'Agregando...' : 'Agregar' }}</span>
         </button>
       </div>
 
@@ -311,6 +345,13 @@ button{
   }
 }
 
+/* Estilo para botón deshabilitado */
+.btn-comprar:disabled {
+  background: #94a3b8 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .btn-comprar {
   background: #0097b2;
   color: white;
@@ -335,7 +376,7 @@ button{
     height: 18px;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #00869e;
   }
 }
@@ -395,28 +436,6 @@ button{
     color: #ef4444;
     &:hover {
       background: #fee2e2;
-    }
-  }
-
-  .btn-comprar {
-    background: #0097b2;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 10px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    line-height: 1;
-
-    svg {
-      display: block;
-      flex-shrink: 0;
-      margin-top: 6px; 
     }
   }
 }
