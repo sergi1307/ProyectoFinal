@@ -346,10 +346,6 @@ button{
   padding: 16px 0px 0px 0px; 
   border-top: 1px solid #edf2f7;
 
-    &:hover {
-      background: #00869e;
-    }
-
   .btn-action {
     flex: 1; 
     display: flex;
