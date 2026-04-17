@@ -63,6 +63,18 @@ const validarPreciosMax = () => {
   }
 };
 
+const usuarioActual = ref(null);
+
+const limpiarFiltros = () => {
+  ordenSeleccionado.value = "Destacados";
+  categoriasSeleccionadas.value = [];
+  calificacionSeleccionada.value = "Todas las calificaciones";
+  precioMin.value = 0;
+  precioMax.value = 1000;
+  console.log("Filtros reseteados. Orden actual:", ordenSeleccionado.value);
+  mostrarFiltros.value = false;
+};
+
 const cargarDatos = async () => {
   try {
     cargando.value = true;
@@ -104,23 +116,27 @@ const toggleFavorito = async (productId) => {
 };
 
 const productosFiltrados = computed(() => {
-  let resultado = [...productos.value];
+  return productos.value.filter(p => {
+    const idDuenoProducto = Number(p.user_id || p.user?.id);
+    const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
 
-  // Filtro por precio
-  resultado = resultado.filter(
-    (p) => p.price >= precioMin.value && p.price <= precioMax.value,
-  );
+    const esMio = idMio && idDuenoProducto === idMio;
+  
+    const cumpleCategoria = categoriasSeleccionadas.value.length === 0 || 
+                            p.categories?.some(c => categoriasSeleccionadas.value.includes(c.id));
+    
+    const cumplePrecio = p.price >= precioMin.value && p.price <= precioMax.value;
+    
+    const ratingMinimo = calificaciones.find(c => c.label === calificacionSeleccionada.value)?.value;
+    const cumpleRating = ratingMinimo === 'todas' || Number(p.rating || 0) >= ratingMinimo;
 
-  // Filtro por categorías
-  if (categoriasSeleccionadas.value.length > 0) {
-    resultado = resultado.filter((p) =>
-      p.categories.some((cat) =>
-        categoriasSeleccionadas.value.includes(cat.id),
-      ),
-    );
-  }
-
-  return resultado;
+    return !esMio && cumpleCategoria && cumplePrecio && cumpleRating;
+  }).sort((a, b) => {
+    if (ordenSeleccionado.value === "Precio: Menor a Mayor") return a.price - b.price;
+    if (ordenSeleccionado.value === "Precio: Mayor a Menor") return b.price - a.price;
+    if (ordenSeleccionado.value === "Mejor calificados") return b.rating - a.rating;
+    return 0;
+  });
 });
 
 onMounted(cargarDatos);
@@ -277,6 +293,9 @@ onMounted(cargarDatos);
         <div class="panel-footer">
           <button class="btn-ver-prod" @click="mostrarFiltros = false">
             Ver {{ productosFiltrados.length }} Productos
+          </button>
+          <button class="btn-limpiar" @click="limpiarFiltros">
+            Limpiar filtros
           </button>
         </div>
       </aside>
