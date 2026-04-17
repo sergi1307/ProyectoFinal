@@ -227,6 +227,7 @@ button{
 }
 
 .categoria-badge {
+  text-align: center;
   background: #0097b2;
   backdrop-filter: blur(4px);
   color: white;
@@ -345,10 +346,6 @@ button{
   margin-top: auto;
   padding: 16px 0px 0px 0px; 
   border-top: 1px solid #edf2f7;
-
-    &:hover {
-      background: #00869e;
-    }
 
   .btn-action {
     flex: 1; 
