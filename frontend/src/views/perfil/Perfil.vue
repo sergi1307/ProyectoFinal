@@ -91,14 +91,20 @@ const actualizarPerfil = async () => {
     usuario.value.email = respuesta.data.user.email;
     usuario.value.avatar = respuesta.data.user.avatar;
 
-    localStorage.setItem("usuario", JSON.stringify(respuesta.data.user));
+    const usuarioParaStorage = {
+        id: respuesta.data.user.id,
+        name: respuesta.data.user.name,
+        email: respuesta.data.user.email,
+        role: respuesta.data.user.role,
+        avatar: respuesta.data.user.avatar
+    };
+
+    localStorage.setItem("usuario", JSON.stringify(usuarioParaStorage));
 
     mostrarModal.value = false;
     alert("¡Perfil y foto actualizados!");
   } catch (error) {
     console.error("Error al actualizar:", error.response?.data || error);
-  } finally {
-    guardando.value = false;
   }
 };
 
