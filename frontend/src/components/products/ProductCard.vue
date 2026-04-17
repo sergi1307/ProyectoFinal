@@ -227,6 +227,7 @@ button{
 }
 
 .categoria-badge {
+  text-align: center;
   background: #0097b2;
   backdrop-filter: blur(4px);
   color: white;
