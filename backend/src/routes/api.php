@@ -22,7 +22,7 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 // ==========================================
-// 2. RUTAS PROTEGIDAS
+// 2. RUTAS PROTEGIDAS (Usuarios y Admins)
 // ==========================================
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -49,4 +49,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/incidents', [IncidentController::class, 'store']);
     Route::get('/incidents', [IncidentController::class, 'index']);
     Route::put('/incidents/{id}', [IncidentController::class, 'update']);
+
+    Route::get('/perfil', [App\Http\Controllers\AuthController::class, 'perfilStats']);
+    Route::post('/perfil/update', [AuthController::class, 'updatePerfil']);
+});
+
+// ==========================================
+// 3. RUTAS EXCLUSIVAS DE ADMINISTRADOR
+// ==========================================
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
 });

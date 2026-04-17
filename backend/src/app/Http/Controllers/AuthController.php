@@ -11,6 +11,7 @@ use App\Http\Requests\ReenviarCodigoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -151,5 +152,57 @@ class AuthController extends Controller
         ]);
 
         Mail::to($user->email)->send(new VerificationCodeMail($code));
+    }
+
+    // ================================
+    // PERFIL DE USUARIO
+    // ================================
+    public function perfilStats(Request $request)
+    {
+        $user = $request->user();
+        
+        return response()->json([
+            'favoritos' => $user->favorites()->count(),
+            'pedidos' => $user->cart()->count(),
+        ]);
+    }
+
+    public function updatePerfil(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email'  => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'avatar' => 'nullable|image|max:2048',
+        ]);
+
+        $user->name = $request->nombre;
+        $user->email = $request->email;
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            $file = $request->file('avatar');
+            $path = $file->store('avatars', 'public');
+
+            $user->avatar = $path;
+        }
+
+        $user->save();
+        
+        $user->refresh();
+
+        return response()->json([
+            'mensaje' => 'Perfil actualizado con éxito',
+            'user'    => [
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'avatar' => $user->avatar,
+            ]
+        ], 200);
     }
 }

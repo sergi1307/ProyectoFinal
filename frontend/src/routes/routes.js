@@ -11,6 +11,7 @@ import Explorar from '@/views/Explorar.vue';
 import legal from '@/views/footer/legal.vue';
 import Favorites from '@/views/products/Favorites.vue';
 import Cart from '@/views/user/Cart.vue';
+import Perfil from '@/views/perfil/Perfil.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -71,11 +72,55 @@ const router = createRouter({
             component: Cart
         },
         {
+            path: '/perfil',
+            name: 'Perfil',
+            component: Perfil
+        },
+        {
             path: '/admin',
             name: 'Admin',
-            component: PanelAministrador
+            component: PanelAministrador,
+            meta: { 
+                requiresAdmin: true 
+            }
         }
     ]
-})
+});
+
+// ==========================================
+// SEGURIDAD DE LAS RUTAS
+// ==========================================
+router.beforeEach((to, from, next) => {
+    const userData = localStorage.getItem("usuario");
+    let user = null;
+
+    if (userData) {
+        try {
+            user = JSON.parse(userData);
+        } catch (e) {
+            user = null;
+        }
+    }
+
+    if (user && user.role === 'admin') {
+        const permitidasParaAdmin = ['Admin', 'login', 'register', 'general', 'landing', 'perfil'];
+        
+        if (!permitidasParaAdmin.includes(to.name)) {
+            return next({ name: 'Admin' });
+        }
+    }
+
+    if (to.meta.requiresAdmin) {
+        if (user && user.role === 'admin') {
+            next();
+        } else if (user) {
+            next({ name: 'general' });
+        } else {
+            next({ name: 'login' });
+        }
+    } else {
+        next();
+    }
+});
 
 export default router;

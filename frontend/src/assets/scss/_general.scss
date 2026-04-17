@@ -1,4 +1,3 @@
-// _explorar.scss
 @use 'variables' as *;
 
 .contenedor-general {
@@ -335,7 +334,6 @@
     }
 }
 
-// Media queries
 @media (max-width: 1024px) {
     .seccion-destacados .contenido-destacados .cuadricula-productos,
     .seccion-tendencias .contenido-tendencias .cuadricula-tendencias {
