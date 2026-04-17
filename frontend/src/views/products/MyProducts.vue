@@ -22,7 +22,6 @@ const cargarProductos = async () => {
 
 const handleEliminar = async (id) => {
   if (!confirm("¿Seguro que quieres borrar este producto?")) return;
-  // Aquí iría la lógica de axios.delete...
 };
 
 onMounted(cargarProductos);
@@ -74,7 +73,7 @@ onMounted(cargarProductos);
 }
 
 .container-wide {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 2rem auto;
   padding: 0 1.5rem;
 }

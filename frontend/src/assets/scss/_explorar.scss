@@ -70,10 +70,11 @@
 
 .rejilla-productos, 
 .rejilla-favoritos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 2rem;
-    align-items: start; 
+    width: 100% !important;
+    justify-items: stretch !important;
 }
 
 .overlay-oscuro {

@@ -28,7 +28,6 @@ const manejarFavorito = async (productId) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     
-    // Si el backend confirma que ya no es favorito, lo quitamos de la lista visual
     if (!res.data.is_favorite) {
       favoritos.value = favoritos.value.filter(p => p.id !== productId);
     }

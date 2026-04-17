@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -18,7 +17,7 @@ Route::prefix('/auth')->group(function () {
     Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
 
-Route::get('/products', [ProductController::class, 'index']); 
+Route::get('/products', [ProductController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 // ==========================================
