@@ -15,12 +15,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  modoPublico: {
+    type: Boolean,
+    default: false,
+  }
 });
 
-// 1. Añadimos 'agregado' a la lista de emits
 const emit = defineEmits(["eliminar", "ver", "editar", "favorito", "agregado"]);
 
-// 2. Estado para saber si está cargando
 const agregando = ref(false);
 
 const obtenerUsuarioId = () => {
@@ -68,7 +70,6 @@ const obtenerImagen = (ruta) => {
   return `http://localhost:8080/storage/${ruta}`;
 };
 
-// 3. Función real para añadir al backend
 const agregarAlCarrito = async () => {
   try {
     agregando.value = true;
@@ -81,7 +82,6 @@ const agregarAlCarrito = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // Avisamos a la vista principal
     emit('agregado', props.producto.id);
     
   } catch (error) {
@@ -105,7 +105,7 @@ const agregarAlCarrito = async () => {
       <img :src="obtenerImagen(producto.image_url)" :alt="producto.title" />
       
       <button 
-        v-if="!esMiProducto"
+        v-if="!esMiProducto || modoPublico"
         class="boton-favorito" 
         :class="{ activo: isFavorite }" 
         @click.stop="emit('favorito', producto.id)"
@@ -144,7 +144,7 @@ const agregarAlCarrito = async () => {
         </button>
       </div>
 
-      <div v-if="esMiProducto" class="acciones-tarjeta">
+      <div v-if="esMiProducto && !modoPublico" class="acciones-tarjeta">
         <button class="btn-action btn-ver" @click="emit('ver', producto.id)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           <span>Ver</span>
@@ -339,13 +339,13 @@ button{
   align-items: center;
 
   .precio-producto {
-    font-size: 1.2rem;
+    color: #0097b2;
     font-weight: 800;
-    color: #1a202c;
+    font-size: 1.2rem;
+    margin: 0
   }
 }
 
-/* Estilo para botón deshabilitado */
 .btn-comprar:disabled {
   background: #94a3b8 !important;
   cursor: not-allowed;
@@ -385,8 +385,7 @@ button{
   display: flex;
   gap: 8px;
   margin-top: auto;
-  padding: 16px 0px 0px 0px; 
-  border-top: 1px solid #edf2f7;
+  padding: 16px 0px 0px 0px;
 
   .btn-action {
     flex: 1; 
