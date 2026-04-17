@@ -1,8 +1,10 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useI18n } from 'vue-i18n';
+import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import ProductCard from "@/components/products/ProductCard.vue";
 
 const { t } = useI18n();
 
@@ -18,10 +20,39 @@ const categorias = computed(() => [
   t('categorias.otros'),
 ]);
 
-const favoritoDestacado1 = ref(false);
-const favoritoDestacado2 = ref(false);
-const favoritoDestacado3 = ref(false);
-const favoritoDestacado4 = ref(false);
+const productosDestacados = ref([]);
+const cargando = ref(true);
+const favoritos = ref([]);
+
+const obtenerProductosDestacados = async () => {
+  try {
+    cargando.value = true;
+    const response = await axios.get('http://localhost:8080/api/products');
+    
+    productosDestacados.value = response.data; 
+  } catch (error) {
+    console.error("Error al cargar destacados desde la BD:", error);
+  } finally {
+    cargando.value = false;
+  }
+};
+
+onMounted(() => {
+  obtenerProductosDestacados();
+});
+
+const toggleFavorito = (id) => {
+  if (favoritos.value.includes(id)) {
+    favoritos.value = favoritos.value.filter(favId => favId !== id);
+  } else {
+    favoritos.value.push(id);
+  }
+};
+
+const manejarAgregado = (id) => {
+  console.log(`Producto ${id} agregado desde la vista principal`);
+};
+
 const favoritoTendencia1 = ref(false);
 const favoritoTendencia2 = ref(false);
 </script>
@@ -29,6 +60,7 @@ const favoritoTendencia2 = ref(false);
 <template>
   <NavBar></NavBar>
   <main class="contenedor-general">
+    
     <section class="hero-explorar">
       <div class="etiqueta-brillante">
         <img src="../assets/iconos/brillos.png" class="icono-brillo"/>
@@ -59,84 +91,25 @@ const favoritoTendencia2 = ref(false);
       <div class="contenido-destacados">
         <div class="cabecera-destacados">
           <div class="titulos-seccion">
-            <h2>{{ $t('explorar.featured') }}</h2>
+            <h2>Destacados</h2>
             <p class="descripcion-seccion">{{ $t('home.whyNexusSub') }}</p>
           </div>
           <router-link to="/explorar" class="enlace-ver-todo">{{ $t('explorar.seeAll') }} &rarr;</router-link>
         </div>
 
+        <div v-if="cargando" style="text-align: center; padding: 2rem; color: #666;">
+          Cargando productos destacados...
+        </div>
+
         <div class="cuadricula-productos">
-          <div class="tarjeta-producto">
-            <div class="contenedor-imagen">
-              <span class="etiqueta-categoria">{{ $t('categorias.cursos') }}</span>
-              <img src="../assets/iconos/curso.jpg" alt="Curso" />
-              <button class="boton-favorito" :class="{ activo: favoritoDestacado1 }" @click="favoritoDestacado1 = !favoritoDestacado1">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-              </button>
-            </div>
-            <div class="informacion-producto">
-              <h3>{{ $t('productos.cursoDiseno') }}...</h3>
-              <p class="nombre-autor">{{ $t('explorar.by') }} Design Academy</p>
-              <div class="pie-tarjeta">
-                <div class="valoracion"><span>⭐</span> 4.8 <span class="cantidad-votos">(342)</span></div>
-                <div class="precio-producto">49.99€</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tarjeta-producto">
-            <div class="contenedor-imagen">
-              <span class="etiqueta-categoria">{{ $t('categorias.ebooks') }}</span>
-              <img src="../assets/iconos/ebook.jpg" alt="eBook" />
-              <button class="boton-favorito" :class="{ activo: favoritoDestacado2 }" @click="favoritoDestacado2 = !favoritoDestacado2">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-              </button>
-            </div>
-            <div class="informacion-producto">
-              <h3>{{ $t('productos.ebookMarketing') }}...</h3>
-              <p class="nombre-autor">{{ $t('explorar.by') }} Marketing Pro</p>
-              <div class="pie-tarjeta">
-                <div class="valoracion"><span>⭐</span> 4.6 <span class="cantidad-votos">(189)</span></div>
-                <div class="precio-producto">24.99€</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tarjeta-producto">
-            <div class="contenedor-imagen">
-              <span class="etiqueta-categoria">{{ $t('categorias.audio') }}</span>
-              <img src="../assets/iconos/musica.jpg" alt="Audio" />
-              <button class="boton-favorito" :class="{ activo: favoritoDestacado3 }" @click="favoritoDestacado3 = !favoritoDestacado3">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-              </button>
-            </div>
-            <div class="informacion-producto">
-              <h3>{{ $t('productos.packSamples') }}...</h3>
-              <p class="nombre-autor">{{ $t('explorar.by') }} Sound Factory</p>
-              <div class="pie-tarjeta">
-                <div class="valoracion"><span>⭐</span> 4.9 <span class="cantidad-votos">(567)</span></div>
-                <div class="precio-producto">39.99€</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tarjeta-producto">
-            <div class="contenedor-imagen">
-              <span class="etiqueta-categoria">{{ $t('categorias.software') }}</span>
-              <img src="../assets/iconos/software.jpg" alt="Software" />
-              <button class="boton-favorito" :class="{ activo: favoritoDestacado4 }" @click="favoritoDestacado4 = !favoritoDestacado4">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-              </button>
-            </div>
-            <div class="informacion-producto">
-              <h3>{{ $t('productos.plantillaWeb') }}</h3>
-              <p class="nombre-autor">{{ $t('explorar.by') }} Design Academy</p>
-              <div class="pie-tarjeta">
-                <div class="valoracion"><span>⭐</span> 4.7 <span class="cantidad-votos">(234)</span></div>
-                <div class="precio-producto">79.99€</div>
-              </div>
-            </div>
-          </div>
+          <ProductCard
+            v-for="producto in productosDestacados"
+            :key="producto.id"
+            :producto="producto"
+            :isFavorite="favoritos.includes(producto.id)"
+            :modoPublico="true"  @favorito="toggleFavorito"
+            @agregado="manejarAgregado"
+          />
         </div>
       </div>
     </section>
@@ -521,8 +494,6 @@ h3 {
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
-  border-top: 1px solid #f3f4f6;
-  padding-top: 1rem;
 }
 
 .cantidad-votos {
