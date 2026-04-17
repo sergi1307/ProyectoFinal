@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IncidentController;
@@ -34,6 +35,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/index', [ProductController::class, 'index']);
         Route::get('/favorites', [ProductController::class, 'getFavorites']);
         Route::post('/store', [ProductController::class, 'store']);
+    });
+
+    Route::prefix('/cart')->group(function () {
+        Route::get('/', [CartController::class, 'index']);
+        Route::post('/', [CartController::class, 'store']);
+        Route::put('/{id}', [CartController::class, 'update']);
+        Route::delete('/{id}', [CartController::class, 'destroy']);
     });
 
     Route::post('/products/{product}/favorite', [ProductController::class, 'toggleFavorite']);
