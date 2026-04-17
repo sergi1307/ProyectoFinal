@@ -79,6 +79,12 @@ const cargarDatos = async () => {
   try {
     cargando.value = true;
     
+    // Obtenemos al usuario logueado para filtrar sus propios productos
+    const userData = localStorage.getItem("usuario");
+    if (userData) {
+      usuarioActual.value = JSON.parse(userData);
+    }
+    
     const resProd = await axios.get('http://localhost:8080/api/products/index', {
       headers: { 
         Authorization: `Bearer ${localStorage.getItem('token')}` 
@@ -113,6 +119,15 @@ const toggleFavorito = async (productId) => {
   } catch (error) {
     console.error("Error al procesar favorito:", error);
   }
+};
+
+// Función añadida para manejar la respuesta del carrito
+const handleAgregado = (productId) => {
+  // Puedes sustituir esto por un Toast o SweetAlert si los usas en tu proyecto
+  alert("¡Producto añadido al carrito correctamente!");
+  
+  // Aquí podrías emitir un evento global o actualizar un store de Pinia 
+  // para que el NavBar actualice su contador de carrito
 };
 
 const productosFiltrados = computed(() => {
@@ -187,6 +202,7 @@ onMounted(cargarDatos);
           :isFavorite="producto.is_favorite"
           @favorito="toggleFavorito"
           @ver="$router.push(`/producto/${$event}`)"
+          @agregado="handleAgregado" 
         />
       </main>
 

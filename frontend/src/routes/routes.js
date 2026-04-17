@@ -10,6 +10,7 @@ import MyProducts from '@/views/products/MyProducts.vue';
 import Explorar from '@/views/Explorar.vue';
 import legal from '@/views/footer/legal.vue';
 import Favorites from '@/views/products/Favorites.vue';
+import Cart from '@/views/user/Cart.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -63,6 +64,11 @@ const router = createRouter({
             path: '/favoritos',
             name: 'Favoritos',
             component: Favorites
+        },
+        {
+            path: '/carrito',
+            name: 'Carrito',
+            component: Cart
         },
         {
             path: '/admin',

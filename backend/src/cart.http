@@ -1,0 +1,51 @@
+# Variables globales (Ajusta el puerto si tu Laravel corre en el 8000)
+@baseUrl = http://localhost:8080/api
+@token = 1|Ty3lA6GDlh6YSPdEZfTm6ujeaCWryLYGSj1guXjm903caa8b
+
+### ==========================================
+### 1. VER EL CARRITO
+### ==========================================
+GET {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+### ==========================================
+### 2. AÑADIR UN PRODUCTO AL CARRITO
+### ==========================================
+# (Asegúrate de que el product_id exista en tu tabla products)
+POST {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+###
+
+### ==========================================
+### 3. ACTUALIZAR CANTIDAD DE UN ÍTEM
+### ==========================================
+# Sustituye el '1' de la URL por un id_cart_item real que te devuelva el GET anterior
+PUT {{baseUrl}}/cart/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "quantity": 5
+}
+
+###
+
+### ==========================================
+### 4. ELIMINAR UN PRODUCTO DEL CARRITO
+### ==========================================
+# Sustituye el '1' de la URL por un id_cart_item real
+DELETE {{baseUrl}}/cart/1
+Authorization: Bearer {{token}}
+Accept: application/json
