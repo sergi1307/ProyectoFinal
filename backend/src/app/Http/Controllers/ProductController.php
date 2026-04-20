@@ -32,7 +32,7 @@ class ProductController extends Controller
         $user = Auth::user();
 
         $productos = Product::where('user_id', $user->id)
-            ->with('categories')
+            ->with('categories', 'user')
             ->latest()
             ->get();
         
