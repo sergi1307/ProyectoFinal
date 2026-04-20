@@ -201,9 +201,23 @@ class AuthController extends Controller
             'user'    => [
                 'id'     => $user->id,
                 'name'   => $user->name,
+                'role' => $user->role,
                 'email'  => $user->email,
                 'avatar' => $user->avatar,
             ]
         ], 200);
+    }
+
+    public function deletePerfil(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->avatar && $user->avatar !== 'default.png') {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Cuenta eliminada'], 200);
     }
 }

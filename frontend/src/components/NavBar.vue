@@ -8,17 +8,34 @@ const route = useRoute();
 const router = useRouter();
 
 const userRole = ref(null);
+const usuarioActual = ref(null);
 const showDropdown = ref(false);
 const cartCount = ref(0);
 
 const actualizarEstado = () => {
   const userRaw = localStorage.getItem('usuario');
+  const token = localStorage.getItem('token');
   if (userRaw) {
     const userData = JSON.parse(userRaw);
-    userRole.value = userData.role; 
+    userRole.value = userData.role;
+    usuarioActual.value = userData; 
+  }else{
+    userRole.value = null;
+    usuarioActual.value = null;
   }
 };
 
+const obtenerRutaAvatar = (ruta) => {
+  if (!ruta || ruta === '0' || ruta === 0) return null;
+  const limpia = ruta.replace(/^storage\//, '').replace(/^\//, '');
+  return `http://localhost:8080/storage/${limpia}`;
+};
+
+const obtenerRutaInicio = () => {
+  if (!userRole.value) return '/';
+  if (userRole.value === 'admin') return '/';
+  return '/general';
+};
 const actualizarCarrito = () => {
   const cartData = localStorage.getItem('carrito');
   if (cartData) {
@@ -39,11 +56,13 @@ onMounted(() => {
   window.addEventListener('cart-updated', actualizarCarrito);
   window.addEventListener('storage', actualizarEstado);
   window.addEventListener('login-success', actualizarEstado);
+  window.addEventListener('perfil-actualizado', actualizarEstado);
 });
 
 onUnmounted(() => {
   window.removeEventListener('storage', actualizarEstado);
   window.removeEventListener('login-success', actualizarEstado);
+  window.removeEventListener('perfil-actualizado', actualizarEstado);
 });
 
 watch(() => route.path, () => {
@@ -69,7 +88,7 @@ const logout = () => {
     <div class="navbar-container">
       
       <div class="navbar-izquierda">
-        <router-link :to="userRole ? '/general' : '/'" class="logo-container">
+        <router-link :to="obtenerRutaInicio()" class="logo-container">
           <img src="../assets/logos/Logo_gr.png" alt="Logo" class="imagen-logo" />
         </router-link>
 
@@ -83,6 +102,15 @@ const logout = () => {
             <router-link v-if="userRole === 'user'" to="/mis-productos" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
               {{ $t('navbar.products') }}
+            </router-link>
+
+            <router-link v-if="userRole === 'user'" to="/pedidos" class="nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+             Pedidos
             </router-link>
             
             <template v-if="userRole === 'admin'">
@@ -138,8 +166,21 @@ const logout = () => {
                 </router-link>
               </template>
               
-              <router-link to="/perfil" class="action-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <router-link to="/perfil" class="action-btn profile-link">
+                <template v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)">
+                  <img 
+                    :src="obtenerRutaAvatar(usuarioActual.avatar)" 
+                    alt="Perfil" 
+                    class="avatar-circle"
+                  />
+                </template>
+                
+                <template v-else>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </template>
               </router-link>
               
               <button @click="logout" class="action-btn logout-btn">
@@ -217,12 +258,15 @@ const logout = () => {
   font-size: 0.95rem;
   padding: 0.5rem 0.8rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
 }
 
 .nav-item:hover {
   background-color: #0097b2;
-  color: #ffffff;
+  color: white;
+}
+
+.nav-item:hover svg{
+  color: white;
 }
 
 .nav-icon {
@@ -396,6 +440,38 @@ const logout = () => {
 
 .boton-registro:hover {
   background-color: #00869e;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  transition: border-color 0.3s;
+}
+
+.profile-link:hover {
+  border-color: #00869e;
+}
+
+.profile-link:hover svg {
+  stroke: #ffffff;
+}
+
+.avatar-circle {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  color:black;
 }
 
 .fade-enter-active, .fade-leave-active {

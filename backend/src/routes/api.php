@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/perfil', [App\Http\Controllers\AuthController::class, 'perfilStats']);
     Route::post('/perfil/update', [AuthController::class, 'updatePerfil']);
+    Route::delete('/perfil/delete', [AuthController::class, 'deletePerfil']);
 });
 
 // ==========================================
