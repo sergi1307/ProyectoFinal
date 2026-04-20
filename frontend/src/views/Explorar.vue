@@ -51,6 +51,22 @@ const estiloBarra = computed(() => {
   };
 });
 
+const searchQuery = ref("");
+
+const productosFiltradosNombre = computed(() => {
+  if (!searchQuery.value) return productos.value;
+  
+  const query = searchQuery.value.toLowerCase();
+  
+  return productos.value.filter(p => {
+    const titulo = p.title || p.name || ""; 
+    const descripcion = p.description || "";
+    
+    return titulo.toLowerCase().includes(query) || 
+           descripcion.toLowerCase().includes(query);
+  });
+});
+
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
     precioMin.value = precioMax.value - 50;
@@ -79,7 +95,6 @@ const cargarDatos = async () => {
   try {
     cargando.value = true;
     
-    // Obtenemos al usuario logueado para filtrar sus propios productos
     const userData = localStorage.getItem("usuario");
     if (userData) {
       usuarioActual.value = JSON.parse(userData);
@@ -121,13 +136,8 @@ const toggleFavorito = async (productId) => {
   }
 };
 
-// Función añadida para manejar la respuesta del carrito
 const handleAgregado = (productId) => {
-  // Puedes sustituir esto por un Toast o SweetAlert si los usas en tu proyecto
   alert("¡Producto añadido al carrito correctamente!");
-  
-  // Aquí podrías emitir un evento global o actualizar un store de Pinia 
-  // para que el NavBar actualice su contador de carrito
 };
 
 const productosFiltrados = computed(() => {
@@ -169,6 +179,23 @@ onMounted(cargarDatos);
           </p>
         </div>
 
+        <div class="acciones-derecha">
+          
+          <div class="buscador-explorar">
+            <div class="search-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input 
+                type="text" 
+                v-model="searchQuery"
+                :placeholder="$t('navbar.search')" 
+                class="search-input" 
+              />
+            </div>
+          </div>
+        </div>
         <button class="boton-filtros-disparador" @click="mostrarFiltros = true">
           <svg
             width="18"
@@ -193,10 +220,10 @@ onMounted(cargarDatos);
           Filtros
         </button>
       </header>
-
+      
       <main v-if="!cargando" class="rejilla-productos">
         <ProductCard
-          v-for="producto in productosFiltrados"
+          v-for="producto in productosFiltradosNombre"
           :key="producto.id"
           :producto="producto"
           :isFavorite="producto.is_favorite"
