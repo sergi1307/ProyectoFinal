@@ -14,6 +14,8 @@ class Category extends Model
         'name',
     ];
 
+    public $timestamps = false;
+
     public function products()
     {
         return $this->belongsToMany(Product::class);
