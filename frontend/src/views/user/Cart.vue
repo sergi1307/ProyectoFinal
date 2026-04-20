@@ -61,6 +61,16 @@ const actualizarCantidad = async (item, nuevaCantidad) => {
     );
 
     item.quantity = nuevaCantidad;
+
+    let carritoLocal = JSON.parse(localStorage.getItem("carrito")) || [];
+    const index = carritoLocal.findIndex(p => p.id === item.product.id);
+    if (index !== -1) {
+      carritoLocal[index].quantity = nuevaCantidad;
+      localStorage.setItem("carrito", JSON.stringify(carritoLocal));
+    }
+
+    window.dispatchEvent(new CustomEvent("cart-updated"));
+
   } catch (error) {
     console.error("Error al actualizar la cantidad:", error);
   } finally {
@@ -81,8 +91,16 @@ const eliminarProducto = async (item) => {
     productosCarrito.value = productosCarrito.value.filter(
       (p) => p.id_cart_item !== item.id_cart_item,
     );
+
+    let carritoLocal = JSON.parse(localStorage.getItem("carrito")) || [];
+    carritoLocal = carritoLocal.filter(p => p.id !== item.product.id);
+    localStorage.setItem("carrito", JSON.stringify(carritoLocal));
+
+    window.dispatchEvent(new CustomEvent("cart-updated"));
+    
   } catch (error) {
     console.error("Error al eliminar del carrito:", error);
+    alert("No se pudo eliminar el producto.");
     item.procesando = false;
   }
 };

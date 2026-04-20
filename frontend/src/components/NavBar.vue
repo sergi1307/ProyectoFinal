@@ -9,6 +9,7 @@ const router = useRouter();
 
 const userRole = ref(null);
 const showDropdown = ref(false);
+const cartCount = ref(0);
 
 const actualizarEstado = () => {
   const userRaw = localStorage.getItem('usuario');
@@ -18,8 +19,24 @@ const actualizarEstado = () => {
   }
 };
 
+const actualizarCarrito = () => {
+  const cartData = localStorage.getItem('carrito');
+  if (cartData) {
+    try {
+      const items = JSON.parse(cartData);
+      cartCount.value = items.reduce((total, item) => total + (item.quantity || 1), 0);
+    } catch (error) {
+      cartCount.value = 0;
+    }
+  } else {
+    cartCount.value = 0;
+  }
+}
+
 onMounted(() => {
   actualizarEstado();
+  actualizarCarrito();
+  window.addEventListener('cart-updated', actualizarCarrito);
   window.addEventListener('storage', actualizarEstado);
   window.addEventListener('login-success', actualizarEstado);
 });
@@ -117,8 +134,15 @@ const logout = () => {
             
             <div class="icon-actions-group">
               <template v-if="userRole === 'user'">
-                <router-link to="/favoritos" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
-                <router-link to="/carrito" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></router-link>
+                <router-link to="/favoritos" class="action-btn cart-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
+                <router-link to="/carrito" class="action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+                </router-link>
               </template>
               
               <router-link to="/perfil" class="action-btn">
@@ -353,6 +377,28 @@ const logout = () => {
 .action-btn svg {
   width: 24px;
   height: 24px;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  min-width: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: 2px solid #ffffff;
+  line-height: 1;
 }
 
 .logout-btn {
