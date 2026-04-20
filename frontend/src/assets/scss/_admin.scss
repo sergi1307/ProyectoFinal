@@ -1,0 +1,106 @@
+@use "@/assets/scss/variables" as *;
+
+.panel-ingresos {
+    animation: fadeIn 0.3s ease;
+
+    .grid-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+
+        .label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .value {
+            color: #1e293b;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+        }
+    }
+
+    .tabla-container {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #eef2f6;
+        padding: 1.5rem;
+
+        h3 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th {
+            text-align: center;
+            padding: 1rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.95rem;
+
+            &.bold {
+                font-weight: 700;
+                color: #1e293b;
+            }
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+    }
+
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: capitalize;
+
+        &.completado {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+        &.pendiente {
+            background: #fffbeb;
+            color: #d97706;
+        }
+        &.cancelado {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+    }
+}

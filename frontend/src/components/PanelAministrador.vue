@@ -1,21 +1,23 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import NavBar from './NavBar.vue';
-import Footer from './Footer.vue';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import NavBar from "./NavBar.vue";
+import Footer from "./Footer.vue";
 
-const activeTab = ref('incidencias');
+import Ingresos from "../components/admin/Ingresos.vue";
 
-const incidencias = ref([]); 
+const activeTab = ref("incidencias");
+
+const incidencias = ref([]);
 
 const tabs = [
-  { id: 'incidencias', label: 'Incidencias' },
-  { id: 'usuarios', label: 'Usuarios' },
-  { id: 'ingresos', label: 'Ingresos' },
-  { id: 'reembolsos', label: 'Reembolsos' },
-  { id: 'imagenes', label: 'Imágenes' },
-  { id: 'mantenimiento', label: 'Mantenimiento' },
-  { id: 'logs', label: 'Logs' },
+  { id: "incidencias", label: "Incidencias" },
+  { id: "usuarios", label: "Usuarios" },
+  { id: "ingresos", label: "Ingresos" },
+  { id: "reembolsos", label: "Reembolsos" },
+  { id: "imagenes", label: "Imágenes" },
+  { id: "mantenimiento", label: "Mantenimiento" },
+  { id: "logs", label: "Logs" },
 ];
 
 const stats = ref({
@@ -23,25 +25,25 @@ const stats = ref({
   abiertas: 0,
   progreso: 0,
   resueltas: 0,
-  cerradas: 0
+  cerradas: 0,
 });
 
 const cargarIncidencias = async () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (!token) return;
 
   try {
-    const response = await axios.get('http://localhost:8080/api/incidents', {
+    const response = await axios.get("http://localhost:8080/api/incidents", {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json'
-      }
+        Accept: "application/json",
+      },
     });
 
     const datosOrdenados = response.data.sort((a, b) => a.id - b.id);
-    
+
     incidencias.value = datosOrdenados;
-    
+
     actualizarEstadisticas();
   } catch (error) {
     console.error("Error al cargar las incidencias:", error);
@@ -49,37 +51,41 @@ const cargarIncidencias = async () => {
 };
 
 const cambiarEstado = async (id, nuevoEstado) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   try {
-    const response = await axios.put(`http://localhost:8080/api/incidents/${id}`, 
+    const response = await axios.put(
+      `http://localhost:8080/api/incidents/${id}`,
       { status: nuevoEstado },
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
-        }
-      }
+          Accept: "application/json",
+        },
+      },
     );
 
     if (response.status === 200 || response.status === 204) {
-      const index = incidencias.value.findIndex(i => i.id === id);
+      const index = incidencias.value.findIndex((i) => i.id === id);
       if (index !== -1) {
         incidencias.value[index].status = nuevoEstado;
         actualizarEstadisticas();
       }
     }
   } catch (error) {
-    console.error("Error al actualizar la base de datos:", error.response?.data || error.message);
+    console.error(
+      "Error al actualizar la base de datos:",
+      error.response?.data || error.message,
+    );
   }
 };
 
 const actualizarEstadisticas = () => {
   const data = incidencias.value;
   stats.value.total = data.length;
-  stats.value.abiertas = data.filter(i => i.status === 'pendiente').length;
-  stats.value.progreso = data.filter(i => i.status === 'en proceso').length; 
-  stats.value.resueltas = data.filter(i => i.status === 'resuelta').length;
-  stats.value.cerradas = data.filter(i => i.status === 'cerrada').length;
+  stats.value.abiertas = data.filter((i) => i.status === "pendiente").length;
+  stats.value.progreso = data.filter((i) => i.status === "en proceso").length;
+  stats.value.resueltas = data.filter((i) => i.status === "resuelta").length;
+  stats.value.cerradas = data.filter((i) => i.status === "cerrada").length;
 };
 
 onMounted(() => {
@@ -90,34 +96,142 @@ onMounted(() => {
 <template>
   <NavBar></NavBar>
   <div class="admin-panel">
-    
     <div class="submenu-container">
       <nav class="submenu">
-        <button 
-          v-for="tab in tabs" 
+        <button
+          v-for="tab in tabs"
           :key="tab.id"
           :class="['tab-btn', { active: activeTab === tab.id }]"
           @click="activeTab = tab.id"
         >
           <span class="icon-wrapper">
-            <svg v-if="tab.id === 'incidencias'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line></svg>
-            
-            <svg v-if="tab.id === 'usuarios'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            
-            <svg v-if="tab.id === 'ingresos'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            
-            <svg v-if="tab.id === 'reembolsos'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10 1.5l-4 3 4 3.5" transform="rotate(-10, 7.5, 4.5)"></path> 
-              <path d="M20 12c0-4.4-3.6-8-8-8-0.8 0-1.6.1-2.4.3"></path> 
-              <path d="M14 22.5l4-3-4-3.5" transform="rotate(-10, 16.5, 19.5)"></path> 
-              <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path> 
+            <svg
+              v-if="tab.id === 'incidencias'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              ></path>
+              <line x1="9" y1="9" x2="15" y2="9"></line>
+              <line x1="9" y1="13" x2="15" y2="13"></line>
             </svg>
 
-            <svg v-if="tab.id === 'imagenes'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            
-            <svg v-if="tab.id === 'mantenimiento'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            
-            <svg v-if="tab.id === 'logs'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <svg
+              v-if="tab.id === 'usuarios'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+
+            <svg
+              v-if="tab.id === 'ingresos'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path
+                d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+
+            <svg
+              v-if="tab.id === 'reembolsos'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10 1.5l-4 3 4 3.5"
+                transform="rotate(-10, 7.5, 4.5)"
+              ></path>
+              <path d="M20 12c0-4.4-3.6-8-8-8-0.8 0-1.6.1-2.4.3"></path>
+              <path
+                d="M14 22.5l4-3-4-3.5"
+                transform="rotate(-10, 16.5, 19.5)"
+              ></path>
+              <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path>
+            </svg>
+
+            <svg
+              v-if="tab.id === 'imagenes'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+
+            <svg
+              v-if="tab.id === 'mantenimiento'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              ></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+
+            <svg
+              v-if="tab.id === 'logs'"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
           </span>
           {{ tab.label }}
         </button>
@@ -125,9 +239,7 @@ onMounted(() => {
     </div>
 
     <div class="tab-content">
-      
       <div v-if="activeTab === 'incidencias'" class="fade-in">
-        
         <div class="stats-grid">
           <div class="stat-card">
             <span class="label">Total</span>
@@ -152,60 +264,102 @@ onMounted(() => {
         </div>
 
         <div class="main-container">
-          <p v-if="incidencias.length === 0" class="empty-state-text">No hay incidencias</p>
-          
+          <p v-if="incidencias.length === 0" class="empty-state-text">
+            No hay incidencias
+          </p>
+
           <table v-else class="data-table">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Usuario</th>
-      <th>Asunto</th>
-      <th>Descripción</th> <th>Estado</th>
-      <th style="text-align: center;">Acciones</th>
-      <th>Fecha</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="incidencia in incidencias" :key="incidencia.id">
-      <td class="id-cell">#{{ incidencia.id }}</td>
-      <td>{{ incidencia.user?.name || 'ID: ' + incidencia.user_id }}</td>
-      <td><strong>{{ incidencia.subject }}</strong></td>
-      
-      <td>{{ incidencia.description }}</td>
-      
-      <td>
-        <span :class="['status-badge', incidencia.status.replace(' ', '-')]">
-          {{ incidencia.status }}
-        </span>
-      </td>
-      <td style="text-align: center;">
-        <div class="edit-dropdown">
-          <button class="pencil-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-            </svg>
-          </button>
-          <div class="dropdown-menu">
-            <button @click="cambiarEstado(incidencia.id, 'pendiente')">Pendiente</button>
-            <button @click="cambiarEstado(incidencia.id, 'en proceso')">En proceso</button>
-            <button @click="cambiarEstado(incidencia.id, 'resuelta')">Resuelta</button>
-            <button @click="cambiarEstado(incidencia.id, 'cerrada')">Cerrada</button>
-          </div>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Asunto</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th style="text-align: center">Acciones</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="incidencia in incidencias" :key="incidencia.id">
+                <td class="id-cell">#{{ incidencia.id }}</td>
+                <td>
+                  {{ incidencia.user?.name || "ID: " + incidencia.user_id }}
+                </td>
+                <td>
+                  <strong>{{ incidencia.subject }}</strong>
+                </td>
+
+                <td>{{ incidencia.description }}</td>
+
+                <td>
+                  <span
+                    :class="[
+                      'status-badge',
+                      incidencia.status.replace(' ', '-'),
+                    ]"
+                  >
+                    {{ incidencia.status }}
+                  </span>
+                </td>
+                <td style="text-align: center">
+                  <div class="edit-dropdown">
+                    <button class="pencil-btn">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                      <button
+                        @click="cambiarEstado(incidencia.id, 'pendiente')"
+                      >
+                        Pendiente
+                      </button>
+                      <button
+                        @click="cambiarEstado(incidencia.id, 'en proceso')"
+                      >
+                        En proceso
+                      </button>
+                      <button @click="cambiarEstado(incidencia.id, 'resuelta')">
+                        Resuelta
+                      </button>
+                      <button @click="cambiarEstado(incidencia.id, 'cerrada')">
+                        Cerrada
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  {{ new Date(incidencia.created_at).toLocaleDateString() }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </td>
-      <td>{{ new Date(incidencia.created_at).toLocaleDateString() }}</td>
-    </tr>
-  </tbody>
-</table>
-        </div>
+      </div>
+
+      <div v-else-if="activeTab === 'ingresos'" class="fade-in">
+        <Ingresos></Ingresos>
       </div>
 
       <div v-else class="fade-in">
         <div class="main-container">
-          <p class="empty-state-text">Sección de {{ activeTab }} en desarrollo...</p>
+          <p class="empty-state-text">
+            Sección de {{ activeTab }} en desarrollo...
+          </p>
         </div>
       </div>
-
     </div>
   </div>
   <Footer></Footer>
@@ -219,7 +373,11 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .submenu-container {
@@ -270,7 +428,9 @@ onMounted(() => {
 .tab-btn.active {
   background: #ffffff;
   color: #0f172a;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 .tab-btn:hover:not(.active) {
@@ -298,7 +458,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s ease;
 }
 
@@ -319,19 +479,19 @@ onMounted(() => {
 }
 
 .text-blue {
-    color: #2563eb !important;
+  color: #2563eb !important;
 }
 
 .text-orange {
-    color: #d97706 !important;
+  color: #d97706 !important;
 }
 
 .text-green {
-    color: #16a34a !important;
+  color: #16a34a !important;
 }
 
 .text-gray {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 .main-container {
@@ -428,7 +588,7 @@ onMounted(() => {
   border-radius: 6px;
   border: 1px solid #0097b2;
   z-index: 9999;
-  padding: 0; 
+  padding: 0;
   margin-top: 2px;
   overflow: hidden;
 }
@@ -454,7 +614,7 @@ onMounted(() => {
   border: none;
   background: transparent;
   color: #313131 !important;
-  font-size: 0.80rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
@@ -493,7 +653,13 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
