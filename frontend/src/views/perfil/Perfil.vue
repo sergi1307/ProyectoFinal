@@ -7,6 +7,7 @@ import Footer from "@/components/Footer.vue";
 const usuario = ref({
   nombre: "",
   email: "",
+  rol: "",
   avatar: null,
   pedidos: 0,
   favoritos: 0,
@@ -45,6 +46,7 @@ const cargarDatos = async () => {
     const user = JSON.parse(datosLocales);
     usuario.value.nombre = user.name;
     usuario.value.email = user.email;
+    usuario.value.rol = user.role;
     usuario.value.avatar = user.avatar;
 
     editandoUsuario.value.nombre = user.name;
@@ -84,12 +86,12 @@ const actualizarPerfil = async () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
 
     localStorage.setItem("usuario", JSON.stringify(respuesta.data.user));
 
-    window.dispatchEvent(new Event('perfil-actualizado'));
+    window.dispatchEvent(new Event("perfil-actualizado"));
 
     usuario.value.nombre = respuesta.data.user.name;
     usuario.value.email = respuesta.data.user.email;
@@ -97,7 +99,6 @@ const actualizarPerfil = async () => {
 
     mostrarModal.value = false;
     guardando.value = false;
-
   } catch (error) {
     guardando.value = false;
     console.error("Error al actualizar:", error.response?.data || error);
@@ -105,11 +106,46 @@ const actualizarPerfil = async () => {
   }
 };
 
-const obtenerRutaAvatar = (ruta) => {
-  if (!ruta || typeof ruta !== 'string' || ruta.includes('.vue')) return null;
+const confirmarEliminarCuenta = async () => {
+  const confirmado = confirm("¿Estás seguro de que quieres eliminar tu cuenta definitivamente? Esta acción borrará todos tus datos y no se puede deshacer.");
+  
+  if (!confirmado) return;
 
-  const base = ruta.startsWith('http') 
-    ? ruta 
+  try {
+    guardando.value = true;
+    const token = localStorage.getItem("token");
+    
+    await axios.delete("http://localhost:8080/api/perfil/delete", {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      },
+    });
+
+    alert("Tu cuenta ha sido eliminada correctamente. ¡Hasta pronto!");
+    
+    localStorage.clear();
+    
+    window.location.href = "/";
+    
+  } catch (error) {
+    guardando.value = false;
+    console.error("Error al eliminar la cuenta:", error.response?.data || error);
+    
+    if (error.response?.status === 401) {
+      alert("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
+      localStorage.clear();
+      window.location.href = "/login";
+    } else {
+      alert("No se ha podido eliminar la cuenta. Por favor, inténtalo de nuevo más tarde.");
+    }
+  }
+};
+
+const obtenerRutaAvatar = (ruta) => {
+  if (!ruta || typeof ruta !== "string" || ruta.includes(".vue")) return null;
+
+  const base = ruta.startsWith("http")
+    ? ruta
     : `http://localhost:8080/storage/${ruta}`;
 
   return `${base}?t=${new Date().getTime()}`;
@@ -133,10 +169,10 @@ onMounted(cargarDatos);
 
         <div class="contenedor-avatar">
           <div class="circulo-avatar">
-            <img 
-              v-if="usuario.avatar && obtenerRutaAvatar(usuario.avatar)" 
-              :src="obtenerRutaAvatar(usuario.avatar)" 
-              class="imagen-perfil" 
+            <img
+              v-if="usuario.avatar && obtenerRutaAvatar(usuario.avatar)"
+              :src="obtenerRutaAvatar(usuario.avatar)"
+              class="imagen-perfil"
             />
 
             <svg
@@ -197,11 +233,42 @@ onMounted(cargarDatos);
               <span class="valor-campo">{{ usuario.email }}</span>
             </div>
           </div>
+          <div
+            v-if="usuario.rol === 'admin'"
+            class="campo-informacion bloque-admin"
+          >
+            <div class="icono-campo">
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="textos-campo">
+              <span class="etiqueta-campo">Rol</span>
+              <span class="valor-campo badge-admin">Administrador</span>
+            </div>
+          </div>
         </div>
 
-        <button class="boton-editar" @click="mostrarModal = true">
-          Editar Perfil
-        </button>
+        <div class="acciones-perfil">
+          <button class="boton-editar" @click="mostrarModal = true">
+            {{ usuario.rol === "admin" ? "Cambiar Foto" : "Editar Perfil" }}
+          </button>
+
+          <button
+            v-if="usuario.rol !== 'admin'"
+            class="boton-eliminar"
+            @click="confirmarEliminarCuenta"
+          >
+            Eliminar Cuenta
+          </button>
+        </div>
       </section>
 
       <aside class="columna-estadisticas">
@@ -215,7 +282,9 @@ onMounted(cargarDatos);
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <path
+                d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+              ></path>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
@@ -236,7 +305,9 @@ onMounted(cargarDatos);
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
             </svg>
           </div>
           <div class="textos-estadistica">
@@ -249,7 +320,10 @@ onMounted(cargarDatos);
 
     <div v-if="mostrarModal" class="capa-modal">
       <div class="contenido-modal">
-        <h3 class="titulo-modal">Editar Perfil</h3>
+        <h3 class="titulo-modal">
+          {{ usuario.rol === "admin" ? "Actualizar Foto" : "Editar Perfil" }}
+        </h3>
+
         <form @submit.prevent="actualizarPerfil" class="formulario-edicion">
           <div class="seccion-vista-previa">
             <label class="etiqueta-foto">Foto de perfil</label>
@@ -259,16 +333,12 @@ onMounted(cargarDatos);
                   v-if="vistaPreviaUrl"
                   :src="vistaPreviaUrl"
                   class="imagen-perfil-preview"
-                  alt="Vista previa"
                 />
-
                 <img
                   v-else-if="usuario.avatar"
                   :src="obtenerRutaAvatar(usuario.avatar)"
                   class="imagen-perfil-preview"
-                  alt="Foto actual"
                 />
-
                 <svg
                   v-else
                   viewBox="0 0 24 24"
@@ -284,7 +354,7 @@ onMounted(cargarDatos);
                 </svg>
               </div>
 
-              <label for="input-file-hidden" class="boton-subir-foto">
+              <label for="input-archivo-perfil" class="boton-subir-foto">
                 <svg
                   viewBox="0 0 24 24"
                   width="16"
@@ -297,37 +367,28 @@ onMounted(cargarDatos);
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                Subir nueva foto
+                Seleccionar nueva imagen
               </label>
               <input
                 type="file"
-                id="input-file-hidden"
+                id="input-archivo-perfil"
                 @change="manejarCambioArchivo"
                 accept="image/*"
-                class="input-archivo-oculto"
+                style="display: none"
               />
             </div>
           </div>
 
-          <div class="grupo-input">
-            <label>Nombre Completo</label>
-            <input
-              v-model="editandoUsuario.nombre"
-              type="text"
-              required
-              placeholder="Tu nombre..."
-            />
-          </div>
-
-          <div class="grupo-input">
-            <label>Correo Electrónico</label>
-            <input
-              v-model="editandoUsuario.email"
-              type="email"
-              required
-              placeholder="tu@email.com"
-            />
-          </div>
+          <template v-if="usuario.rol !== 'admin'">
+            <div class="grupo-input">
+              <label>Nombre Completo</label>
+              <input v-model="editandoUsuario.nombre" type="text" required />
+            </div>
+            <div class="grupo-input">
+              <label>Correo Electrónico</label>
+              <input v-model="editandoUsuario.email" type="email" required />
+            </div>
+          </template>
 
           <div class="botones-modal">
             <button
@@ -345,7 +406,6 @@ onMounted(cargarDatos);
       </div>
     </div>
   </main>
-
   <Footer></Footer>
 </template>
 
