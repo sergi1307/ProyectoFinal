@@ -95,13 +95,6 @@ const logout = () => {
         </template>
       </div>
 
-      <div class="navbar-centro" v-if="userRole && userRole !== 'admin'">
-        <div class="search-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" :placeholder="$t('navbar.search')" class="search-input" />
-        </div>
-      </div>
-
       <div class="navbar-derecha">
         <div class="idioma-wrapper">
           <div class="action-btn" @click.stop="showDropdown = !showDropdown">
@@ -235,47 +228,6 @@ const logout = () => {
 .nav-icon {
   width: 20px;
   height: 20px;
-}
-
-.navbar-centro {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  max-width: 600px;
-}
-
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  background-color: #f3f4f6;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  width: 100%;
-  gap: 0.8rem;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
-
-.search-wrapper:focus-within {
-  background-color: #ffffff;
-  box-shadow: 0 0 0 2px #0cc0df;
-}
-
-.search-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  width: 100%;
-  font-size: 0.95rem;
-  color: #374151;
-}
-
-.search-input::placeholder {
-  color: #6b7280;
 }
 
 .navbar-derecha {
