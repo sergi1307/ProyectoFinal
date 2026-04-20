@@ -105,7 +105,7 @@ const agregarAlCarrito = async () => {
 </script>
 
 <template>
-  <div class="tarjeta-producto">
+  <div class="tarjeta-producto" @click="emit('ver', producto.id)">
     <div class="contenedor-imagen-producto">
       <div class="categorias-wrapper" v-if="producto.categories?.length">
         <span v-for="cat in producto.categories" :key="cat.id" class="categoria-badge">

@@ -27,6 +27,19 @@ class ProductController extends Controller
         return $query->latest()->get();
     }
 
+    public function show($id)
+    {
+        $producto = Product::with(['user', 'categories'])->find($id);
+
+        if (!$producto) {
+            return response()->json([
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        return response()->json($producto);
+    }
+
     public function me(Request $request)
     {
         $user = Auth::user();

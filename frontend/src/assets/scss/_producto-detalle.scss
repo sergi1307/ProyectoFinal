@@ -1,0 +1,163 @@
+@use "variables" as *;
+
+.pagina-detalle {
+  padding: 4rem 0;
+  background-color: #fcfcfc;
+  min-height: 80vh;
+}
+
+.contenedor-detalle {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 4rem;
+  padding: 0 1.5rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.galeria-producto {
+  .sticky-image {
+    position: sticky;
+    top: 120px;
+  }
+
+  .imagen-principal {
+    width: 100%;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.info-compra {
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+    a { color: $primary-blue; text-decoration: none; }
+  }
+
+  .titulo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+
+  .meta-superior {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .estrellas { color: #facc15; }
+    .count { color: #64748b; font-size: 0.9rem; margin-left: 5px; }
+
+    .badge-vendedor {
+      background: #f0fdf4;
+      color: #16a34a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+  }
+
+  .precio {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary-blue;
+    margin-bottom: 2rem;
+  }
+
+  .descripcion {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 2rem;
+    white-space: pre-line;
+  }
+
+  .caracteristicas {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+
+    .item-feat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #64748b;
+      font-size: 0.9rem;
+      svg { width: 18px; height: 18px; color: $primary-blue; }
+    }
+  }
+
+  .acciones-compra {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+
+    .btn-principal {
+      flex: 1;
+      height: 56px;
+      background: $primary-blue;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover { background: $primary-hover; transform: translateY(-2px); }
+      &:disabled { background: #94a3b8; }
+    }
+
+    .btn-favorito-detalle {
+      width: 56px;
+      height: 56px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #94a3b8;
+      transition: all 0.2s;
+
+      &:hover { color: #ef4444; border-color: #ef4444; }
+    }
+  }
+
+  .info-vendedor {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
+
+    .avatar { width: 48px; height: 48px; border-radius: 50%; }
+    .vendedor-txt {
+      .nombre {
+        margin: 0; font-size: 0.95rem;
+        span { font-weight: 700; color: #1e293b; }
+      }
+      a { font-size: 0.85rem; color: $primary-blue; text-decoration: none; font-weight: 600; }
+    }
+  }
+}

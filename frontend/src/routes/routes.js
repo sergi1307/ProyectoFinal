@@ -62,6 +62,11 @@ const router = createRouter({
             component: Explorar
         },
         {
+            path: '/producto/:id',
+            name: 'ProductoDetalle',
+            component: () => import('../views/products/Details.vue')
+        },
+        {
             path: '/favoritos',
             name: 'Favoritos',
             component: Favorites

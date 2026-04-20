@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/index', [ProductController::class, 'index']);
         Route::get('/favorites', [ProductController::class, 'getFavorites']);
         Route::post('/store', [ProductController::class, 'store']);
+        Route::get('/{id}', [ProductController::class, 'show']);
     });
 
     Route::prefix('/cart')->group(function () {
