@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -50,6 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create-order', [PaymentController::class, 'createOrder']);
         Route::post('/capture-order/{orderId}', [PaymentController::class, 'captureOrder']);
     });
+
+    Route::post('/products/{id}/reviews', [ReviewController::class, 'store']);
 
     Route::post('/products/{product}/favorite', [ProductController::class, 'toggleFavorite']);
 

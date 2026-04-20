@@ -29,13 +29,16 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $producto = Product::with(['user', 'categories'])->find($id);
+        $producto = Product::with(['user', 'categories', 'reviews.user'])->find($id);
 
         if (!$producto) {
             return response()->json([
                 'message' => 'Producto no encontrado'
             ], 404);
         }
+
+        $producto->rating = round($producto->reviews()->avg('rating'), 1) ?: 0;
+        $producto->reviews_count = $producto->reviews()->count();
 
         $user = Auth::user();
 
