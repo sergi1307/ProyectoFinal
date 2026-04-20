@@ -6,17 +6,7 @@ import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
 
 const productos = ref([]);
-const categorias = ref([
-  { id: 1, name: "Cursos" },
-  { id: 2, name: "eBooks" },
-  { id: 3, name: "Software" },
-  { id: 4, name: "Plantillas" },
-  { id: 5, name: "Audio" },
-  { id: 6, name: "Fotografía" },
-  { id: 7, name: "Video" },
-  { id: 8, name: "Fuentes" },
-  { id: 9, name: "Otros" },
-]);
+const categorias = ref([]);
 
 const cargando = ref(true);
 const mostrarFiltros = ref(false);
@@ -66,6 +56,15 @@ const productosFiltradosNombre = computed(() => {
            descripcion.toLowerCase().includes(query);
   });
 });
+
+const obtenerCategorias = async () => {
+  try {
+    const res = await axios.get(`http://localhost:8080/api/categories`);
+    categorias.value = res.data;
+  } catch (error) {
+    console.error("Error al cargar las categorias:", error);
+  }
+}
 
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
@@ -164,7 +163,31 @@ const productosFiltrados = computed(() => {
   });
 });
 
-onMounted(cargarDatos);
+const categoriasDisponibles = computed(() => {
+  return categorias.value.filter(cat => !categoriasSeleccionadas.value.includes(cat.id))
+})
+
+const añadirCategoria = (event) => {
+  const id = Number(event.target.value);
+  if (id && !categoriasSeleccionadas.value.includes(id)) {
+    categoriasSeleccionadas.value.push(id);
+  }
+
+  event.target.value = "";
+}
+
+const quitarCategoria = (id) => {
+  categoriasSeleccionadas.value = categoriasSeleccionadas.value.filter(catId => catId !== id);
+}
+
+const nombreCategoria = (id) => {
+  return categorias.value.find(c => c.id === id)?.name || "";
+}
+
+onMounted(async () => {
+  await cargarDatos();
+  await obtenerCategorias();
+});
 </script>
 
 <template>
@@ -269,14 +292,21 @@ onMounted(cargarDatos);
 
           <section class="seccion-f">
             <h4>Categorías</h4>
-            <div v-for="cat in categorias" :key="cat.id" class="control-f">
-              <input
-                type="checkbox"
-                :id="'c-' + cat.id"
-                :value="cat.id"
-                v-model="categoriasSeleccionadas"
-              />
-              <label :for="'c-' + cat.id">{{ cat.name }}</label>
+            
+            <div class="selector-wrapper">
+              <select @change="añadirCategoria" class="select-categorias">
+                <option value="" disabled selected>Seleccionar categoría...</option>
+                <option v-for="cat in categoriasDisponibles" :key="cat.id" :value="cat.id">
+                  + {{ cat.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="chips-container" v-if="categoriasSeleccionadas.length > 0">
+              <div v-for="id in categoriasSeleccionadas" :key="id" class="chip-categoria">
+                <span>{{ nombreCategoria(id) }}</span>
+                <button @click="quitarCategoria(id)" class="btn-quitar-chip">&times;</button>
+              </div>
             </div>
           </section>
 
