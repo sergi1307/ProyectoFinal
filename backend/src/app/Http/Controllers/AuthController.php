@@ -57,6 +57,12 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (!$user->active) {
+            return response()->json([
+                'error' => 'Tu cuenta ha sido baneada. Contacta con el administrador.'
+            ], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -156,6 +162,15 @@ class AuthController extends Controller
     }
 
     // ================================
+    // TODOS LOS USUARIOS
+    // ================================
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users, 200);
+    }
+
+    // ================================
     // PERFIL DE USUARIO
     // ================================
     public function perfilStats(Request $request)
@@ -168,6 +183,30 @@ class AuthController extends Controller
         ]);
     }
 
+    // ================================
+    // CAMBIAR ESTADO USUARIO
+    // ================================
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->role === 'admin' && User::id() == $user->id) {
+            return response()->json(['message' => 'No puedes banearte a ti mismo'], 403);
+        }
+
+        $user->active = !$user->active;
+        $user->save();
+
+        return response()->json([
+            'message' => $user->active ? 'Usuario activado' : 'Usuario baneado',
+            'active' => $user->active
+        ]);
+    }
+
+
+    // ================================
+    // ACTUALIZAR PERFIL
+    // ================================
     public function updatePerfil(Request $request)
     {
         $user = $request->user();

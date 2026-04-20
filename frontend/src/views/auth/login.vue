@@ -39,8 +39,16 @@ const enviarDatos = async () => {
       }
     }
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      errorMsg.value = t('auth.errorLogin');
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMsg.value = t('auth.errorLogin');
+      } 
+      else if (error.response.status === 403) {
+        errorMsg.value = error.response.data.error;
+      } 
+      else {
+        errorMsg.value = t('auth.errorConn');
+      }
     } else {
       errorMsg.value = t('auth.errorConn');
     }
