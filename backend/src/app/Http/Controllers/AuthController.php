@@ -57,6 +57,12 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (!$user->active) {
+            return response()->json([
+                'error' => 'Tu cuenta ha sido baneada. Contacta con el administrador.'
+            ], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
