@@ -37,6 +37,12 @@ class ProductController extends Controller
             ], 404);
         }
 
+        $user = Auth::user();
+
+        $producto->is_favorite = $user
+            ? $user->favorites()->where('product_id', $producto->id)->exists()
+            : false;
+
         return response()->json($producto);
     }
 

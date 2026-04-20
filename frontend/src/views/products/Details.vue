@@ -35,6 +35,21 @@ const obtenerImagen = (ruta) => {
     return `http://localhost:8080/storage/${ruta}`;
 }
 
+const toggleFavorito = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const res = await axios.post(`http://localhost:8080/api/products/${producto.value.id}/favorite`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        producto.value.is_favorite = res.data.is_favorite;
+    } catch (error) {
+        console.error("Error al actualizar favorito:", error);
+    }
+}
+
 const agregarAlCarrito = async () => {
     try {
         agregando.value = true;
@@ -47,6 +62,10 @@ const agregarAlCarrito = async () => {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        let carritoLocal = JSON.parse(localStorage.getItem("carrito")) || [];
+        carritoLocal.push(producto.value);
+        localStorage.setItem("carrito", JSON.stringify(carritoLocal));
 
         window.dispatchEvent(new CustomEvent('cart-updated'));
     } catch (error) {
@@ -109,7 +128,7 @@ onMounted(obtenerProducto);
                         <span>{{ agregando ? 'Añadiendo...' : 'Añadir al Carrito' }}</span>
                     </button>
                     
-                    <button class="btn-favorito-detalle">
+                    <button @click="toggleFavorito" class="btn-favorito-detalle" :class="{ 'activo': producto.is_favorite }">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     </button>
                 </div>
