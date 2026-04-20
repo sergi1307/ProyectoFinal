@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::get('/users', [AuthController::class, 'index']);
+    Route::post('/users/{id}/toggle-status', [AuthController::class, 'toggleStatus']);
+
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     Route::prefix('/products')->group(function () {
