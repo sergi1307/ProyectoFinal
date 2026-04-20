@@ -43,20 +43,6 @@ const estiloBarra = computed(() => {
 
 const searchQuery = ref("");
 
-const productosFiltradosNombre = computed(() => {
-  if (!searchQuery.value) return productos.value;
-  
-  const query = searchQuery.value.toLowerCase();
-  
-  return productos.value.filter(p => {
-    const titulo = p.title || p.name || ""; 
-    const descripcion = p.description || "";
-    
-    return titulo.toLowerCase().includes(query) || 
-           descripcion.toLowerCase().includes(query);
-  });
-});
-
 const obtenerCategorias = async () => {
   try {
     const res = await axios.get(`http://localhost:8080/api/categories`);
@@ -143,9 +129,14 @@ const productosFiltrados = computed(() => {
   return productos.value.filter(p => {
     const idDuenoProducto = Number(p.user_id || p.user?.id);
     const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
-
     const esMio = idMio && idDuenoProducto === idMio;
-  
+    if (esMio) return false;
+
+    const query = searchQuery.value.toLowerCase();
+    const cumpleNombre = !query ||
+                          (p.title || "").toLowerCase().includes(query) ||
+                          (p.description || "").toLowerCase().includes(query);
+
     const cumpleCategoria = categoriasSeleccionadas.value.length === 0 || 
                             p.categories?.some(c => categoriasSeleccionadas.value.includes(c.id));
     
@@ -154,7 +145,7 @@ const productosFiltrados = computed(() => {
     const ratingMinimo = calificaciones.find(c => c.label === calificacionSeleccionada.value)?.value;
     const cumpleRating = ratingMinimo === 'todas' || Number(p.rating || 0) >= ratingMinimo;
 
-    return !esMio && cumpleCategoria && cumplePrecio && cumpleRating;
+    return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
   }).sort((a, b) => {
     if (ordenSeleccionado.value === "Precio: Menor a Mayor") return a.price - b.price;
     if (ordenSeleccionado.value === "Precio: Mayor a Menor") return b.price - a.price;
@@ -246,7 +237,7 @@ onMounted(async () => {
       
       <main v-if="!cargando" class="rejilla-productos">
         <ProductCard
-          v-for="producto in productosFiltradosNombre"
+          v-for="producto in productosFiltrados"
           :key="producto.id"
           :producto="producto"
           :isFavorite="producto.is_favorite"

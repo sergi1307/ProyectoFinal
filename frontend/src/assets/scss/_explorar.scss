@@ -255,12 +255,12 @@
                 display: flex;
                 flex-wrap: wrap;
                 gap: 8px;
-                margin-bottom: 1.5rem;
 
                 .chip-categoria {
                     display: flex;
                     align-items: center;
                     gap: 6px;
+                    height: 2.5rem;
                     background: #f0f9ff;
                     color: $primary-blue;
                     padding: 6px 12px;
