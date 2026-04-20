@@ -163,6 +163,7 @@ button {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  text-decoration: none;
   transition: $transition-base;
 
   &:hover {
@@ -312,6 +313,43 @@ margin-bottom: 2rem;
       outline: none;
       border-color: $primary-blue;
       box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+  }
+}
+
+.acciones-perfil {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+
+  .boton-editar, .boton-eliminar {
+    flex: 1;
+    padding: 0.8rem;
+    border-radius: $border-radius-sm;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .boton-editar {
+    background-color: $primary-blue;
+    color: white;
+    &:hover { background-color: $primary-hover; }
+  }
+
+  .boton-eliminar {
+    background-color: #e11d48;
+    color: white;
+    border: 1px solid #fecdd3;
+    &:hover {
+      background-color: #ad1838;
+      color: white;
     }
   }
 }

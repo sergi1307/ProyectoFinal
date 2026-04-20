@@ -103,7 +103,7 @@ router.beforeEach((to, from, next) => {
     }
 
     if (user && user.role === 'admin') {
-        const permitidasParaAdmin = ['Admin', 'login', 'register', 'general', 'landing', 'perfil'];
+        const permitidasParaAdmin = ['Admin', 'login', 'register', 'general', 'landing', 'Perfil'];
         
         if (!permitidasParaAdmin.includes(to.name)) {
             return next({ name: 'Admin' });
