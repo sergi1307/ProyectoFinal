@@ -30,6 +30,12 @@ const obtenerRutaAvatar = (ruta) => {
   return `http://localhost:8080/storage/${limpia}`;
 };
 
+const obtenerRutaInicio = () => {
+  if (!userRole.value) return '/';
+  if (userRole.value === 'admin') return '/';
+  return '/general';
+};
+
 onMounted(() => {
   actualizarEstado();
   window.addEventListener('storage', actualizarEstado);
@@ -66,7 +72,7 @@ const logout = () => {
     <div class="navbar-container">
       
       <div class="navbar-izquierda">
-        <router-link :to="userRole ? '/general' : '/'" class="logo-container">
+        <router-link :to="obtenerRutaInicio()" class="logo-container">
           <img src="../assets/logos/Logo_gr.png" alt="Logo" class="imagen-logo" />
         </router-link>
 
@@ -220,12 +226,15 @@ const logout = () => {
   font-size: 0.95rem;
   padding: 0.5rem 0.8rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
 }
 
 .nav-item:hover {
   background-color: #0097b2;
-  color: #ffffff;
+  color: white;
+}
+
+.nav-item:hover svg{
+  color: white;
 }
 
 .nav-icon {
