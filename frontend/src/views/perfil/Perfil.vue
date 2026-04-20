@@ -73,7 +73,6 @@ const actualizarPerfil = async () => {
     formulario.append("email", editandoUsuario.value.email);
 
     if (nuevaFotoArchivo.value) {
-      console.log("Archivo detectado, adjuntando...", nuevaFotoArchivo.value);
       formulario.append("avatar", nuevaFotoArchivo.value);
     }
 
@@ -83,28 +82,26 @@ const actualizarPerfil = async () => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       }
     );
+
+    localStorage.setItem("usuario", JSON.stringify(respuesta.data.user));
+
+    window.dispatchEvent(new Event('perfil-actualizado'));
 
     usuario.value.nombre = respuesta.data.user.name;
     usuario.value.email = respuesta.data.user.email;
     usuario.value.avatar = respuesta.data.user.avatar;
 
-    const usuarioParaStorage = {
-        id: respuesta.data.user.id,
-        name: respuesta.data.user.name,
-        email: respuesta.data.user.email,
-        role: respuesta.data.user.role,
-        avatar: respuesta.data.user.avatar
-    };
-
-    localStorage.setItem("usuario", JSON.stringify(usuarioParaStorage));
-
     mostrarModal.value = false;
-    alert("¡Perfil y foto actualizados!");
+    guardando.value = false;
+
   } catch (error) {
+    guardando.value = false;
     console.error("Error al actualizar:", error.response?.data || error);
+    alert("Hubo un error al guardar los cambios.");
   }
 };
 

@@ -8,25 +8,39 @@ const route = useRoute();
 const router = useRouter();
 
 const userRole = ref(null);
+const usuarioActual = ref(null);
 const showDropdown = ref(false);
 
 const actualizarEstado = () => {
   const userRaw = localStorage.getItem('usuario');
+  const token = localStorage.getItem('token');
   if (userRaw) {
     const userData = JSON.parse(userRaw);
-    userRole.value = userData.role; 
+    userRole.value = userData.role;
+    usuarioActual.value = userData; 
+  }else{
+    userRole.value = null;
+    usuarioActual.value = null;
   }
+};
+
+const obtenerRutaAvatar = (ruta) => {
+  if (!ruta || ruta === '0' || ruta === 0) return null;
+  const limpia = ruta.replace(/^storage\//, '').replace(/^\//, '');
+  return `http://localhost:8080/storage/${limpia}`;
 };
 
 onMounted(() => {
   actualizarEstado();
   window.addEventListener('storage', actualizarEstado);
   window.addEventListener('login-success', actualizarEstado);
+  window.addEventListener('perfil-actualizado', actualizarEstado);
 });
 
 onUnmounted(() => {
   window.removeEventListener('storage', actualizarEstado);
   window.removeEventListener('login-success', actualizarEstado);
+  window.removeEventListener('perfil-actualizado', actualizarEstado);
 });
 
 watch(() => route.path, () => {
@@ -114,8 +128,21 @@ const logout = () => {
                 <router-link to="/carrito" class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></router-link>
               </template>
               
-              <router-link to="/perfil" class="action-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <router-link to="/perfil" class="action-btn profile-link">
+                <template v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)">
+                  <img 
+                    :src="obtenerRutaAvatar(usuarioActual.avatar)" 
+                    alt="Perfil" 
+                    class="avatar-circle"
+                  />
+                </template>
+                
+                <template v-else>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </template>
               </router-link>
               
               <button @click="logout" class="action-btn logout-btn">
@@ -350,6 +377,38 @@ const logout = () => {
 
 .boton-registro:hover {
   background-color: #00869e;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  transition: border-color 0.3s;
+}
+
+.profile-link:hover {
+  border-color: #00869e;
+}
+
+.profile-link:hover svg {
+  stroke: #ffffff;
+}
+
+.avatar-circle {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  color:black;
 }
 
 .fade-enter-active, .fade-leave-active {
