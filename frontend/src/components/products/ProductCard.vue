@@ -82,7 +82,18 @@ const agregarAlCarrito = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
+    let carritoLocal = JSON.parse(localStorage.getItem('carrito') || '[]');
+    const index = carritoLocal.findIndex(item => item.id === props.producto.id);
+
+    if (index !== -1) {
+      carritoLocal[index].quantity += 1;
+    } else {
+      carritoLocal.push({ id: props.producto.id, quantity: 1 });
+    }
+    localStorage.setItem('carrito', JSON.stringify(carritoLocal));
+
     emit('agregado', props.producto.id);
+    window.dispatchEvent(new CustomEvent('cart-updated'));
     
   } catch (error) {
     console.error("Error al agregar al carrito:", error);
@@ -105,7 +116,7 @@ const agregarAlCarrito = async () => {
       <img :src="obtenerImagen(producto.image_url)" :alt="producto.title" />
       
       <button 
-        v-if="!esMiProducto || modoPublico"
+        v-if="!esMiProducto"
         class="boton-favorito" 
         :class="{ activo: isFavorite }" 
         @click.stop="emit('favorito', producto.id)"
@@ -126,7 +137,7 @@ const agregarAlCarrito = async () => {
         <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
       </div>
 
-      <p class="autor">Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span></p>
+      <p v-if="!esMiProducto || modoPublico" class="autor">Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span></p>
 
       <hr class="linea-separacion">
 
