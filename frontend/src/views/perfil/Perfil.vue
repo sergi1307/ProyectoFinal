@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
@@ -409,7 +409,3 @@ onMounted(cargarDatos);
   </main>
   <Footer></Footer>
 </template>
-
-<style lang="scss" scoped>
-@import "@/assets/scss/perfil";
-</style>

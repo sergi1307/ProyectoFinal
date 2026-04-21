@@ -23,7 +23,7 @@ onMounted(() => {
 
 <template>
   <footer>
-    <div class="contenedor-principal">
+    <div class="footer-contenedor">
       <div id="sobreNosotros">
         <h3>{{ $t("footer.aboutTitle") }}</h3>
         <p>{{ $t("footer.aboutText") }}</p>
@@ -189,7 +189,8 @@ p {
   margin-bottom: 1rem;
 }
 
-.contenedor-principal a {
+/* CAMBIO AQUÍ: Actualizada la clase en CSS */
+.footer-contenedor a {
   display: table;
   color: #cbd5e1;
   text-decoration: none;
@@ -198,7 +199,7 @@ p {
   transition: all 0.2s ease-in-out;
 }
 
-.contenedor-principal a:hover {
+.footer-contenedor a:hover {
   color: #0cc0df;
   transform: translateX(4px);
 }
@@ -297,7 +298,8 @@ p {
 .derechos p { color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem; }
 .derechos p.copy { color: #e2e8f0; font-size: 0.95rem; margin-bottom: 0.5rem; }
 
-.contenedor-principal {
+/* CAMBIO AQUÍ: Actualizada la clase en CSS */
+.footer-contenedor {
   display: grid;
   grid-template-columns: 2.5fr 1fr 1.5fr 1fr;
   gap: 4rem 2rem;
@@ -307,14 +309,14 @@ p {
 }
 
 @media (max-width: 968px) {
-  .contenedor-principal {
+  .footer-contenedor {
     grid-template-columns: 1.5fr 1fr;
     gap: 3.5rem 2rem;
   }
 }
 
 @media (max-width: 650px) {
-  .contenedor-principal {
+  .footer-contenedor {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
