@@ -146,6 +146,9 @@ const inicializarPaypal = () => {
             );
             alert("¡Pago completado!");
             productosCarrito.value = [];
+            localStorage.removeItem("carrito");
+
+            window.dispatchEvent(new CustomEvent('cart-updated'));
           } catch (error) {
             console.error("Error al capturar el pago:", error);
           }
