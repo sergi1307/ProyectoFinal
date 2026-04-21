@@ -39,6 +39,10 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     transition: all 0.5s;
 
+    button {
+        margin: 2em 0em !important;
+    }
+
     &:hover {
         box-shadow: 0px 0px 8px $primary-glow; 
     }
