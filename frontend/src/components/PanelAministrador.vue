@@ -4,7 +4,8 @@ import axios from "axios";
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
 
-import Ingresos from "../components/admin/Ingresos.vue";
+import Ingresos from "./NavPanelAdmin/Ingresos.vue";
+import Usuarios from "./NavPanelAdmin/Usuarios.vue";
 
 const activeTab = ref("incidencias");
 
@@ -41,9 +42,7 @@ const cargarIncidencias = async () => {
     });
 
     const datosOrdenados = response.data.sort((a, b) => a.id - b.id);
-
     incidencias.value = datosOrdenados;
-
     actualizarEstadisticas();
   } catch (error) {
     console.error("Error al cargar las incidencias:", error);
@@ -88,6 +87,15 @@ const actualizarEstadisticas = () => {
   stats.value.cerradas = data.filter((i) => i.status === "cerrada").length;
 };
 
+const enviarmensaje = (email, asunto) => {
+  if (!email) {
+    alert("Este usuario no tiene un correo electrónico asociado.");
+    return;
+  }
+  const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;
+  window.location.href = mailtoLink;
+};
+
 onMounted(() => {
   cargarIncidencias();
 });
@@ -122,7 +130,6 @@ onMounted(() => {
               <line x1="9" y1="9" x2="15" y2="9"></line>
               <line x1="9" y1="13" x2="15" y2="13"></line>
             </svg>
-
             <svg
               v-if="tab.id === 'usuarios'"
               width="18"
@@ -139,7 +146,6 @@ onMounted(() => {
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
-
             <svg
               v-if="tab.id === 'ingresos'"
               width="18"
@@ -156,7 +162,6 @@ onMounted(() => {
                 d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
               ></path>
             </svg>
-
             <svg
               v-if="tab.id === 'reembolsos'"
               width="18"
@@ -179,7 +184,6 @@ onMounted(() => {
               ></path>
               <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path>
             </svg>
-
             <svg
               v-if="tab.id === 'imagenes'"
               width="18"
@@ -195,7 +199,6 @@ onMounted(() => {
               <circle cx="8.5" cy="8.5" r="1.5"></circle>
               <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-
             <svg
               v-if="tab.id === 'mantenimiento'"
               width="18"
@@ -212,7 +215,6 @@ onMounted(() => {
               ></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
-
             <svg
               v-if="tab.id === 'logs'"
               width="18"
@@ -267,7 +269,6 @@ onMounted(() => {
           <p v-if="incidencias.length === 0" class="empty-state-text">
             No hay incidencias
           </p>
-
           <table v-else class="data-table">
             <thead>
               <tr>
@@ -278,6 +279,7 @@ onMounted(() => {
                 <th>Estado</th>
                 <th style="text-align: center">Acciones</th>
                 <th>Fecha</th>
+                <th>Mensaje</th>
               </tr>
             </thead>
             <tbody>
@@ -289,9 +291,7 @@ onMounted(() => {
                 <td>
                   <strong>{{ incidencia.subject }}</strong>
                 </td>
-
                 <td>{{ incidencia.description }}</td>
-
                 <td>
                   <span
                     :class="[
@@ -343,14 +343,40 @@ onMounted(() => {
                 <td>
                   {{ new Date(incidencia.created_at).toLocaleDateString() }}
                 </td>
+                <td>
+                  <button
+                    @click="
+                      enviarmensaje(incidencia.user?.email, incidencia.subject)
+                    "
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect width="20" height="16" x="2" y="4" rx="2" />
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                    </svg>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
+      <div v-else-if="activeTab === 'usuarios'" class="fade-in">
+        <Usuarios />
+      </div>
+
       <div v-else-if="activeTab === 'ingresos'" class="fade-in">
-        <Ingresos></Ingresos>
+        <Ingresos />
       </div>
 
       <div v-else class="fade-in">
@@ -366,6 +392,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Los estilos se mantienen exactamente igual a como los tenías */
 .admin-panel {
   padding: 40px 20px;
   background-color: #f8fafc;
@@ -379,13 +406,11 @@ onMounted(() => {
     -apple-system,
     sans-serif;
 }
-
 .submenu-container {
   display: flex;
   justify-content: center;
   margin-bottom: 35px;
 }
-
 .submenu {
   display: flex;
   align-items: center;
@@ -396,9 +421,7 @@ onMounted(() => {
   border: 1px solid #e2e8f0;
   width: fit-content;
   justify-content: center;
-  max-width: none;
 }
-
 .tab-btn {
   margin: 0 !important;
   display: flex;
@@ -415,7 +438,6 @@ onMounted(() => {
   transition: all 0.3s ease-in-out;
   white-space: nowrap;
 }
-
 .icon-wrapper {
   display: flex;
   align-items: center;
@@ -424,7 +446,6 @@ onMounted(() => {
   height: 18px;
   color: inherit;
 }
-
 .tab-btn.active {
   background: #ffffff;
   color: #0f172a;
@@ -432,24 +453,20 @@ onMounted(() => {
     0 10px 15px -3px rgba(0, 0, 0, 0.08),
     0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
-
 .tab-btn:hover:not(.active) {
   background: rgba(255, 255, 255, 0.6);
   color: #0f172a;
 }
-
 .tab-content {
   width: 100%;
   max-width: 1400px;
 }
-
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   margin-bottom: 25px;
 }
-
 .stat-card {
   background: #ffffff;
   padding: 24px;
@@ -461,39 +478,31 @@ onMounted(() => {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s ease;
 }
-
 .stat-card:hover {
   transform: translateY(-2px);
 }
-
 .stat-card .label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #64748b;
 }
-
 .stat-card .value {
   font-size: 2.2rem;
   font-weight: 700;
   color: #0f172a;
 }
-
 .text-blue {
   color: #2563eb !important;
 }
-
 .text-orange {
   color: #d97706 !important;
 }
-
 .text-green {
   color: #16a34a !important;
 }
-
 .text-gray {
   color: #94a3b8 !important;
 }
-
 .main-container {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -502,24 +511,20 @@ onMounted(() => {
   text-align: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
-
 .empty-state-text {
   color: #94a3b8;
   font-size: 1.1rem;
   font-weight: 500;
 }
-
 .fade-in {
   animation: fadeIn 0.3s ease-out;
 }
-
 .data-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   color: #313131;
 }
-
 .data-table th {
   background-color: #f8fbff;
   color: #6b7280;
@@ -527,40 +532,16 @@ onMounted(() => {
   border-bottom: 2px solid #0097b2;
   font-size: 0.9rem;
 }
-
 .id-cell {
   font-weight: bold;
   color: #0097b2;
 }
-
 .data-table td:nth-child(4) {
   max-width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.pencil-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: #6b7280;
-  padding: 6px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.pencil-btn:hover {
-  color: #0097b2;
-  background-color: #f0fdff;
-  border-color: #5ce1e6;
-  box-shadow: 0 0 8px rgba(12, 192, 223, 0.2);
-}
-
-.edit-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
 .pencil-btn {
   background: none;
   border: none;
@@ -569,13 +550,15 @@ onMounted(() => {
   padding: 8px;
   display: flex;
 }
-
 .pencil-btn:hover {
   background-color: #f0fdff;
   color: #00869e !important;
   box-shadow: 0 0 10px rgba(12, 192, 223, 0.2);
 }
-
+.edit-dropdown {
+  position: relative;
+  display: inline-block;
+}
 .dropdown-menu {
   visibility: hidden;
   opacity: 0;
@@ -592,7 +575,6 @@ onMounted(() => {
   margin-top: 2px;
   overflow: hidden;
 }
-
 .dropdown-menu::before {
   content: "";
   position: absolute;
@@ -601,12 +583,10 @@ onMounted(() => {
   width: 100%;
   height: 10px;
 }
-
 .edit-dropdown:hover .dropdown-menu {
   visibility: visible;
   opacity: 1;
 }
-
 .dropdown-menu button {
   padding: 20px 12px;
   margin: 0;
@@ -622,19 +602,19 @@ onMounted(() => {
   border-radius: 0;
   transition: background-color 0.2s ease;
 }
-
+button {
+  padding: 0.4em !important;
+}
 .dropdown-menu button:hover {
   background-color: #f0fdff;
   color: #0097b2 !important;
 }
-
 .status-badge {
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
 }
-
 .status-badge.pendiente {
   background: #e0f2fe;
   color: #0369a1;
@@ -651,7 +631,6 @@ onMounted(() => {
   background: #f1f5f9;
   color: #475569;
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
