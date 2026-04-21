@@ -205,6 +205,7 @@ button{
   width: 100% !important;
   margin: 0 !important;
   max-width: none !important;
+  height: fit-content;
 
   &:hover {
     transform: translateY(-5px);
@@ -337,6 +338,8 @@ button{
   font-size: 0.85rem;
   margin-bottom: 8px;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .autor {
