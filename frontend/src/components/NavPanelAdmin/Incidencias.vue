@@ -5,7 +5,6 @@ import axios from "axios";
 const incidencias = ref([]);
 const loading = ref(true);
 
-// Estado para el Modal
 const modalVisible = ref(false);
 const incidenciaSeleccionada = ref(null);
 
@@ -59,7 +58,6 @@ const cambiarEstado = async (id, nuevoEstado) => {
       if (index !== -1) {
         incidencias.value[index].status = nuevoEstado;
         actualizarEstadisticas();
-        // Si el modal está abierto y cambiamos el estado, lo actualizamos también
         if (
           incidenciaSeleccionada.value &&
           incidenciaSeleccionada.value.id === id
@@ -91,11 +89,10 @@ const enviarmensaje = (email, asunto) => {
   window.location.href = mailtoLink;
 };
 
-// Funciones del Modal
 const abrirModal = (incidencia) => {
   incidenciaSeleccionada.value = incidencia;
   modalVisible.value = true;
-  document.body.style.overflow = "hidden"; // Evita scroll de fondo
+  document.body.style.overflow = "hidden";
 };
 
 const cerrarModal = () => {
@@ -154,7 +151,6 @@ onMounted(() => {
               <th>ID</th>
               <th class="hide-mobile">Usuario</th>
               <th>Asunto</th>
-              <th class="hide-tablet">Prioridad</th>
               <th class="hide-tablet">Descripción</th>
               <th>Estado</th>
               <th class="hide-mobile">Fecha</th>
@@ -171,21 +167,6 @@ onMounted(() => {
 
               <td>
                 <strong>{{ incidencia.subject }}</strong>
-              </td>
-
-              <td class="hide-tablet">
-                <span
-                  :class="[
-                    'priority-badge',
-                    incidencia.priority?.toLowerCase() || 'media',
-                  ]"
-                >
-                  {{
-                    incidencia.priority
-                      ? incidencia.priority.toUpperCase()
-                      : "MEDIA"
-                  }}
-                </span>
               </td>
 
               <td class="desc-cell hide-tablet">
