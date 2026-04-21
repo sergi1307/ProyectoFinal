@@ -137,7 +137,7 @@ const agregarAlCarrito = async () => {
       <div class="meta">
         <span class="contenedor-estrellas">
           <span class="estrella">&#9733;</span> 
-          <span class="puntuacion">{{ producto.rating || '0.0' }}</span>
+          <span class="puntuacion">{{ producto.reviews_avg_rating || '0.0' }}</span>
         </span>
         <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
       </div>

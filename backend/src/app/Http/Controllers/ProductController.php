@@ -57,7 +57,7 @@ class ProductController extends Controller
             ->with('categories', 'user')
             ->latest()
             ->get();
-        
+
         return response()->json($productos);
     }
 
@@ -74,7 +74,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('file_real')) {
             $rutaArchivo = $request->file('file_real')->store('products/files', 'local');
-            
+
             if (!$rutaArchivo) {
                 return response()->json(['message' => 'El archivo llegó, pero Laravel no tiene permisos para guardarlo en el disco.'], 500);
             }
@@ -85,7 +85,7 @@ class ProductController extends Controller
         $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('products/images', 'public');
-            
+
             if (!$rutaImagen) {
                 return response()->json(['message' => 'La imagen llegó, pero Laravel no tiene permisos para guardarla.'], 500);
             }
@@ -123,7 +123,7 @@ class ProductController extends Controller
     public function getFavorites(Request $request)
     {
         $user = $request->user();
-        
+
         $favoritos = $user->favorites()
             ->with(['categories', 'user'])
             ->withExists(['favoritedBy as is_favorite' => function ($q) use ($user) {
@@ -133,5 +133,70 @@ class ProductController extends Controller
             ->get();
 
         return response()->json($favoritos);
+    }
+
+    public function destacados()
+    {
+        $userId = auth('sanctum')->id();
+
+        $productos = Product::with(['categories', 'user'])
+            ->where('active', true)
+            ->has('reviews')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('reviews_avg_rating')
+            ->orderByDesc('reviews_count')
+            ->when($userId, function ($q) use ($userId) {
+                $q->withExists(['favoritedBy as is_favorite' => function ($f) use ($userId) {
+                    $f->where('user_id', $userId);
+                }]);
+            })
+            ->paginate(10);
+
+        $productos->getCollection()->transform(function ($producto) {
+            $producto->reviews_avg_rating = $producto->reviews_avg_rating
+                ? round($producto->reviews_avg_rating, 1)
+                : 0;
+
+            return $producto;
+        });
+
+        return response()->json($productos);
+    }
+
+    public function tendencias()
+    {
+        $userId = auth('sanctum')->id();
+
+        $productos = Product::with(['categories', 'user'])
+            ->where('active', true)
+            ->has('details')
+            ->withAvg('reviews', 'rating')
+            /* AGREGAMOS ESTA LÍNEA: */
+            ->withCount('reviews')
+            ->withCount(['details as sales_count' => function ($query) {
+                $query->whereHas('order', function ($q) {
+                    $q->where('status', 'completed');
+                });
+            }])
+            ->having('sales_count', '>', 0)
+            ->orderByDesc('sales_count')
+            ->when($userId, function ($q) use ($userId) {
+                $q->withExists(['favoritedBy as is_favorite' => function ($f) use ($userId) {
+                    $f->where('user_id', $userId);
+                }]);
+            })
+            ->take(10)
+            ->get();
+
+        $productos->transform(function ($producto) {
+            $producto->reviews_avg_rating = $producto->reviews_avg_rating
+                ? round($producto->reviews_avg_rating, 1)
+                : 0;
+
+            return $producto;
+        });
+
+        return response()->json($productos);
     }
 }
