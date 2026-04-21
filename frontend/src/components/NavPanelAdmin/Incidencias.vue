@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 
 const incidencias = ref([]);
 const loading = ref(true);
+const busqueda = ref('');
 
 const modalVisible = ref(false);
 const incidenciaSeleccionada = ref(null);
@@ -101,6 +102,28 @@ const cerrarModal = () => {
   document.body.style.overflow = "";
 };
 
+const incidenciasFiltradas = computed(() => {
+  if (!busqueda.value) {
+    return incidencias.value;
+  }
+
+  const termino = busqueda.value.toLowerCase();
+
+  return incidencias.value.filter((incidencia) => {
+    const id = String(incidencia.id);
+    const asunto = (incidencia.subject || '').toLowerCase();
+    const descripcion = (incidencia.description || '').toLowerCase();
+    const estado = (incidencia.status || '').toLowerCase();
+    const usuario = (incidencia.user?.name || '').toLowerCase();
+
+    return id.includes(termino) || 
+           asunto.includes(termino) || 
+           descripcion.includes(termino) || 
+           estado.includes(termino) || 
+           usuario.includes(termino);
+  });
+});
+
 onMounted(() => {
   cargarIncidencias();
 });
@@ -132,6 +155,38 @@ onMounted(() => {
     </div>
 
     <div class="main-container">
+      <div class="toolbar-incidencias">
+        <div class="toolbar-left">
+          <button @click="cargarIncidencias" class="btn-refresh">
+            Actualizar Lista
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="search-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              v-model="busqueda" 
+              placeholder="Buscar incidencia..." 
+              class="input-buscador"
+            />
+          </div>
+
+          <button @click="abrirHistorial" class="btn-history">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+              <path d="M3 3v5h5"></path>
+              <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+              <path d="M12 7v5l4 2"></path>
+            </svg>
+            Historial
+          </button>
+        </div>
+      </div>
+
       <div v-if="loading" class="empty-state-text" style="padding: 20px">
         Cargando incidencias...
       </div>
@@ -158,7 +213,7 @@ onMounted(() => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="incidencia in incidencias" :key="incidencia.id">
+            <tr v-for="incidencia in incidenciasFiltradas" :key="incidencia.id">
               <td class="id-cell">#{{ incidencia.id }}</td>
 
               <td class="hide-mobile">
@@ -275,10 +330,6 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
-
-      <button @click="cargarIncidencias" class="btn-refresh">
-        Actualizar Lista
-      </button>
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
@@ -310,21 +361,6 @@ onMounted(() => {
               <span class="detail-value">{{
                 new Date(incidenciaSeleccionada.created_at).toLocaleString()
               }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Prioridad:</span>
-              <span
-                :class="[
-                  'priority-badge',
-                  incidenciaSeleccionada.priority?.toLowerCase() || 'media',
-                ]"
-              >
-                {{
-                  incidenciaSeleccionada.priority
-                    ? incidenciaSeleccionada.priority.toUpperCase()
-                    : "MEDIA"
-                }}
-              </span>
             </div>
             <div class="detail-item">
               <span class="detail-label">Estado:</span>
@@ -378,13 +414,10 @@ onMounted(() => {
   width: 100%;
 }
 
-/* ==============================================================
-   GRID RESPONSIVO (5 -> 3 y 2 centrados -> 1)
-   ============================================================== */
 .stats-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Centra los items cuando sobran abajo */
+  justify-content: center;
   gap: 20px;
   margin-bottom: 25px;
 }
@@ -609,7 +642,6 @@ onMounted(() => {
   margin-bottom: 0;
 }
 
-/* Badges de Estado */
 .status-badge {
   padding: 6px 12px;
   border-radius: 12px;
@@ -634,7 +666,6 @@ onMounted(() => {
   color: #475569;
 }
 
-/* Badges de Prioridad */
 .priority-badge {
   padding: 4px 10px;
   border-radius: 6px;
@@ -659,7 +690,7 @@ onMounted(() => {
 }
 
 .btn-refresh {
-  margin-top: 20px;
+  margin: 10px 0px !important;
   padding: 10px 20px;
   background-color: #0097b2;
   color: white;
@@ -673,9 +704,6 @@ onMounted(() => {
   background-color: #00869e;
 }
 
-/* ==============================================================
-   MODAL DE DETALLES
-   ============================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -832,5 +860,80 @@ onMounted(() => {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+.toolbar-incidencias {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #718096;
+  pointer-events: none;
+}
+
+.input-buscador {
+  padding: 10px 16px 10px 42px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #2d3748;
+  background-color: #f8fafc;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 260px;
+}
+
+.input-buscador:focus {
+  background-color: #ffffff;
+  border-color: #0cc0df;
+  box-shadow: 0 0 0 3px rgba(12, 192, 223, 0.15);
+}
+
+.btn-history {
+  display: flex;
+  align-items: center;
+  background-color: #0cc0df;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(12, 192, 223, 0.25);
+}
+
+.btn-history svg {
+  margin-right: 8px;
+}
+
+.btn-history:hover {
+  background-color: #5ce1e6;
+  box-shadow: 0 6px 14px rgba(12, 192, 223, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-history:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(12, 192, 223, 0.2);
 }
 </style>
