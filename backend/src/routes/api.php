@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -69,5 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // 3. RUTAS EXCLUSIVAS DE ADMINISTRADOR
 // ==========================================
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-
+    Route::prefix('admin')->group(function () {
+        Route::get('/ingresos', [AdminController::class, 'ingresos']);
+    });
 });
