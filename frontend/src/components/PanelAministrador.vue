@@ -105,7 +105,7 @@ onMounted(() => {
   <NavBar></NavBar>
   <div class="admin-panel">
     <div class="submenu-container">
-      <nav class="submenu">
+      <nav class="submenu desktop-tabs">
         <button
           v-for="tab in tabs"
           :key="tab.id"
@@ -238,6 +238,28 @@ onMounted(() => {
           {{ tab.label }}
         </button>
       </nav>
+
+      <div class="mobile-tab-selector">
+        <select v-model="activeTab">
+          <option v-for="tab in tabs" :key="tab.id" :value="tab.id">
+            Sección: {{ tab.label }}
+          </option>
+        </select>
+        <div class="select-arrow">
+          <svg
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <div class="tab-content">
@@ -392,7 +414,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Los estilos se mantienen exactamente igual a como los tenías */
 .admin-panel {
   padding: 40px 20px;
   background-color: #f8fafc;
@@ -410,14 +431,15 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin-bottom: 35px;
+  width: 100%;
 }
 .submenu {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
   background: #f1f5f9;
-  padding: 6px;
-  border-radius: 18px;
+  padding: 8px;
+  border-radius: 20px;
   border: 1px solid #e2e8f0;
   width: fit-content;
   justify-content: center;
@@ -426,8 +448,8 @@ onMounted(() => {
   margin: 0 !important;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 22px;
+  gap: 12px;
+  padding: 12px 28px;
   border: none;
   background: transparent;
   color: #1e293b;
@@ -639,6 +661,93 @@ button {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.mobile-tab-selector {
+  display: none;
+}
+
+@media (max-width: 1050px) {
+  .desktop-tabs {
+    display: none !important;
+  }
+
+  .mobile-tab-selector {
+    display: block;
+    position: relative;
+    width: 90%;
+    max-width: 350px;
+    margin: 0 auto;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-tab-selector:hover {
+    transform: translateY(-2px);
+  }
+
+  .mobile-tab-selector select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px 50px 14px 20px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    cursor: pointer;
+    box-shadow:
+      0 4px 10px rgba(0, 0, 0, 0.03),
+      0 1px 3px rgba(0, 0, 0, 0.05);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-tab-selector select:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-tab-selector select:focus {
+    border-color: #0097b2;
+    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.15);
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #0097b2;
+    background-color: #f0fdff;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-tab-selector select:hover + .select-arrow {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+}
+
+@media (max-width: 480px) {
+  .submenu-container {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+
+  .mobile-tab-selector {
+    width: 100%;
+    max-width: 100%;
   }
 }
 </style>
