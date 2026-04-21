@@ -12,6 +12,7 @@ import legal from '@/views/footer/legal.vue';
 import Favorites from '@/views/products/Favorites.vue';
 import Cart from '@/views/user/Cart.vue';
 import Perfil from '@/views/perfil/Perfil.vue';
+import NotFound from '@/components/Error/NotFound.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -88,6 +89,11 @@ const router = createRouter({
             meta: { 
                 requiresAdmin: true 
             }
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            component: NotFound
         }
     ]
 });
