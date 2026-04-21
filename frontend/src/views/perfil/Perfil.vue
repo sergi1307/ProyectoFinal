@@ -60,6 +60,7 @@ const cargarDatos = async () => {
     });
     usuario.value.pedidos = respuesta.data.pedidos;
     usuario.value.favoritos = respuesta.data.favoritos;
+    console.log(usuario.value);
   } catch (error) {
     console.error("Error al cargar estadísticas:", error);
   }
