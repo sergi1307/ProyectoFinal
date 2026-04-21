@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // --- 2. CATEGORÍAS ---
-        $categorias = ['Software', 'Diseño', 'E-books', 'Cursos', 'Música', 'Gaming'];
+        $categorias = ['Cursos', 'eBooks', 'Software', 'Plantillas', 'Audios', 'Fotografías', 'Vídeos', 'Fuentes', 'Gaming', 'Extensiones', 'Servicios Web', 'Otros' ];
         $catIds = [];
         foreach ($categorias as $cat) {
             $c = Category::create(['name' => $cat]);
