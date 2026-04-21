@@ -4,7 +4,8 @@ import axios from "axios";
 
 const incidencias = ref([]);
 const loading = ref(true);
-const busqueda = ref('');
+const busqueda = ref("");
+const mostrandoHistorial = ref(false);
 
 const modalVisible = ref(false);
 const incidenciaSeleccionada = ref(null);
@@ -103,24 +104,38 @@ const cerrarModal = () => {
 };
 
 const incidenciasFiltradas = computed(() => {
+  let listaBase = incidencias.value.filter((incidencia) => {
+    if (mostrandoHistorial.value) {
+      return (
+        incidencia.status === "resuelta" || incidencia.status === "cerrada"
+      );
+    } else {
+      return (
+        incidencia.status === "pendiente" || incidencia.status === "en proceso"
+      );
+    }
+  });
+
   if (!busqueda.value) {
-    return incidencias.value;
+    return listaBase;
   }
 
   const termino = busqueda.value.toLowerCase();
 
-  return incidencias.value.filter((incidencia) => {
+  return listaBase.filter((incidencia) => {
     const id = String(incidencia.id);
-    const asunto = (incidencia.subject || '').toLowerCase();
-    const descripcion = (incidencia.description || '').toLowerCase();
-    const estado = (incidencia.status || '').toLowerCase();
-    const usuario = (incidencia.user?.name || '').toLowerCase();
+    const asunto = (incidencia.subject || "").toLowerCase();
+    const descripcion = (incidencia.description || "").toLowerCase();
+    const estado = (incidencia.status || "").toLowerCase();
+    const usuario = (incidencia.user?.name || "").toLowerCase();
 
-    return id.includes(termino) || 
-           asunto.includes(termino) || 
-           descripcion.includes(termino) || 
-           estado.includes(termino) || 
-           usuario.includes(termino);
+    return (
+      id.includes(termino) ||
+      asunto.includes(termino) ||
+      descripcion.includes(termino) ||
+      estado.includes(termino) ||
+      usuario.includes(termino)
+    );
   });
 });
 
@@ -164,25 +179,58 @@ onMounted(() => {
 
         <div class="toolbar-right">
           <div class="search-container">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="search-icon"
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input 
-              type="text" 
-              v-model="busqueda" 
-              placeholder="Buscar incidencia..." 
+            <input
+              type="text"
+              v-model="busqueda"
+              placeholder="Buscar incidencia..."
               class="input-buscador"
             />
           </div>
 
-          <button @click="abrirHistorial" class="btn-history">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
-              <path d="M3 3v5h5"></path>
-              <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
-              <path d="M12 7v5l4 2"></path>
+          <button
+            @click="mostrandoHistorial = !mostrandoHistorial"
+            :class="['btn-history', { 'active-mode': mostrandoHistorial }]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 5px"
+            >
+              <template v-if="mostrandoHistorial">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </template>
+
+              <template v-else>
+                <path d="M3 3v5h5"></path>
+                <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+                <path d="M12 7v5l4 2"></path>
+              </template>
             </svg>
-            Historial
+
+            {{ mostrandoHistorial ? "Volver atrás" : "Historial" }}
           </button>
         </div>
       </div>
@@ -480,7 +528,7 @@ onMounted(() => {
   border: 1px solid #e2e8f0;
   border-radius: 18px;
   padding: 20px;
-  overflow: visible !important; 
+  overflow: visible !important;
   position: relative;
   z-index: 1;
 }
