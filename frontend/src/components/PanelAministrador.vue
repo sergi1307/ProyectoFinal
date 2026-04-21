@@ -87,6 +87,15 @@ const actualizarEstadisticas = () => {
   stats.value.cerradas = data.filter((i) => i.status === "cerrada").length;
 };
 
+const enviarmensaje = (email, asunto) => {
+  if (!email) {
+    alert("Este usuario no tiene un correo electrónico asociado.");
+    return;
+  }
+  const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;
+  window.location.href = mailtoLink;
+};
+
 onMounted(() => {
   cargarIncidencias();
 });
@@ -277,6 +286,7 @@ onMounted(() => {
                 <th>Estado</th>
                 <th style="text-align: center">Acciones</th>
                 <th>Fecha</th>
+                <th>Mensaje</th>
               </tr>
             </thead>
             <tbody>
@@ -341,6 +351,24 @@ onMounted(() => {
                 </td>
                 <td>
                   {{ new Date(incidencia.created_at).toLocaleDateString() }}
+                </td>
+                <td>
+                  <button @click="enviarmensaje(incidencia.user?.email, incidencia.subject)">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect width="20" height="16" x="2" y="4" rx="2" />
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -624,6 +652,10 @@ onMounted(() => {
   display: block;
   border-radius: 0;
   transition: background-color 0.2s ease;
+}
+
+button {
+  padding: 0.4em !important;
 }
 
 .dropdown-menu button:hover {
