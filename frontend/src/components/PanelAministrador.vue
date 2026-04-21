@@ -1,15 +1,14 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref } from "vue";
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
 
+// Importamos las vistas de las pestañas
+import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
 
 const activeTab = ref("incidencias");
-
-const incidencias = ref([]);
 
 const tabs = [
   { id: "incidencias", label: "Incidencias" },
@@ -20,85 +19,6 @@ const tabs = [
   { id: "mantenimiento", label: "Mantenimiento" },
   { id: "logs", label: "Logs" },
 ];
-
-const stats = ref({
-  total: 0,
-  abiertas: 0,
-  progreso: 0,
-  resueltas: 0,
-  cerradas: 0,
-});
-
-const cargarIncidencias = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  try {
-    const response = await axios.get("http://localhost:8080/api/incidents", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
-
-    const datosOrdenados = response.data.sort((a, b) => a.id - b.id);
-    incidencias.value = datosOrdenados;
-    actualizarEstadisticas();
-  } catch (error) {
-    console.error("Error al cargar las incidencias:", error);
-  }
-};
-
-const cambiarEstado = async (id, nuevoEstado) => {
-  const token = localStorage.getItem("token");
-  try {
-    const response = await axios.put(
-      `http://localhost:8080/api/incidents/${id}`,
-      { status: nuevoEstado },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      },
-    );
-
-    if (response.status === 200 || response.status === 204) {
-      const index = incidencias.value.findIndex((i) => i.id === id);
-      if (index !== -1) {
-        incidencias.value[index].status = nuevoEstado;
-        actualizarEstadisticas();
-      }
-    }
-  } catch (error) {
-    console.error(
-      "Error al actualizar la base de datos:",
-      error.response?.data || error.message,
-    );
-  }
-};
-
-const actualizarEstadisticas = () => {
-  const data = incidencias.value;
-  stats.value.total = data.length;
-  stats.value.abiertas = data.filter((i) => i.status === "pendiente").length;
-  stats.value.progreso = data.filter((i) => i.status === "en proceso").length;
-  stats.value.resueltas = data.filter((i) => i.status === "resuelta").length;
-  stats.value.cerradas = data.filter((i) => i.status === "cerrada").length;
-};
-
-const enviarmensaje = (email, asunto) => {
-  if (!email) {
-    alert("Este usuario no tiene un correo electrónico asociado.");
-    return;
-  }
-  const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;
-  window.location.href = mailtoLink;
-};
-
-onMounted(() => {
-  cargarIncidencias();
-});
 </script>
 
 <template>
@@ -264,133 +184,7 @@ onMounted(() => {
 
     <div class="tab-content">
       <div v-if="activeTab === 'incidencias'" class="fade-in">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span class="label">Total</span>
-            <span class="value">{{ stats.total }}</span>
-          </div>
-          <div class="stat-card abiertos">
-            <span class="label text-blue">Abiertas</span>
-            <span class="value text-blue">{{ stats.abiertas }}</span>
-          </div>
-          <div class="stat-card progreso">
-            <span class="label text-orange">En Progreso</span>
-            <span class="value text-orange">{{ stats.progreso }}</span>
-          </div>
-          <div class="stat-card resueltas">
-            <span class="label text-green">Resueltas</span>
-            <span class="value text-green">{{ stats.resueltas }}</span>
-          </div>
-          <div class="stat-card cerradas">
-            <span class="label text-gray">Cerradas</span>
-            <span class="value text-gray">{{ stats.cerradas }}</span>
-          </div>
-        </div>
-
-        <div class="main-container">
-          <p v-if="incidencias.length === 0" class="empty-state-text">
-            No hay incidencias
-          </p>
-          <table v-else class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Asunto</th>
-                <th>Descripción</th>
-                <th>Estado</th>
-                <th style="text-align: center">Acciones</th>
-                <th>Fecha</th>
-                <th>Mensaje</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="incidencia in incidencias" :key="incidencia.id">
-                <td class="id-cell">#{{ incidencia.id }}</td>
-                <td>
-                  {{ incidencia.user?.name || "ID: " + incidencia.user_id }}
-                </td>
-                <td>
-                  <strong>{{ incidencia.subject }}</strong>
-                </td>
-                <td>{{ incidencia.description }}</td>
-                <td>
-                  <span
-                    :class="[
-                      'status-badge',
-                      incidencia.status.replace(' ', '-'),
-                    ]"
-                  >
-                    {{ incidencia.status }}
-                  </span>
-                </td>
-                <td style="text-align: center">
-                  <div class="edit-dropdown">
-                    <button class="pencil-btn">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path
-                          d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <div class="dropdown-menu">
-                      <button
-                        @click="cambiarEstado(incidencia.id, 'pendiente')"
-                      >
-                        Pendiente
-                      </button>
-                      <button
-                        @click="cambiarEstado(incidencia.id, 'en proceso')"
-                      >
-                        En proceso
-                      </button>
-                      <button @click="cambiarEstado(incidencia.id, 'resuelta')">
-                        Resuelta
-                      </button>
-                      <button @click="cambiarEstado(incidencia.id, 'cerrada')">
-                        Cerrada
-                      </button>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  {{ new Date(incidencia.created_at).toLocaleDateString() }}
-                </td>
-                <td>
-                  <button
-                    @click="
-                      enviarmensaje(incidencia.user?.email, incidencia.subject)
-                    "
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2" />
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Incidencias />
       </div>
 
       <div v-else-if="activeTab === 'usuarios'" class="fade-in">
@@ -483,48 +277,7 @@ onMounted(() => {
   width: 100%;
   max-width: 1400px;
 }
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 25px;
-}
-.stat-card {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease;
-}
-.stat-card:hover {
-  transform: translateY(-2px);
-}
-.stat-card .label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #64748b;
-}
-.stat-card .value {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-.text-blue {
-  color: #2563eb !important;
-}
-.text-orange {
-  color: #d97706 !important;
-}
-.text-green {
-  color: #16a34a !important;
-}
-.text-gray {
-  color: #94a3b8 !important;
-}
+
 .main-container {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -541,118 +294,6 @@ onMounted(() => {
 .fade-in {
   animation: fadeIn 0.3s ease-out;
 }
-.data-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  color: #313131;
-}
-.data-table th {
-  background-color: #f8fbff;
-  color: #6b7280;
-  padding: 12px;
-  border-bottom: 2px solid #0097b2;
-  font-size: 0.9rem;
-}
-.id-cell {
-  font-weight: bold;
-  color: #0097b2;
-}
-.data-table td:nth-child(4) {
-  max-width: 250px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.pencil-btn {
-  background: none;
-  border: none;
-  color: #0097b2 !important;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-}
-.pencil-btn:hover {
-  background-color: #f0fdff;
-  color: #00869e !important;
-  box-shadow: 0 0 10px rgba(12, 192, 223, 0.2);
-}
-.edit-dropdown {
-  position: relative;
-  display: inline-block;
-}
-.dropdown-menu {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  top: 80%;
-  right: 0;
-  background-color: #ffffff;
-  min-width: 125px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  border: 1px solid #0097b2;
-  z-index: 9999;
-  padding: 0;
-  margin-top: 2px;
-  overflow: hidden;
-}
-.dropdown-menu::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: 10px;
-}
-.edit-dropdown:hover .dropdown-menu {
-  visibility: visible;
-  opacity: 1;
-}
-.dropdown-menu button {
-  padding: 20px 12px;
-  margin: 0;
-  width: 100%;
-  border: none;
-  background: transparent;
-  color: #313131 !important;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-  display: block;
-  border-radius: 0;
-  transition: background-color 0.2s ease;
-}
-button {
-  padding: 0.4em !important;
-}
-.dropdown-menu button:hover {
-  background-color: #f0fdff;
-  color: #0097b2 !important;
-}
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-.status-badge.pendiente {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-.status-badge.en-proceso {
-  background: #fff7ed;
-  color: #ea580c;
-}
-.status-badge.resuelta {
-  background: #f0fdf4;
-  color: #16a34a;
-}
-.status-badge.cerrada {
-  background: #f1f5f9;
-  color: #475569;
-}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -664,6 +305,7 @@ button {
   }
 }
 
+/* Selector Móvil */
 .mobile-tab-selector {
   display: none;
 }
@@ -672,7 +314,6 @@ button {
   .desktop-tabs {
     display: none !important;
   }
-
   .mobile-tab-selector {
     display: block;
     position: relative;
@@ -681,16 +322,13 @@ button {
     margin: 0 auto;
     transition: transform 0.2s ease;
   }
-
   .mobile-tab-selector:hover {
     transform: translateY(-2px);
   }
-
   .mobile-tab-selector select {
     width: 100%;
     appearance: none;
     -webkit-appearance: none;
-    -moz-appearance: none;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 16px;
@@ -703,19 +341,16 @@ button {
       0 4px 10px rgba(0, 0, 0, 0.03),
       0 1px 3px rgba(0, 0, 0, 0.05);
     outline: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
   }
-
   .mobile-tab-selector select:hover {
     border-color: #cbd5e1;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
   }
-
   .mobile-tab-selector select:focus {
     border-color: #0097b2;
     box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.15);
   }
-
   .select-arrow {
     position: absolute;
     right: 14px;
@@ -727,26 +362,18 @@ button {
     padding: 6px;
     border-radius: 50%;
     display: flex;
-    align-items: center;
-    justify-content: center;
     transition: all 0.3s ease;
   }
-
   .mobile-tab-selector select:hover + .select-arrow {
     background-color: #e0f2fe;
     color: #0284c7;
   }
 }
-
 @media (max-width: 480px) {
   .submenu-container {
-    width: 100%;
-    margin-bottom: 20px;
     padding: 0 10px;
   }
-
   .mobile-tab-selector {
-    width: 100%;
     max-width: 100%;
   }
 }
