@@ -264,8 +264,11 @@ onMounted(cargarUsuarios);
 }
 
 .acciones-cell {
-  text-align: center;
-  gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border-bottom: 1px solid #f7fafc;
 }
 
 .texto-protegido {
