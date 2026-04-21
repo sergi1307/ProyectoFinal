@@ -10,6 +10,7 @@ const router = useRouter();
 const userRole = ref(null);
 const usuarioActual = ref(null);
 const showDropdown = ref(false);
+const isMenuOpen = ref(false);
 const cartCount = ref(0);
 
 const actualizarEstado = () => {
@@ -50,6 +51,17 @@ const actualizarCarrito = () => {
   }
 }
 
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+  if (isMenuOpen.value) document.body.style.overflow = 'hidden';
+  else document.body.style.overflow = '';
+};
+
+const cerrarMenu = () => {
+  isMenuOpen.value = false;
+  document.body.style.overflow = '';
+};
+
 onMounted(() => {
   actualizarEstado();
   actualizarCarrito();
@@ -63,10 +75,12 @@ onUnmounted(() => {
   window.removeEventListener('storage', actualizarEstado);
   window.removeEventListener('login-success', actualizarEstado);
   window.removeEventListener('perfil-actualizado', actualizarEstado);
+  document.body.style.overflow = '';
 });
 
 watch(() => route.path, () => {
   actualizarEstado();
+  cerrarMenu();
 }, { immediate: true });
 
 const seleccionarIdioma = (code) => {
@@ -79,6 +93,7 @@ const logout = () => {
   localStorage.removeItem('usuario');
   localStorage.removeItem('token');
   userRole.value = null;
+  cerrarMenu();
   router.push('/login');
 };
 </script>
@@ -88,12 +103,17 @@ const logout = () => {
     <div class="navbar-container">
       
       <div class="navbar-izquierda">
+        <button class="burger-btn" @click="toggleMenu" aria-label="Menu">
+          <svg v-if="!isMenuOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
         <router-link :to="obtenerRutaInicio()" class="logo-container">
           <img src="../assets/logos/Logo_gr.png" alt="Logo" class="imagen-logo" />
         </router-link>
 
         <template v-if="userRole">
-          <div class="nav-links">
+          <div class="nav-links hide-on-mobile">
             <router-link v-if="userRole !== 'admin'" to="/explorar" class="nav-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               {{ $t('explorar.featured') }}
@@ -124,7 +144,7 @@ const logout = () => {
       </div>
 
       <div class="navbar-derecha">
-        <div class="idioma-wrapper">
+        <div class="idioma-wrapper hide-on-mobile">
           <div class="action-btn" @click.stop="showDropdown = !showDropdown">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2 5h12"></path>
@@ -148,14 +168,14 @@ const logout = () => {
 
         <div class="acciones">
           <template v-if="userRole">
-            <router-link v-if="userRole === 'user'" to="/vender" class="boton-vender">
+            <router-link v-if="userRole === 'user'" to="/vender" class="boton-vender hide-on-mobile">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="plus-icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               {{ $t('navbar.sell') }}
             </router-link>
             
             <div class="icon-actions-group">
               <template v-if="userRole === 'user'">
-                <router-link to="/favoritos" class="action-btn cart-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
+                <router-link to="/favoritos" class="action-btn cart-btn hide-on-mobile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></router-link>
                 <router-link to="/carrito" class="action-btn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="9" cy="21" r="1"></circle>
@@ -166,7 +186,7 @@ const logout = () => {
                 </router-link>
               </template>
               
-              <router-link to="/perfil" class="action-btn profile-link">
+              <router-link to="/perfil" class="action-btn profile-link hide-on-mobile">
                 <template v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)">
                   <img 
                     :src="obtenerRutaAvatar(usuarioActual.avatar)" 
@@ -183,19 +203,82 @@ const logout = () => {
                 </template>
               </router-link>
               
-              <button @click="logout" class="action-btn logout-btn">
+              <button @click="logout" class="action-btn logout-btn hide-on-mobile">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
               </button>
             </div>
           </template>
 
           <template v-else>
-            <router-link to="/login" class="enlace">{{ $t('navbar.login') }}</router-link>
-            <router-link to="/register" class="boton-registro">{{ $t('navbar.register') }}</router-link>
+            <router-link to="/login" class="enlace hide-on-mobile">{{ $t('navbar.login') }}</router-link>
+            <router-link to="/register" class="boton-registro hide-on-mobile">{{ $t('navbar.register') }}</router-link>
           </template>
         </div>
       </div>
     </div>
+
+    <transition name="slide-menu">
+      <div v-if="isMenuOpen" class="mobile-drawer">
+        <div class="mobile-drawer-content">
+          
+          <div v-if="userRole" class="mobile-user-profile">
+            <img v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)" :src="obtenerRutaAvatar(usuarioActual.avatar)" class="mobile-avatar" />
+            <div v-else class="mobile-avatar-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="mobile-user-info">
+              <span class="mobile-user-name">{{ usuarioActual?.name || 'Usuario' }}</span>
+              <span class="mobile-user-email">{{ usuarioActual?.email || '' }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-lang-group">
+            <button @click="seleccionarIdioma('esp')" :class="{'active': locale === 'esp'}">ESP</button>
+            <button @click="seleccionarIdioma('val')" :class="{'active': locale === 'val'}">VAL</button>
+            <button @click="seleccionarIdioma('eng')" :class="{'active': locale === 'eng'}">ENG</button>
+          </div>
+
+          <div v-if="userRole" class="mobile-nav-links">
+            <router-link v-if="userRole !== 'admin'" to="/explorar" class="mobile-nav-item">{{ $t('explorar.featured') }}</router-link>
+            <router-link v-if="userRole === 'user'" to="/mis-productos" class="mobile-nav-item">{{ $t('navbar.products') }}</router-link>
+            <router-link v-if="userRole === 'user'" to="/pedidos" class="mobile-nav-item">Pedidos</router-link>
+            <router-link v-if="userRole === 'user'" to="/favoritos" class="mobile-nav-item">Favoritos</router-link>
+            <router-link to="/perfil" class="mobile-nav-item">Mi Perfil</router-link>
+
+            <div class="mobile-divider"></div>
+
+            <router-link v-if="userRole === 'user'" to="/vender" class="mobile-nav-item mobile-btn-vender">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ $t('navbar.sell') }}
+            </router-link>
+            
+            <router-link v-if="userRole === 'admin'" to="/admin" class="mobile-nav-item mobile-btn-admin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              {{ $t('navbar.admin') }}
+            </router-link>
+
+            <button @click="logout" class="mobile-nav-item mobile-logout-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Cerrar sesión
+            </button>
+          </div>
+
+          <div v-else class="mobile-nav-links">
+            <router-link to="/login" class="mobile-nav-item">{{ $t('navbar.login') }}</router-link>
+            <div class="mobile-divider"></div>
+            <div class="mobile-action-wrapper">
+              <router-link to="/register" class="mobile-btn-registro">{{ $t('navbar.register') }}</router-link>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </transition>
+
+    <div v-if="isMenuOpen" class="mobile-overlay" @click="cerrarMenu"></div>
   </nav>
 </template>
 
@@ -481,5 +564,218 @@ const logout = () => {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.burger-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #111827;
+  cursor: pointer;
+  padding: 5px;
+}
+.burger-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  width: min(85vw, 320px);
+  height: calc(100vh - 80px);
+  background-color: #ffffff;
+  z-index: 99;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-drawer-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.mobile-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+.mobile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.mobile-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+.mobile-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.mobile-user-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0f172a;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.mobile-user-email {
+  font-size: 0.85rem;
+  color: #64748b;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.mobile-lang-group {
+  display: flex;
+  gap: 10px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.mobile-lang-group button {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mobile-lang-group button.active {
+  background-color: #0097b2;
+  color: white;
+  border-color: #0097b2;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  flex-grow: 1;
+}
+.mobile-nav-item {
+  text-decoration: none;
+  color: #334155;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+.mobile-nav-item:hover {
+  background-color: #f8fafc;
+  color: #0097b2;
+  border-left-color: #0097b2;
+}
+.mobile-divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  margin: 8px 24px;
+}
+
+.mobile-btn-vender, .mobile-btn-admin {
+  color: #0097b2;
+  font-weight: 600;
+}
+.mobile-action-wrapper {
+  padding: 12px 24px;
+}
+.mobile-btn-registro {
+  display: block;
+  background-color: #0097b2;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.mobile-btn-registro:hover {
+  background-color: #00869e;
+}
+.mobile-logout-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 24px;
+  font-size: 1rem;
+}
+.mobile-logout-btn:hover {
+  background-color: #fef2f2;
+  border-left-color: #ef4444;
+}
+
+.mobile-overlay {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 98;
+  backdrop-filter: blur(2px);
+}
+
+.slide-menu-enter-active, .slide-menu-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-menu-enter-from, .slide-menu-leave-to {
+  transform: translateX(-100%);
+}
+
+
+@media (max-width: 1024px) {
+  .burger-btn {
+    display: block;
+  }
+  
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .navbar-container {
+    padding: 0 1.5rem;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .imagen-logo {
+    height: 35px;
+  }
+  .navbar-container {
+    padding: 0 1rem;
+  }
 }
 </style>

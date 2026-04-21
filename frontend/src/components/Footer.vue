@@ -12,7 +12,6 @@ const verificarRol = async () => {
 
   if (usuarioRaw) {
     esAdmin.value = usuarioRaw.role === "admin";
-
     console.log(esAdmin.value);
   }
 };
@@ -24,85 +23,89 @@ onMounted(() => {
 
 <template>
   <footer>
-    <div class="contenedor-principal">
+    <div class="footer-contenedor">
       <div id="sobreNosotros">
         <h3>{{ $t("footer.aboutTitle") }}</h3>
         <p>{{ $t("footer.aboutText") }}</p>
         <div class="redes-sociales">
-          <a href="#"
-            ><img
+          <a href="#">
+            <img
               src="../assets/iconos/Facebook.png"
               alt="Facebook"
-              class="img-normal" /><img
+              class="img-normal"
+            />
+            <img
               src="../assets/iconos/Facebook-hover.png"
               alt="Facebook"
               class="img-hover"
               aria-hidden="true"
-          /></a>
-          <a href="#"
-            ><img src="../assets/iconos/X.png" alt="X" class="img-normal" /><img
+            />
+          </a>
+          <a href="#">
+            <img src="../assets/iconos/X.png" alt="X" class="img-normal" />
+            <img
               src="../assets/iconos/X-hover.png"
               alt="X"
               class="img-hover"
               aria-hidden="true"
-          /></a>
-          <a href="#"
-            ><img
+            />
+          </a>
+          <a href="#">
+            <img
               src="../assets/iconos/Instagram.png"
               alt="Instagram"
-              class="img-normal" /><img
+              class="img-normal"
+            />
+            <img
               src="../assets/iconos/Instagram-hover.png"
               alt="Instagram"
               class="img-hover"
               aria-hidden="true"
-          /></a>
-          <a href="#"
-            ><img
+            />
+          </a>
+          <a href="#">
+            <img
               src="../assets/iconos/Tiktok.png"
               alt="Tiktok"
-              class="img-normal" /><img
+              class="img-normal"
+            />
+            <img
               src="../assets/iconos/Tiktok-hover.png"
               alt="Tiktok"
               class="img-hover"
               aria-hidden="true"
-          /></a>
+            />
+          </a>
         </div>
       </div>
 
       <div id="legal">
         <h3>{{ $t("footer.legalTitle") }}</h3>
-
-        <router-link :to="{ name: 'legal', query: { section: 'tos' } }">
-          {{ $t("footer.terms") }}
-        </router-link>
-
-        <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">
-          {{ $t("footer.privacy") }}
-        </router-link>
-
-        <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">
-          {{ $t("footer.cookies") }}
-        </router-link>
-
-        <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">
-          {{ $t("footer.refunds") }}
-        </router-link>
-
-        <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">
-          {{ $t("footer.sellerAgreement") }}
-        </router-link>
+        <router-link :to="{ name: 'legal', query: { section: 'tos' } }">{{
+          $t("footer.terms")
+        }}</router-link>
+        <router-link :to="{ name: 'legal', query: { section: 'privacy' } }">{{
+          $t("footer.privacy")
+        }}</router-link>
+        <router-link :to="{ name: 'legal', query: { section: 'cookies' } }">{{
+          $t("footer.cookies")
+        }}</router-link>
+        <router-link :to="{ name: 'legal', query: { section: 'refunds' } }">{{
+          $t("footer.refunds")
+        }}</router-link>
+        <router-link :to="{ name: 'legal', query: { section: 'vendor' } }">{{
+          $t("footer.sellerAgreement")
+        }}</router-link>
       </div>
 
       <div id="soporteTecnico">
         <h3>{{ $t("footer.supportTitle") }}</h3>
-
         <div class="email">
           <img src="../assets/iconos/email.png" alt="Email" />
           <p>{{ $t("auth.email") }}:</p>
           <a href="mailto:soporte@nexus.com">soporte@nexus.com</a>
           <p class="horario">{{ $t("footer.hours") }}</p>
         </div>
-
         <div v-if="!esAdmin" id="incidencias">
           <button @click="isModalOpen = true">
             <svg
@@ -135,7 +138,6 @@ onMounted(() => {
             {{ $t("footer.sendIncident") }}
           </button>
         </div>
-
         <ModalIncidencias
           v-if="!esAdmin"
           :isOpen="isModalOpen"
@@ -163,166 +165,172 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 footer {
   background-color: #0f172a;
   color: #94a3b8;
   font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  padding: 4rem 2rem 2rem 2rem;
-}
-
-.contenedor-principal {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 5rem 2rem 3rem 2rem;
 }
 
 h3 {
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   margin-top: 0;
   margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
 }
 
 p {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.7;
   margin-top: 0;
   margin-bottom: 1rem;
 }
 
-.contenedor-principal a {
-  display: block;
+/* CAMBIO AQUÍ: Actualizada la clase en CSS */
+.footer-contenedor a {
+  display: table;
   color: #cbd5e1;
   text-decoration: none;
-  font-size: 1rem;
-  margin-bottom: 0.8rem;
-  transition: color 0.2s;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease-in-out;
 }
 
-.contenedor-principal a:hover {
+.footer-contenedor a:hover {
   color: #0cc0df;
+  transform: translateX(4px);
 }
 
 #sobreNosotros p {
-  margin-bottom: 1.5rem;
-  text-align: justify;
+  margin-bottom: 1.8rem;
+  text-align: left;
+  max-width: 90%;
 }
 
 .redes-sociales {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .redes-sociales a {
   display: inline-block;
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   margin-bottom: 0;
 }
 
 .redes-sociales a img {
-  width: 25px;
-  height: 25px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
-.img-normal {
-  display: block;
-}
-
-.img-hover {
-  display: none;
-}
-
-.redes-sociales a:hover .img-normal {
-  display: none;
-}
-
-.redes-sociales a:hover .img-hover {
-  display: block;
-}
+.img-normal { display: block; }
+.img-hover { display: none; }
+.redes-sociales a:hover .img-normal { display: none; }
+.redes-sociales a:hover .img-hover { display: block; }
+.redes-sociales a:hover { transform: translateY(-3px); }
 
 .email {
   display: grid;
   grid-template-columns: 24px 1fr;
-  gap: 0.2rem 0.8rem;
-  margin-bottom: 1.5rem;
+  gap: 0.2rem 1rem;
+  margin-bottom: 1.8rem;
   align-items: start;
 }
 
 .email img {
   grid-column: 1;
-  grid-row: 1 / span 3; /* Hace que el icono ocupe la altura de las 3 líneas de texto */
-  width: 25px;
-  height: 25px;
+  grid-row: 1 / span 3;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  margin-top: 2px;
 }
 
-.email p {
-  color: #ffffff;
-  margin-bottom: 0;
-}
-
-.email a {
-  color: #94a3b8;
-  margin-bottom: 0;
-}
-
-.email .horario {
-  color: #94a3b8;
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
-}
+.email p { color: #ffffff; margin-bottom: 0; font-weight: 500; }
+.email a { color: #94a3b8; margin-bottom: 0; display: inline-block; }
+.email .horario { color: #64748b; font-size: 0.85rem; margin-top: 0.3rem; }
 
 #incidencias button {
   background-color: #ffffff;
   color: #0f172a;
-  border: none;
-  border-radius: 6px;
-  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.85rem 1.5rem;
   width: 100%;
+  max-width: 280px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  gap: 0.6rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 #incidencias button:hover {
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   color: #0cc0df;
+  border-color: #0cc0df;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
 }
 
 #incidencias button .icono-incidencia {
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
 }
 
 .derechos {
   text-align: center;
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid #1e293b;
+  margin-top: 5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.derechos p {
-  color: #94a3b8;
-  font-size: 0.8rem;
-  margin-bottom: 0.5rem;
+.derechos p { color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem; }
+.derechos p.copy { color: #e2e8f0; font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+/* CAMBIO AQUÍ: Actualizada la clase en CSS */
+.footer-contenedor {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1.5fr 1fr;
+  gap: 4rem 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  align-items: flex-start;
 }
 
-.derechos p.copy {
-  color: white;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+@media (max-width: 968px) {
+  .footer-contenedor {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3.5rem 2rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .footer-contenedor {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  footer {
+    padding: 3rem 1.5rem 2rem 1.5rem;
+  }
+  
+  #sobreNosotros p {
+    max-width: 100%;
+  }
+
+  #incidencias button {
+    max-width: 100%;
+  }
 }
 </style>

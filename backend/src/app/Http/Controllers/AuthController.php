@@ -225,8 +225,7 @@ class AuthController extends Controller
                 Storage::disk('public')->delete($user->avatar);
             }
 
-            $file = $request->file('avatar');
-            $path = $file->store('avatars', 'public');
+            $path = $request->file('avatar')->store('avatars', 'public');
 
             $user->avatar = $path;
         }
