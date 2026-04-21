@@ -13,7 +13,7 @@
     padding: 0 1.5rem; 
     
     main {
-        align-items: baseline;
+        align-items: stretch;
     }
 }
 
@@ -224,6 +224,70 @@
                 color: $text-main;
             }
 
+            .selector-wrapper {
+                position: relative;
+                margin-bottom: 1rem;
+
+                .select-categorias {
+                    width: 100%;
+                    padding: 0.8rem;
+                    border-radius: 8px;
+                    border: 1px solid #e2e8f0;
+                    background-color: white;
+                    font-family: inherit;
+                    font-size: 0.95rem;
+                    cursor: pointer;
+                    appearance: none;
+                    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                    background-repeat: no-repeat;
+                    background-position: right 1rem center;
+                    background-size: 1em;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary-blue;
+                        box-shadow: 0 0 0 3px rgba(0, 151, 178, 0.1);
+                    }
+                }
+            }
+
+            .chips-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+
+                .chip-categoria {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    height: 2.5rem;
+                    background: #f0f9ff;
+                    color: $primary-blue;
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    border: 1px solid rgba(0, 151, 178, 0.2);
+                    animation: fadeIn 0.2s ease;
+
+                    .btn-quitar-chip {
+                        background: none;
+                        border: none;
+                        padding: 0;
+                        font-size: 1.2rem;
+                        line-height: 1;
+                        color: $primary-blue;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+
+                        &:hover {
+                            color: #ef4444;
+                        }
+                    }
+                }
+            }
+
             .control-f {
                 display: flex;
                 align-items: center;
@@ -352,5 +416,15 @@
                 background: $primary-hover;
             }
         }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    } to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

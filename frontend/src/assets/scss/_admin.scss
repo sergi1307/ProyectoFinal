@@ -1,0 +1,185 @@
+@use "@/assets/scss/variables" as *;
+
+.panel-ingresos {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .grid-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+  }
+
+  .stat-card {
+    position: relative;
+    background: white;
+    padding: 1.8rem;
+    border-radius: 20px; // Más redondeado para seguir tu estilo de tarjetas
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba($primary-blue, 0.1);
+      border-color: rgba($primary-blue, 0.2);
+    }
+
+    // Decoración corporativa sutil en el fondo
+    &::after {
+      content: "";
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, rgba($primary-blue, 0.05) 0%, transparent 100%);
+      border-radius: 50%;
+    }
+
+    .label {
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .value {
+      color: #1e293b;
+      font-size: 2.2rem; // Un poco más grande
+      font-weight: 900;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      &::before {
+        content: "";
+        width: 4px;
+        height: 24px;
+        background: $primary-blue;
+        border-radius: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .tabla-container {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #f1f5f9;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      &::after {
+        content: "Recientes";
+        font-size: 0.7rem;
+        background: #f0fafd;
+        color: $primary-blue;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .responsive-table {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px; // Separación entre filas para efecto "floating"
+
+    th {
+      text-align: left;
+      padding: 1rem 1.5rem;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    tbody tr {
+      transition: all 0.2s ease;
+      
+      &:hover td {
+        background-color: #f8fafc;
+      }
+
+      td {
+        padding: 1.2rem 1.5rem;
+        background-color: white;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid #f1f5f9;
+        color: #475569;
+        font-size: 0.95rem;
+
+        &:first-child { border-radius: 12px 0 0 12px; }
+        &:last-child { border-radius: 0 12px 12px 0; }
+
+        &.bold {
+          font-weight: 800;
+          color: $primary-blue; // Precio en color corporativo
+        }
+      }
+    }
+
+    .id-cell {
+      font-weight: 700;
+      color: #94a3b8;
+    }
+  }
+
+  // Badges más modernos con colores de éxito/error suaves
+  .badge-status {
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    &::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    &.completado {
+      background: #ecfdf5;
+      color: #10b981;
+    }
+    &.pendiente {
+      background: #fffbeb;
+      color: #f59e0b;
+    }
+    &.cancelado {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+  }
+}

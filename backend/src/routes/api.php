@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -39,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/index', [ProductController::class, 'index']);
         Route::get('/favorites', [ProductController::class, 'getFavorites']);
         Route::post('/store', [ProductController::class, 'store']);
+        Route::get('/{id}', [ProductController::class, 'show']);
     });
 
     Route::prefix('/cart')->group(function () {
@@ -52,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create-order', [PaymentController::class, 'createOrder']);
         Route::post('/capture-order/{orderId}', [PaymentController::class, 'captureOrder']);
     });
+
+    Route::post('/products/{id}/reviews', [ReviewController::class, 'store']);
 
     Route::post('/products/{product}/favorite', [ProductController::class, 'toggleFavorite']);
 
@@ -68,5 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // 3. RUTAS EXCLUSIVAS DE ADMINISTRADOR
 // ==========================================
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-
+    Route::prefix('admin')->group(function () {
+        Route::get('/ingresos', [AdminController::class, 'ingresos']);
+    });
 });

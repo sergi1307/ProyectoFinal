@@ -27,6 +27,28 @@ class ProductController extends Controller
         return $query->latest()->get();
     }
 
+    public function show($id)
+    {
+        $producto = Product::with(['user', 'categories', 'reviews.user'])->find($id);
+
+        if (!$producto) {
+            return response()->json([
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        $producto->rating = round($producto->reviews()->avg('rating'), 1) ?: 0;
+        $producto->reviews_count = $producto->reviews()->count();
+
+        $user = Auth::user();
+
+        $producto->is_favorite = $user
+            ? $user->favorites()->where('product_id', $producto->id)->exists()
+            : false;
+
+        return response()->json($producto);
+    }
+
     public function me(Request $request)
     {
         $user = Auth::user();

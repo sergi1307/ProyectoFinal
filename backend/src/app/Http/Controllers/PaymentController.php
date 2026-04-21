@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -59,33 +60,87 @@ class PaymentController extends Controller
     {
         try {
             $token = $this->getAccessToken();
-            $url = rtrim(env('PAYPAL_BASE_URL'), '/') . "/v2/checkout/orders/{$orderId}/capture";
+            // rtrim para evitar doble barra si la env tiene una al final
+            $url = rtrim($this->baseUrl, '/') . "/v2/checkout/orders/{$orderId}/capture";
 
-            // Usamos withBody y un string vacío con el content-type correcto
-            // Esto asegura que PayPal reciba una petición POST limpia y sin ruido
             $response = Http::withToken($token)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
-                    // PayPal a veces requiere esto en POST vacíos para evitar el 400
-                    'PayPal-Request-Id' => uniqid() 
+                    'PayPal-Request-Id' => "capture-{$orderId}" // Id de idempotencia basado en el pedido
                 ])
                 ->withBody('', 'application/json') 
                 ->post($url);
 
             if ($response->successful()) {
-                return response()->json($response->json());
+                $paypalData = $response->json();
+
+                // Usamos el estado que devuelve PayPal para confirmar
+                if ($paypalData['status'] !== 'COMPLETED') {
+                    return response()->json(['error' => 'El pago no se ha completado en PayPal'], 400);
+                }
+
+                return DB::transaction(function () use ($paypalData) {
+                    $user = auth()->user(); 
+
+                    // Verificamos que el usuario tenga un carrito
+                    $cart = DB::table('carts')->where('user_id', $user->id)->first();
+                    
+                    if (!$cart) {
+                        throw new \Exception("Carrito no encontrado para el usuario.");
+                    }
+
+                    $items = DB::table('cart_items')
+                        ->join('products', 'cart_items.product_id', '=', 'products.id')
+                        ->where('cart_id', $cart->id_cart)
+                        ->select('products.id', 'products.price', 'cart_items.quantity')
+                        ->get();
+
+                    if ($items->isEmpty()) {
+                        throw new \Exception("El carrito está vacío.");
+                    }
+
+                    // Obtenemos el total exacto que cobró PayPal
+                    $totalPagado = $paypalData['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
+
+                    // Insertamos la cabecera
+                    $idOrder = DB::table('orders')->insertGetId([
+                        'total' => $totalPagado,
+                        'status' => 'completed',
+                        'user_id' => $user->id,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    // Insertamos los detalles (Copiamos precio actual)
+                    $details = $items->map(function ($item) use ($idOrder) {
+                        return [
+                            'id_order' => $idOrder,
+                            'id_product' => $item->id,
+                            'price' => $item->price,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ];
+                    })->toArray();
+
+                    DB::table('details')->insert($details);
+
+                    // Vaciamos el carrito
+                    DB::table('cart_items')->where('cart_id', $cart->id_cart)->delete();
+
+                    return response()->json([
+                        'status' => 'COMPLETED',
+                        'order_id' => $idOrder,
+                        'paypal_details' => $paypalData
+                    ]);
+                });
             }
 
-            // Si falla, registramos el error para verlo en el log
-            Log::error("Fallo de PayPal Capture 400:", $response->json());
-            
-            return response()->json([
-                'paypal_error' => $response->json(),
-                'status' => $response->status()
-            ], $response->status());
+            Log::error("Fallo de PayPal Capture:", $response->json());
+            return response()->json($response->json(), $response->status());
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error("Error en captureOrder: " . $e->getMessage());
+            return response()->json(['error' => 'Hubo un problema al procesar el pedido: ' . $e->getMessage()], 500);
         }
     }
 }

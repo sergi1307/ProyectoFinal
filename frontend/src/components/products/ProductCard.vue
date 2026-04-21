@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, defineEmits, computed, ref } from "vue";
+import imagenPorDefecto from "@/assets/logos/Logo.png";
 import axios from "axios";
 
 const props = defineProps({
@@ -65,10 +66,14 @@ const esMiProducto = computed(() => {
 });
 
 const obtenerImagen = (ruta) => {
-  if (!ruta) return "https://via.placeholder.com/300x400?text=Sin+Portada";
+  if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
   return `http://localhost:8080/storage/${ruta}`;
 };
+
+const manejarErrorImagen = (event) => {
+  event.target.src = imagenPorDefecto;
+}
 
 const agregarAlCarrito = async () => {
   try {
@@ -105,7 +110,7 @@ const agregarAlCarrito = async () => {
 </script>
 
 <template>
-  <div class="tarjeta-producto">
+  <div class="tarjeta-producto" @click="emit('ver', producto.id)">
     <div class="contenedor-imagen-producto">
       <div class="categorias-wrapper" v-if="producto.categories?.length">
         <span v-for="cat in producto.categories" :key="cat.id" class="categoria-badge">
@@ -113,7 +118,7 @@ const agregarAlCarrito = async () => {
         </span>
       </div>
 
-      <img :src="obtenerImagen(producto.image_url)" :alt="producto.title" />
+      <img :src="obtenerImagen(producto.image_url)" :alt="producto.title" @error="manejarErrorImagen" />
       
       <button 
         v-if="!esMiProducto"
@@ -217,11 +222,12 @@ button{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
     transition: transform 0.5s ease;
   }
 
   &:hover img {
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
 
   .boton-favorito {
