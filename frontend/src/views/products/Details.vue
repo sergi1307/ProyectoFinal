@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import imagenPorDefecto from "@/assets/logos/Logo.png";
 import Navbar from "../../components/NavBar.vue";
 import Footer from "../../components/Footer.vue";
 
@@ -37,9 +38,13 @@ const obtenerProducto = async () => {
 };
 
 const obtenerImagen = (ruta) => {
-  if (!ruta) return "https://via.placeholder.com/600x800?text=Sin+Imagen";
+  if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
   return `http://localhost:8080/storage/${ruta}`;
+};
+
+const manejarErrorImagen = (event) => {
+  event.target.src = imagenPorDefecto;
 };
 
 const toggleFavorito = async () => {
@@ -153,6 +158,7 @@ onMounted(obtenerProducto);
             :src="obtenerImagen(producto.image_url)"
             :alt="producto.title"
             class="imagen-principal"
+            @error="manejarErrorImagen"
           />
         </div>
       </div>
