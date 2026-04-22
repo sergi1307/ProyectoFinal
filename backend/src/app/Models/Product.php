@@ -14,6 +14,7 @@ class Product extends Model
         'description',
         'price',
         'file_url',
+        'file_size',
         'image_url',
         'active',
         'user_id',

@@ -15,6 +15,8 @@ class ProductController extends Controller
         $userId = auth('sanctum')->id();
 
         $query = Product::with(['categories', 'user'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
             ->where('active', true)
             ->where('user_id', '!=', $userId);
 
@@ -24,7 +26,17 @@ class ProductController extends Controller
             }]);
         }
 
-        return $query->latest()->get();
+        $productos = $query->latest()->get();
+
+        $productos->transform(function ($producto) {
+            $producto->reviews_avg_rating = $producto->reviews_avg_rating
+                ? round($producto->reviews_avg_rating, 1)
+                : 0;
+
+            return $producto;
+        });
+
+        return response()->json($productos);
     }
 
     public function show($id)
@@ -72,8 +84,15 @@ class ProductController extends Controller
             'imagen' => 'nullable|image',
         ]);
 
+        $rutaImagen = null;
+        $tamanioArchivo = null;
+
         if ($request->hasFile('file_real')) {
-            $rutaArchivo = $request->file('file_real')->store('products/files', 'local');
+            $archivo = $request->file('file_real');
+
+            $tamanioArchivo = $archivo->getSize();
+
+            $rutaArchivo = $archivo->store('products/files', 'local');
 
             if (!$rutaArchivo) {
                 return response()->json(['message' => 'El archivo llegó, pero Laravel no tiene permisos para guardarlo en el disco.'], 500);
@@ -82,7 +101,6 @@ class ProductController extends Controller
             return response()->json(['message' => 'No se pudo leer el archivo file_real'], 422);
         }
 
-        $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('products/images', 'public');
 
@@ -96,6 +114,7 @@ class ProductController extends Controller
             'description' => $request->descripcion,
             'price' => $request->precio,
             'file_url' => $rutaArchivo,
+            'file_size' => $tamanioArchivo,
             'image_url' => $rutaImagen,
             'active' => true,
             'user_id' => Auth::id(),

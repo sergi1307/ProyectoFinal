@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PurchaseReceiptMail;
 
 class PaymentController extends Controller
 {
@@ -60,31 +62,28 @@ class PaymentController extends Controller
     {
         try {
             $token = $this->getAccessToken();
-            // rtrim para evitar doble barra si la env tiene una al final
             $url = rtrim($this->baseUrl, '/') . "/v2/checkout/orders/{$orderId}/capture";
 
             $response = Http::withToken($token)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
-                    'PayPal-Request-Id' => "capture-{$orderId}" // Id de idempotencia basado en el pedido
+                    'PayPal-Request-Id' => "capture-{$orderId}"
                 ])
-                ->withBody('', 'application/json') 
+                ->withBody('', 'application/json')
                 ->post($url);
 
             if ($response->successful()) {
                 $paypalData = $response->json();
 
-                // Usamos el estado que devuelve PayPal para confirmar
                 if ($paypalData['status'] !== 'COMPLETED') {
                     return response()->json(['error' => 'El pago no se ha completado en PayPal'], 400);
                 }
 
                 return DB::transaction(function () use ($paypalData) {
-                    $user = auth()->user(); 
+                    $user = auth()->user();
 
-                    // Verificamos que el usuario tenga un carrito
                     $cart = DB::table('carts')->where('user_id', $user->id)->first();
-                    
+
                     if (!$cart) {
                         throw new \Exception("Carrito no encontrado para el usuario.");
                     }
@@ -92,17 +91,15 @@ class PaymentController extends Controller
                     $items = DB::table('cart_items')
                         ->join('products', 'cart_items.product_id', '=', 'products.id')
                         ->where('cart_id', $cart->id_cart)
-                        ->select('products.id', 'products.price', 'cart_items.quantity')
+                        ->select('products.id', 'products.title', 'products.price', 'cart_items.quantity')
                         ->get();
 
                     if ($items->isEmpty()) {
                         throw new \Exception("El carrito está vacío.");
                     }
 
-                    // Obtenemos el total exacto que cobró PayPal
                     $totalPagado = $paypalData['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
 
-                    // Insertamos la cabecera
                     $idOrder = DB::table('orders')->insertGetId([
                         'total' => $totalPagado,
                         'status' => 'completed',
@@ -111,7 +108,6 @@ class PaymentController extends Controller
                         'updated_at' => now()
                     ]);
 
-                    // Insertamos los detalles (Copiamos precio actual)
                     $details = $items->map(function ($item) use ($idOrder) {
                         return [
                             'id_order' => $idOrder,
@@ -124,8 +120,9 @@ class PaymentController extends Controller
 
                     DB::table('details')->insert($details);
 
-                    // Vaciamos el carrito
                     DB::table('cart_items')->where('cart_id', $cart->id_cart)->delete();
+
+                    Mail::to($user->email)->send(new PurchaseReceiptMail($idOrder, $totalPagado, $items));
 
                     return response()->json([
                         'status' => 'COMPLETED',
@@ -137,7 +134,6 @@ class PaymentController extends Controller
 
             Log::error("Fallo de PayPal Capture:", $response->json());
             return response()->json($response->json(), $response->status());
-
         } catch (\Exception $e) {
             Log::error("Error en captureOrder: " . $e->getMessage());
             return response()->json(['error' => 'Hubo un problema al procesar el pedido: ' . $e->getMessage()], 500);
