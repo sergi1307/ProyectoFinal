@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue";
 import axios from "axios";
+import imagenPorDefecto from "@/assets/logos/Logo.png";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 
@@ -106,9 +107,13 @@ const eliminarProducto = async (item) => {
 };
 
 const obtenerImagen = (ruta) => {
-  if (!ruta) return "https://via.placeholder.com/300x300?text=Sin+Imagen";
+  if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
   return `http://localhost:8080/storage/${ruta}`;
+};
+
+const manejarErrorImagen = (event) => {
+  event.target.src = imagenPorDefecto;
 };
 
 const inicializarPaypal = () => {
@@ -146,6 +151,9 @@ const inicializarPaypal = () => {
             );
             alert("¡Pago completado!");
             productosCarrito.value = [];
+            localStorage.removeItem("carrito");
+
+            window.dispatchEvent(new CustomEvent('cart-updated'));
           } catch (error) {
             console.error("Error al capturar el pago:", error);
           }
@@ -214,6 +222,7 @@ onMounted(async () => {
               :src="obtenerImagen(item.product.image_url)"
               :alt="item.product.title"
               class="producto-img"
+              @error="manejarErrorImagen" 
             />
 
             <div class="producto-info">
