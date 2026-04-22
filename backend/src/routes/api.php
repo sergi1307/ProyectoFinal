@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -46,6 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [ProductController::class, 'show']);
     });
 
+    Route::prefix('/seller')->group(function () {
+        Route::get('/balance', [SellerController::class, 'obtenerBalances']);
+    });
+
     Route::prefix('/cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/', [CartController::class, 'store']);
@@ -77,5 +82,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/ingresos', [AdminController::class, 'ingresos']);
+        Route::post('/reembolsar/{id_order}', [PaymentController::class, 'refundOrder']);
     });
 });
