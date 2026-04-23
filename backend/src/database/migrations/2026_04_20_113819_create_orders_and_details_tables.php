@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id('id_order');
             $table->decimal('total', 10, 2);
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'completed', 'cancelled', 'refunded'])->default('pending');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('paypal_order_id')->nullable();
+            $table->string('paypal_capture_id')->nullable();
+            $table->timestamp('release_date')->nullable();
+            $table->boolean('is_paid_to_seller')->default(false);
             $table->timestamps();
         });
 

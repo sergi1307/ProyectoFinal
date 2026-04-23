@@ -64,7 +64,11 @@ const enviarDatos = async () => {
         errorMsg.value = t('auth.errorLogin');
       } 
       else if (error.response.status === 403) {
-        errorMsg.value = error.response.data.error;
+        if (error.response.data.unverified) {
+          router.push({ path: '/verificar-email', query: { email: email.value } });
+        } else {
+          errorMsg.value = error.response.data.error;
+        }
       } 
       else {
         errorMsg.value = t('auth.errorConn');
@@ -104,6 +108,8 @@ const enviarDatos = async () => {
         placeholder="••••••••••" 
         required 
       />
+
+      <router-link class="resetPassword" to="/verificar-email?mode=reset">¿Has olvidado la contraseña?</router-link>
 
       <button type="submit">{{ $t('auth.titleLogin') }}</button>
       
