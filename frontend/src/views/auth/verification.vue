@@ -1,77 +1,217 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import axios from 'axios';
-import router from '@/routes/routes';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 import "../../assets/css/auth.css";
 
 const route = useRoute();
-const email = ref('');
-const code = ref('');
+const router = useRouter();
+
+// Variables de estado
+const email = ref("");
+const code = ref("");
+const newPassword = ref("");
+const confirmPassword = ref("");
+const errorMsg = ref("");
+
+// Control del flujo
+const mode = ref("verify");
+const paso = ref(1); // 1: Email, 2: Código, 3: Nueva contraseña
 
 onMounted(() => {
-    console.log("Query params:", route.query);
-    email.value = route.query.email || '';
+  mode.value = route.query.mode || "verify";
+  email.value = route.query.email || "";
+
+  // Si ya venimos con un email (ej. desde el registro), saltamos al paso 2
+  if (email.value) {
+    paso.value = 2;
+  }
 });
 
-const verificarCodigo = async () => {
-    if (!code.value) {
-        console.log("Datos introducidos no válidos.");
-        return;
-    }
+// PASO 1: Enviar correo
+const solicitarCodigo = async () => {
+  errorMsg.value = "";
+  if (!email.value) {
+    errorMsg.value = "Por favor, introduce tu correo electrónico.";
+    return;
+  }
 
-    if (code.value.length !== 6) {
-        console.log("El código debe tener 6 dígitos.");
-        return;
-    }
+  try {
+    const endpoint =
+      mode.value === "reset" ? "forgot-password" : "reenviar-codigo";
+    await axios.post(`http://localhost:8080/api/auth/${endpoint}`, {
+      email: email.value,
+    });
 
-    const payload = {
-        "email": email.value,
-        "code": code.value
-    }
+    paso.value = 2; // Avanzamos al paso del código
+  } catch (error) {
+    errorMsg.value = "Hubo un error al intentar enviar el correo.";
+  }
+};
 
+// PASO 2: Validar código en frontend y decidir qué hacer
+const procesarCodigo = async () => {
+  errorMsg.value = "";
+  if (!code.value || code.value.length !== 6) {
+    errorMsg.value = "El código debe tener 6 dígitos exactos.";
+    return;
+  }
+
+  if (mode.value === "verify") {
+    // Si estamos verificando cuenta nueva, aquí termina el flujo y llamamos a la API
     try {
-        const response = await axios.post(`http://localhost:8080/api/auth/verificar-email`, payload);
-        console.log("Email verificado con éxito.");
-        router.push('/login');
+      await axios.post(`http://localhost:8080/api/auth/verificar-email`, {
+        email: email.value,
+        code: code.value,
+      });
+      alert("Email verificado con éxito. Ya puedes iniciar sesión.");
+      router.push("/login");
     } catch (error) {
-        console.error("Error al verificar el código:", error.response.data);
+      errorMsg.value = "Código incorrecto o expirado.";
     }
-}
+  } else {
+    // Si estamos reseteando contraseña, pasamos al Paso 3 para pedir las claves
+    paso.value = 3;
+  }
+};
 
+// PASO 3: Enviar la nueva contraseña (Solo modo Reset)
+const cambiarPassword = async () => {
+  errorMsg.value = "";
+
+  if (newPassword.value !== confirmPassword.value) {
+    errorMsg.value = "Las contraseñas no coinciden.";
+    return;
+  }
+
+  if (newPassword.value.length < 8) {
+    errorMsg.value = "La contraseña debe tener al menos 8 caracteres.";
+    return;
+  }
+
+  try {
+    await axios.post(`http://localhost:8080/api/auth/reset-password`, {
+      email: email.value,
+      code: code.value,
+      password: newPassword.value,
+    });
+    alert(
+      "Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.",
+    );
+    router.push("/login");
+  } catch (error) {
+    errorMsg.value =
+      "El código ha expirado o es incorrecto. Vuelve a intentarlo.";
+    paso.value = 1; // Le devolvemos al inicio si falló en el backend
+  }
+};
+
+// Reutilizamos la función de solicitar código para el botón de "Reenviar"
 const reenviarCodigo = async () => {
-    if (!email.value) {
-        console.log("No se encontró el email.");
-        return;
-    }
-
-    try {
-        await axios.post(`http://localhost:8080/api/auth/reenviar-codigo`, { email: email.value });
-        console.log("Código reenviado con éxito.");
-    } catch (error) {
-        console.error("Error al reenviar el código:", error);
-    }
-}
+  await solicitarCodigo();
+  alert("Te hemos enviado un nuevo código.");
+};
 </script>
 
 <template>
-    <main>
-        <router-link to="/" class="inicio">Volver al inicio</router-link>
-        <form class="container" @submit.prevent="verificarCodigo">
-            <h1>Verificar Email</h1>
-            <p>Introduce el código de 6 dígitos que te hemos enviado a <strong>{{ email }}</strong></p>
+  <main>
+    <router-link to="/login" class="inicio">← Volver al login</router-link>
 
-            <label for="code">Código de verificación:</label>
-            <input type="text" id="code" v-model="code" placeholder="000000" maxlength="6" />
+    <form
+      class="container"
+      @submit.prevent="
+        paso === 1
+          ? solicitarCodigo()
+          : paso === 2
+            ? procesarCodigo()
+            : cambiarPassword()
+      "
+    >
+      <h1>
+        {{ mode === "reset" ? "Recuperar Contraseña" : "Verificar Email" }}
+      </h1>
 
-            <button type="submit">Verificar</button>
+      <p
+        v-if="errorMsg"
+        style="
+          color: #ef4444;
+          text-align: center;
+          margin-bottom: 1rem;
+          font-weight: 600;
+        "
+      >
+        {{ errorMsg }}
+      </p>
 
-            <div id="frase"></div>
+      <template v-if="paso === 1">
+        <p style="text-align: center; margin-bottom: 1.5rem">
+          Introduce tu correo electrónico para recibir el código de 6 dígitos.
+        </p>
+        <label for="email">Correo electrónico:</label>
+        <input
+          type="email"
+          id="email"
+          v-model="email"
+          placeholder="tu@email.com"
+          required
+        />
 
-            <p id="normal">
-                ¿No has recibido el código?
-                <span id="cambiar" @click="reenviarCodigo">Reenviar código</span>
-            </p>
-        </form>
-    </main>
+        <button type="submit">Enviar código</button>
+      </template>
+
+      <template v-if="paso === 2">
+        <p style="text-align: center; margin-bottom: 1.5rem">
+          Introduce el código de 6 dígitos que te hemos enviado a
+          <strong>{{ email }}</strong>
+        </p>
+
+        <label for="code">Código de verificación:</label>
+        <input
+          type="text"
+          id="code"
+          v-model="code"
+          placeholder="000000"
+          maxlength="6"
+          required
+        />
+
+        <button type="submit">
+          {{ mode === "reset" ? "Siguiente paso" : "Verificar cuenta" }}
+        </button>
+
+        <p id="normal">
+          ¿No has recibido el código?
+          <span id="cambiar" @click="reenviarCodigo" style="cursor: pointer"
+            >Reenviar código</span
+          >
+        </p>
+      </template>
+
+      <template v-if="paso === 3">
+        <p style="text-align: center; margin-bottom: 1.5rem">
+          Crea una nueva contraseña para tu cuenta.
+        </p>
+
+        <label for="newPassword">Nueva contraseña:</label>
+        <input
+          type="password"
+          id="newPassword"
+          v-model="newPassword"
+          placeholder="••••••••••"
+          required
+        />
+
+        <label for="confirmPassword">Confirmar contraseña:</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          v-model="confirmPassword"
+          placeholder="••••••••••"
+          required
+        />
+
+        <button type="submit">Guardar y cambiar contraseña</button>
+      </template>
+    </form>
+  </main>
 </template>
