@@ -1,13 +1,17 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+
+const route = useRoute();
 
 const usuario = ref({
   nombre: "",
   email: "",
   rol: "",
+  plan: "",
   avatar: null,
   pedidos: 0,
   favoritos: 0,
@@ -16,29 +20,8 @@ const usuario = ref({
 const mostrarModal = ref(false);
 const editandoUsuario = ref({ nombre: "", email: "" });
 const guardando = ref(false);
-
 const nuevaFotoArchivo = ref(null);
 const vistaPreviaUrl = ref(null);
-
-const manejarCambioArchivo = (event) => {
-  const archivo = event.target.files[0];
-
-  if (!archivo) {
-    nuevaFotoArchivo.value = null;
-    vistaPreviaUrl.value = null;
-    return;
-  }
-
-  nuevaFotoArchivo.value = archivo;
-
-  const lector = new FileReader();
-
-  lector.onload = (e) => {
-    vistaPreviaUrl.value = e.target.result;
-  };
-
-  lector.readAsDataURL(archivo);
-};
 
 const cargarDatos = async () => {
   const datosLocales = localStorage.getItem("usuario");
@@ -48,6 +31,7 @@ const cargarDatos = async () => {
     usuario.value.email = user.email;
     usuario.value.rol = user.role;
     usuario.value.avatar = user.avatar;
+    usuario.value.plan = user.plan;
 
     editandoUsuario.value.nombre = user.name;
     editandoUsuario.value.email = user.email;
@@ -55,26 +39,50 @@ const cargarDatos = async () => {
 
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await axios.get("http://localhost:8080/api/perfil", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const respuesta = await axios.get(
+      `http://localhost:8080/api/perfil?nocache=${Date.now()}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
     usuario.value.pedidos = respuesta.data.pedidos;
     usuario.value.favoritos = respuesta.data.favoritos;
-    console.log(usuario.value);
+
+    if (respuesta.data.plan && respuesta.data.plan !== usuario.value.plan) {
+      usuario.value.plan = respuesta.data.plan;
+
+      const userActualizado = JSON.parse(localStorage.getItem("usuario"));
+      userActualizado.plan = respuesta.data.plan;
+      localStorage.setItem("usuario", JSON.stringify(userActualizado));
+    }
   } catch (error) {
-    console.error("Error al cargar estadísticas:", error);
+    console.error("Error al sincronizar con el servidor:", error);
   }
+};
+
+const manejarCambioArchivo = (event) => {
+  const archivo = event.target.files[0];
+  if (!archivo) {
+    nuevaFotoArchivo.value = null;
+    vistaPreviaUrl.value = null;
+    return;
+  }
+  nuevaFotoArchivo.value = archivo;
+  const lector = new FileReader();
+  lector.onload = (e) => {
+    vistaPreviaUrl.value = e.target.result;
+  };
+  lector.readAsDataURL(archivo);
 };
 
 const actualizarPerfil = async () => {
   try {
     guardando.value = true;
     const token = localStorage.getItem("token");
-
     const formulario = new FormData();
     formulario.append("nombre", editandoUsuario.value.nombre);
     formulario.append("email", editandoUsuario.value.email);
-
     if (nuevaFotoArchivo.value) {
       formulario.append("avatar", nuevaFotoArchivo.value);
     }
@@ -91,68 +99,68 @@ const actualizarPerfil = async () => {
     );
 
     localStorage.setItem("usuario", JSON.stringify(respuesta.data.user));
-
     window.dispatchEvent(new Event("perfil-actualizado"));
 
     usuario.value.nombre = respuesta.data.user.name;
     usuario.value.email = respuesta.data.user.email;
     usuario.value.avatar = respuesta.data.user.avatar;
+    usuario.value.plan = respuesta.data.user.plan || usuario.value.plan;
 
     mostrarModal.value = false;
     guardando.value = false;
   } catch (error) {
     guardando.value = false;
-    console.error("Error al actualizar:", error.response?.data || error);
     alert("Hubo un error al guardar los cambios.");
   }
 };
 
 const confirmarEliminarCuenta = async () => {
-  const confirmado = confirm("¿Estás seguro de que quieres eliminar tu cuenta definitivamente? Esta acción borrará todos tus datos y no se puede deshacer.");
-  
-  if (!confirmado) return;
-
+  if (
+    !confirm("¿Estás seguro de que quieres eliminar tu cuenta definitivamente?")
+  )
+    return;
   try {
     guardando.value = true;
     const token = localStorage.getItem("token");
-    
     await axios.delete("http://localhost:8080/api/perfil/delete", {
-      headers: { 
-        Authorization: `Bearer ${token}` 
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
-
-    alert("Tu cuenta ha sido eliminada correctamente. ¡Hasta pronto!");
-    
     localStorage.clear();
-    
     window.location.href = "/";
-    
   } catch (error) {
     guardando.value = false;
-    console.error("Error al eliminar la cuenta:", error.response?.data || error);
-    
-    if (error.response?.status === 401) {
-      alert("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
-      localStorage.clear();
-      window.location.href = "/login";
-    } else {
-      alert("No se ha podido eliminar la cuenta. Por favor, inténtalo de nuevo más tarde.");
-    }
+    alert("No se pudo eliminar la cuenta.");
   }
 };
 
 const obtenerRutaAvatar = (ruta) => {
   if (!ruta || typeof ruta !== "string" || ruta.includes(".vue")) return null;
-
-  const base = ruta.startsWith("http")
+  return ruta.startsWith("http")
     ? ruta
-    : `http://localhost:8080/storage/${ruta}`;
-
-  return `${base}?t=${new Date().getTime()}`;
+    : `http://localhost:8080/storage/${ruta}?t=${new Date().getTime()}`;
 };
 
-onMounted(cargarDatos);
+// ==========================================
+// EL MOTOR REACTIVO INQUEBRANTABLE
+// ==========================================
+onMounted(() => {
+  cargarDatos();
+  window.addEventListener("perfil-actualizado", cargarDatos);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("perfil-actualizado", cargarDatos);
+});
+
+// ESTO ES LO NUEVO: Si Vue recicla la página y no ejecuta onMounted, este perro guardián detecta que has entrado al perfil y fuerza la actualización.
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath === "/perfil") {
+      cargarDatos();
+    }
+  },
+);
 </script>
 
 <template>
@@ -272,7 +280,7 @@ onMounted(cargarDatos);
         </div>
       </section>
 
-      <aside class="columna-estadisticas">
+      <aside v-if="usuario.rol !== 'admin'" class="columna-estadisticas">
         <router-link to="/pedidos" class="tarjeta-estadistica clickable">
           <div class="circulo-icono-estadistica">
             <svg
@@ -314,6 +322,36 @@ onMounted(cargarDatos);
           <div class="textos-estadistica">
             <span class="numero-estadistica">{{ usuario.favoritos || 0 }}</span>
             <span class="etiqueta-estadistica">Favoritos</span>
+          </div>
+        </router-link>
+
+        <router-link
+          to="/suscripciones"
+          class="tarjeta-estadistica clickable tarjeta-premium"
+        >
+          <div class="circulo-icono-estadistica icono-suscripcion">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="nav-icon"
+            >
+              <circle cx="12" cy="8" r="6"></circle>
+              <polyline
+                points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
+              ></polyline>
+            </svg>
+          </div>
+          <div class="textos-estadistica">
+            <span class="numero-estadistica">{{
+              usuario.plan || "Básico"
+            }}</span>
+            <span class="etiqueta-estadistica">Plan actual</span>
           </div>
         </router-link>
       </aside>

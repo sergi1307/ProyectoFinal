@@ -132,14 +132,6 @@ const logout = () => {
               </svg>
              Pedidos
             </router-link>
-
-            <router-link v-if="userRole === 'user'" to="/suscripciones" class="nav-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-                <circle cx="12" cy="8" r="7"></circle>
-                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-              </svg>
-              Suscripciones
-            </router-link>
             
             <template v-if="userRole === 'admin'">
               <router-link to="/admin" class="nav-item">
