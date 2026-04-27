@@ -24,13 +24,33 @@ const enviarDatos = async () => {
     });
 
     const data = response.data; 
+    console.log(data.value);
 
     if (data.token && data.usuario) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
+      try {
+        const resCart = await axios.get("http://localhost:8080/api/cart", {
+          headers: { Authorization: `Bearer ${data.token}` },
+        });
+
+        console.log(resCart);
+        
+        const carritoRecuperado = resCart.data.map(item => ({
+          id: item.product_id,
+          quantity: item.quantity
+        }));
+        
+        localStorage.setItem("carrito", JSON.stringify(carritoRecuperado));
+      } catch (cartError) {
+        console.error("No se pudo recuperar el carrito al iniciar sesión:", cartError);
+        localStorage.setItem("carrito", JSON.stringify([]));
+      }
+
       window.dispatchEvent(new Event('login-success'));
       window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new CustomEvent('cart-updated'));
 
       if (data.usuario.role === 'admin') {
         router.push('/admin');
@@ -44,7 +64,11 @@ const enviarDatos = async () => {
         errorMsg.value = t('auth.errorLogin');
       } 
       else if (error.response.status === 403) {
-        errorMsg.value = error.response.data.error;
+        if (error.response.data.unverified) {
+          router.push({ path: '/verificar-email', query: { email: email.value } });
+        } else {
+          errorMsg.value = error.response.data.error;
+        }
       } 
       else {
         errorMsg.value = t('auth.errorConn');
@@ -84,6 +108,8 @@ const enviarDatos = async () => {
         placeholder="••••••••••" 
         required 
       />
+
+      <router-link class="resetPassword" to="/verificar-email?mode=reset">¿Has olvidado la contraseña?</router-link>
 
       <button type="submit">{{ $t('auth.titleLogin') }}</button>
       

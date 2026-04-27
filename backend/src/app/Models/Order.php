@@ -12,7 +12,9 @@ class Order extends Model
     protected $fillable = [
         'total',
         'status',
-        'user_id'
+        'user_id',
+        'paypal_order_id',
+        'paypal_capture_id'
     ];
 
     public function details()

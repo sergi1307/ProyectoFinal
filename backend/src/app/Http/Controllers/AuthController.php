@@ -8,6 +8,7 @@ use App\Http\Requests\RegistroRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\VerificarEmailRequest;
 use App\Http\Requests\ReenviarCodigoRequest;
+use App\Mail\ResetPasswordCodeMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -60,6 +61,15 @@ class AuthController extends Controller
         if (!$user->active) {
             return response()->json([
                 'error' => 'Tu cuenta ha sido baneada. Contacta con el administrador.'
+            ], 403);
+        }
+
+        if (!$user->email_verified) {
+            $this->enviarCodigoVerificacion($user);
+
+            return response()->json([
+                'error' => 'Debes verificar tu correo electrónico antes de iniciar sesión.',
+                'unverified' => true    
             ], 403);
         }
 
@@ -257,5 +267,63 @@ class AuthController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'Cuenta eliminada'], 200);
+    }
+
+    // ================================
+    // RECUPERAR CONTRASEÑA
+    // ================================
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+            $user->verification_code = $code;
+            $user->verification_code_expires_at = now()->addMinutes(15);
+            $user->save();
+
+            Mail::to($user->email)->send(new ResetPasswordCodeMail($code));
+        }
+
+        return response()->json([
+            'message' => "Si el correo existe, se ha enviado un código de verificación."
+        ]);
+    }
+
+    // ================================
+    // RESTABLECER CONTRASEÑA
+    // ================================
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|string|size:6',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::where('email', $request->email)
+            ->where('verification_code', $request->code)
+            ->where('verification_code_expires_at', '>', now())
+            ->first();
+        
+        if (!$user) {
+            return response()->json([
+                'error' => 'Código inválido o expirado'
+            ], 400);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->verification_code = null;
+        $user->verification_code_expires_at = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Contraseña actualizada con éxito.'
+        ], 200);
     }
 }

@@ -1,16 +1,24 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, onUnmounted } from "vue";
 import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
 
+// ==========================================
+// 1. ESTADO GLOBAL Y VARIABLES
+// ==========================================
 const productos = ref([]);
 const categorias = ref([]);
-
 const cargando = ref(true);
 const mostrarFiltros = ref(false);
+const usuarioActual = ref(null);
 
+// ==========================================
+// 2. ESTADO DE LOS FILTROS
+// ==========================================
+const searchQuery = ref("");
+const ordenSeleccionado = ref("Destacados");
 const opcionesOrden = [
   "Destacados",
   "Más populares",
@@ -18,10 +26,12 @@ const opcionesOrden = [
   "Precio: Menor a Mayor",
   "Precio: Mayor a Menor",
 ];
-const ordenSeleccionado = ref("Destacados");
-const categoriasSeleccionadas = ref([]);
-const calificacionSeleccionada = ref("Todas las calificaciones");
 
+const precioMin = ref(0);
+const precioMax = ref(1000);
+const maxTotal = 1000;
+
+const calificacionSeleccionada = ref("Todas las calificaciones");
 const calificaciones = [
   { label: "Todas las calificaciones", value: "todas" },
   { label: "3+ estrellas", value: 3 },
@@ -29,10 +39,17 @@ const calificaciones = [
   { label: "4.5+ estrellas", value: 4.5 },
 ];
 
-const precioMin = ref(0);
-const precioMax = ref(1000);
-const maxTotal = 1000;
+const categoriasSeleccionadas = ref([]);
 
+// --- NUEVO: ESTADO DEL BUSCADOR DE CATEGORÍAS ---
+const busquedaCategoria = ref("");
+const mostrarDropdownCategorias = ref(false);
+
+// ==========================================
+// 3. PROPIEDADES COMPUTADAS (Lógica reactiva)
+// ==========================================
+
+// Gradiente dinámico para la barra de rango de precio
 const estiloBarra = computed(() => {
   const dep1 = (precioMin.value / maxTotal) * 100;
   const dep2 = (precioMax.value / maxTotal) * 100;
@@ -41,16 +58,71 @@ const estiloBarra = computed(() => {
   };
 });
 
-const searchQuery = ref("");
+// Categorías que aún no han sido seleccionadas
+const categoriasDisponibles = computed(() => {
+  return categorias.value.filter(
+    (cat) => !categoriasSeleccionadas.value.includes(cat.id),
+  );
+});
 
-const obtenerCategorias = async () => {
-  try {
-    const res = await axios.get(`http://localhost:8080/api/categories`);
-    categorias.value = res.data;
-  } catch (error) {
-    console.error("Error al cargar las categorias:", error);
-  }
-}
+// Filtro en tiempo real para el nuevo buscador de categorías
+const categoriasFiltradasPorBusqueda = computed(() => {
+  const query = busquedaCategoria.value.toLowerCase();
+  return categoriasDisponibles.value.filter((cat) =>
+    cat.name.toLowerCase().includes(query),
+  );
+});
+
+// El motor principal: Filtra y ordena los productos
+const productosFiltrados = computed(() => {
+  return productos.value
+    .filter((p) => {
+      // 1. Ocultar mis propios productos
+      const idDuenoProducto = Number(p.user_id || p.user?.id);
+      const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
+      const esMio = idMio && idDuenoProducto === idMio;
+      if (esMio) return false;
+
+      // 2. Filtro por buscador de texto
+      const query = searchQuery.value.toLowerCase();
+      const cumpleNombre =
+        !query ||
+        (p.title || "").toLowerCase().includes(query) ||
+        (p.description || "").toLowerCase().includes(query);
+
+      // 3. Filtro por categorías seleccionadas
+      const cumpleCategoria =
+        categoriasSeleccionadas.value.length === 0 ||
+        p.categories?.some((c) => categoriasSeleccionadas.value.includes(c.id));
+
+      // 4. Filtro por rango de precios
+      const cumplePrecio =
+        p.price >= precioMin.value && p.price <= precioMax.value;
+
+      // 5. Filtro por estrellas
+      const ratingMinimo = calificaciones.find(
+        (c) => c.label === calificacionSeleccionada.value,
+      )?.value;
+      const cumpleRating =
+        ratingMinimo === "todas" || Number(p.rating || 0) >= ratingMinimo;
+
+      return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
+    })
+    .sort((a, b) => {
+      // Ordenamiento final
+      if (ordenSeleccionado.value === "Precio: Menor a Mayor")
+        return a.price - b.price;
+      if (ordenSeleccionado.value === "Precio: Mayor a Menor")
+        return b.price - a.price;
+      if (ordenSeleccionado.value === "Mejor calificados")
+        return b.rating - a.rating;
+      return 0;
+    });
+});
+
+// ==========================================
+// 4. MÉTODOS DE LA UI (Filtros y Rangos)
+// ==========================================
 
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
@@ -64,37 +136,76 @@ const validarPreciosMax = () => {
   }
 };
 
-const usuarioActual = ref(null);
-
 const limpiarFiltros = () => {
   ordenSeleccionado.value = "Destacados";
   categoriasSeleccionadas.value = [];
   calificacionSeleccionada.value = "Todas las calificaciones";
   precioMin.value = 0;
   precioMax.value = 1000;
+  searchQuery.value = "";
   console.log("Filtros reseteados. Orden actual:", ordenSeleccionado.value);
   mostrarFiltros.value = false;
+};
+
+// --- NUEVO: Métodos del Buscador Desplegable ---
+const seleccionarCategoria = (categoria) => {
+  if (categoria && !categoriasSeleccionadas.value.includes(categoria.id)) {
+    categoriasSeleccionadas.value.push(categoria.id);
+  }
+  busquedaCategoria.value = "";
+  mostrarDropdownCategorias.value = false;
+};
+
+// Conservado tu método antiguo por si acaso
+const añadirCategoria = (event) => {
+  const id = Number(event.target.value);
+  if (id && !categoriasSeleccionadas.value.includes(id)) {
+    categoriasSeleccionadas.value.push(id);
+  }
+  event.target.value = "";
+};
+
+const quitarCategoria = (id) => {
+  categoriasSeleccionadas.value = categoriasSeleccionadas.value.filter(
+    (catId) => catId !== id,
+  );
+};
+
+const nombreCategoria = (id) => {
+  return categorias.value.find((c) => c.id === id)?.name || "";
+};
+
+// ==========================================
+// 5. LLAMADAS A LA API (Datos)
+// ==========================================
+
+const obtenerCategorias = async () => {
+  try {
+    const res = await axios.get(`http://localhost:8080/api/categories`);
+    categorias.value = res.data;
+  } catch (error) {
+    console.error("Error al cargar las categorias:", error);
+  }
 };
 
 const cargarDatos = async () => {
   try {
     cargando.value = true;
-    
+
     const userData = localStorage.getItem("usuario");
     if (userData) {
       usuarioActual.value = JSON.parse(userData);
     }
-    
-    const resProd = await axios.get('http://localhost:8080/api/products/index', {
-      headers: { 
-        Authorization: `Bearer ${localStorage.getItem('token')}` 
-      }
-    });
-    
+
+    const resProd = await axios.get(
+      "http://localhost:8080/api/products/index",
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
+
     productos.value = resProd.data;
-
     console.log("Productos recibidos (ya filtrados):", productos.value.length);
-
   } catch (error) {
     console.error("Error al cargar productos:", error);
   } finally {
@@ -107,9 +218,7 @@ const toggleFavorito = async (productId) => {
     const res = await axios.post(
       `http://localhost:8080/api/products/${productId}/favorite`,
       {},
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
     );
 
     const producto = productos.value.find((p) => p.id === productId);
@@ -125,59 +234,27 @@ const handleAgregado = (productId) => {
   alert("¡Producto añadido al carrito correctamente!");
 };
 
-const productosFiltrados = computed(() => {
-  return productos.value.filter(p => {
-    const idDuenoProducto = Number(p.user_id || p.user?.id);
-    const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
-    const esMio = idMio && idDuenoProducto === idMio;
-    if (esMio) return false;
-
-    const query = searchQuery.value.toLowerCase();
-    const cumpleNombre = !query ||
-                          (p.title || "").toLowerCase().includes(query) ||
-                          (p.description || "").toLowerCase().includes(query);
-
-    const cumpleCategoria = categoriasSeleccionadas.value.length === 0 || 
-                            p.categories?.some(c => categoriasSeleccionadas.value.includes(c.id));
-    
-    const cumplePrecio = p.price >= precioMin.value && p.price <= precioMax.value;
-    
-    const ratingMinimo = calificaciones.find(c => c.label === calificacionSeleccionada.value)?.value;
-    const cumpleRating = ratingMinimo === 'todas' || Number(p.rating || 0) >= ratingMinimo;
-
-    return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
-  }).sort((a, b) => {
-    if (ordenSeleccionado.value === "Precio: Menor a Mayor") return a.price - b.price;
-    if (ordenSeleccionado.value === "Precio: Mayor a Menor") return b.price - a.price;
-    if (ordenSeleccionado.value === "Mejor calificados") return b.rating - a.rating;
-    return 0;
-  });
-});
-
-const categoriasDisponibles = computed(() => {
-  return categorias.value.filter(cat => !categoriasSeleccionadas.value.includes(cat.id))
-})
-
-const añadirCategoria = (event) => {
-  const id = Number(event.target.value);
-  if (id && !categoriasSeleccionadas.value.includes(id)) {
-    categoriasSeleccionadas.value.push(id);
-  }
-
-  event.target.value = "";
-}
-
-const quitarCategoria = (id) => {
-  categoriasSeleccionadas.value = categoriasSeleccionadas.value.filter(catId => catId !== id);
-}
-
-const nombreCategoria = (id) => {
-  return categorias.value.find(c => c.id === id)?.name || "";
-}
-
+// ==========================================
+// 6. CICLO DE VIDA
+// ==========================================
 onMounted(async () => {
   await cargarDatos();
   await obtenerCategorias();
+});
+
+// ==========================================
+// 7. CONTROL DE SCROLL (Fondo bloqueado)
+// ==========================================
+watch(mostrarFiltros, (estaAbierto) => {
+  if (estaAbierto) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
+onUnmounted(() => {
+  document.body.style.overflow = '';
 });
 </script>
 
@@ -194,22 +271,28 @@ onMounted(async () => {
         </div>
 
         <div class="acciones-derecha">
-          
           <div class="buscador-explorar">
             <div class="search-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="search-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#6b7280"
+                stroke-width="2"
+                class="search-icon"
+              >
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 v-model="searchQuery"
-                :placeholder="$t('navbar.search')" 
-                class="search-input" 
+                :placeholder="$t('navbar.search')"
+                class="search-input"
               />
             </div>
           </div>
         </div>
+
         <button class="boton-filtros-disparador" @click="mostrarFiltros = true">
           <svg
             width="18"
@@ -234,7 +317,7 @@ onMounted(async () => {
           Filtros
         </button>
       </header>
-      
+
       <main v-if="!cargando" class="rejilla-productos">
         <ProductCard
           v-for="producto in productosFiltrados"
@@ -243,7 +326,7 @@ onMounted(async () => {
           :isFavorite="producto.is_favorite"
           @favorito="toggleFavorito"
           @ver="$router.push(`/producto/${$event}`)"
-          @agregado="handleAgregado" 
+          @agregado="handleAgregado"
         />
       </main>
 
@@ -267,7 +350,11 @@ onMounted(async () => {
         <div class="panel-scroll">
           <section class="seccion-f">
             <h4>Ordenar por</h4>
-            <div v-for="opcion in opcionesOrden" :key="opcion" class="control-f">
+            <div
+              v-for="opcion in opcionesOrden"
+              :key="opcion"
+              class="control-f"
+            >
               <input
                 type="radio"
                 :id="opcion"
@@ -283,20 +370,58 @@ onMounted(async () => {
 
           <section class="seccion-f">
             <h4>Categorías</h4>
-            
-            <div class="selector-wrapper">
-              <select @change="añadirCategoria" class="select-categorias">
-                <option value="" disabled selected>Seleccionar categoría...</option>
-                <option v-for="cat in categoriasDisponibles" :key="cat.id" :value="cat.id">
-                  + {{ cat.name }}
-                </option>
-              </select>
+
+            <div class="buscador-categorias-wrapper">
+              <input
+                type="text"
+                v-model="busquedaCategoria"
+                placeholder="Buscar y añadir categoría..."
+                class="input-buscar-categoria"
+                @focus="mostrarDropdownCategorias = true"
+                @blur="
+                  setTimeout(() => (mostrarDropdownCategorias = false), 200)
+                "
+              />
+
+              <ul
+                v-if="
+                  mostrarDropdownCategorias &&
+                  categoriasFiltradasPorBusqueda.length > 0
+                "
+                class="dropdown-categorias"
+              >
+                <li
+                  v-for="cat in categoriasFiltradasPorBusqueda"
+                  :key="cat.id"
+                  @click="seleccionarCategoria(cat)"
+                >
+                  {{ cat.name }}
+                </li>
+              </ul>
+
+              <div
+                v-else-if="
+                  mostrarDropdownCategorias && busquedaCategoria !== ''
+                "
+                class="dropdown-categorias vacio"
+              >
+                No se encontraron categorías
+              </div>
             </div>
 
-            <div class="chips-container" v-if="categoriasSeleccionadas.length > 0">
-              <div v-for="id in categoriasSeleccionadas" :key="id" class="chip-categoria">
+            <div
+              class="chips-container"
+              v-if="categoriasSeleccionadas.length > 0"
+            >
+              <div
+                v-for="id in categoriasSeleccionadas"
+                :key="id"
+                class="chip-categoria"
+              >
                 <span>{{ nombreCategoria(id) }}</span>
-                <button @click="quitarCategoria(id)" class="btn-quitar-chip">&times;</button>
+                <button @click="quitarCategoria(id)" class="btn-quitar-chip">
+                  &times;
+                </button>
               </div>
             </div>
           </section>

@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 // ==========================================
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/auth')->group(function () {
     Route::post('/registro', [AuthController::class, 'registro']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/verificar-email', [AuthController::class, 'verificarEmail']);
     Route::post('/reenviar-codigo', [AuthController::class, 'reenviarCodigo']);
 });
@@ -44,6 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/destacados', [ProductController::class, 'destacados']);
         Route::get('/tendencias', [ProductController::class, 'tendencias']);
         Route::get('/{id}', [ProductController::class, 'show']);
+    });
+
+    Route::prefix('/seller')->group(function () {
+        Route::get('/balance', [SellerController::class, 'obtenerBalances']);
     });
 
     Route::prefix('/cart')->group(function () {
@@ -77,5 +84,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/ingresos', [AdminController::class, 'ingresos']);
+        Route::post('/reembolsar/{id_order}', [PaymentController::class, 'refundOrder']);
     });
 });
