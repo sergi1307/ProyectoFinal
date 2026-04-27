@@ -13,6 +13,7 @@ import Favorites from '@/views/products/Favorites.vue';
 import Cart from '@/views/user/Cart.vue';
 import Perfil from '@/views/perfil/Perfil.vue';
 import NotFound from '@/components/Error/NotFound.vue';
+import Suscripciones from '@/components/Suscripciones/Suscripciones.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -94,7 +95,12 @@ const router = createRouter({
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
             component: NotFound
-        }
+        },
+        {
+            path: '/suscripciones',
+            name: 'Suscripciones',
+            component: Suscripciones
+        },
     ]
 });
 
