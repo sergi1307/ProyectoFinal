@@ -1,7 +1,5 @@
-// _vender.scss
 @use 'variables' as *;
 
-// 1. Estructura base anti-saltos (Igual que en Explorar, Favoritos y Mis Productos)
 .vender-page {
     background-color: $bg-color;
     min-height: 100vh;
@@ -11,11 +9,10 @@
     .vender-contenedor {
         max-width: 1000px;
         margin: 0 auto;
-        padding: 0 1.5rem; // El padding mágico para que no salte
+        padding: 0 1.5rem;
     }
 }
 
-// Reemplaza el bloque .form-nav antiguo por este:
 .form-nav {
     margin-bottom: 2rem;
     display: flex;
@@ -25,10 +22,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.6rem;
-        background-color: $bg-card; // Blanco
+        background-color: $bg-card;
         color: $text-main;
         padding: 0.6rem 1.2rem;
-        border-radius: 50px; // Forma de píldora
+        border-radius: 50px;
         border: 1px solid #e5e7eb;
         font-size: 0.95rem;
         font-weight: 700;
@@ -46,11 +43,11 @@
             background-color: $primary-blue;
             color: white;
             border-color: $primary-blue;
-            transform: translateX(-5px); // Animación hacia la izquierda
+            transform: translateX(-5px);
             box-shadow: 0 4px 10px rgba(0, 151, 178, 0.2);
 
             svg {
-                stroke: white; // El icono se vuelve blanco al hacer hover
+                stroke: white;
             }
         }
     }
@@ -71,7 +68,7 @@
             font-size: 2.2rem; 
             font-weight: 800; 
             color: $text-main; 
-            margin: 0 0 0.5rem 0 !important; // Matamos los márgenes fantasma
+            margin: 0 0 0.5rem 0 !important;
             line-height: 1.2;
         }
         

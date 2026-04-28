@@ -140,9 +140,6 @@ const obtenerRutaAvatar = (ruta) => {
     : `http://localhost:8080/storage/${ruta}?t=${new Date().getTime()}`;
 };
 
-// ==========================================
-// EL MOTOR REACTIVO INQUEBRANTABLE
-// ==========================================
 onMounted(() => {
   cargarDatos();
   window.addEventListener("perfil-actualizado", cargarDatos);
@@ -152,7 +149,6 @@ onUnmounted(() => {
   window.removeEventListener("perfil-actualizado", cargarDatos);
 });
 
-// ESTO ES LO NUEVO: Si Vue recicla la página y no ejecuta onMounted, este perro guardián detecta que has entrado al perfil y fuerza la actualización.
 watch(
   () => route.path,
   (newPath) => {

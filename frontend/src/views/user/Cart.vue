@@ -117,11 +117,9 @@ const manejarErrorImagen = (event) => {
 };
 
 const inicializarPaypal = () => {
-  // Quitamos la comprobación de paypalRendered.value para probar si es eso
   const container = document.getElementById("paypal-button-container");
 
   if (window.paypal && container) {
-    // Limpiamos el contenedor por si acaso había algo antes
     container.innerHTML = "";
 
     window.paypal
@@ -333,7 +331,5 @@ onMounted(async () => {
 </template>
 
 <style lang="scss">
-/* Si importas el SCSS desde un archivo global, puedes borrar esta etiqueta <style> */
-/* Si lo enlazas aquí, asegúrate de que la ruta sea la correcta */
 @use "@/assets/scss/carrito";
 </style>

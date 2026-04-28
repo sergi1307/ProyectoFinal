@@ -5,18 +5,11 @@ import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
 
-// ==========================================
-// 1. ESTADO GLOBAL Y VARIABLES
-// ==========================================
 const productos = ref([]);
 const categorias = ref([]);
 const cargando = ref(true);
 const mostrarFiltros = ref(false);
 const usuarioActual = ref(null);
-
-// ==========================================
-// 2. ESTADO DE LOS FILTROS
-// ==========================================
 const searchQuery = ref("");
 const ordenSeleccionado = ref("Destacados");
 const opcionesOrden = [
@@ -40,16 +33,9 @@ const calificaciones = [
 ];
 
 const categoriasSeleccionadas = ref([]);
-
-// --- NUEVO: ESTADO DEL BUSCADOR DE CATEGORÍAS ---
 const busquedaCategoria = ref("");
 const mostrarDropdownCategorias = ref(false);
 
-// ==========================================
-// 3. PROPIEDADES COMPUTADAS (Lógica reactiva)
-// ==========================================
-
-// Gradiente dinámico para la barra de rango de precio
 const estiloBarra = computed(() => {
   const dep1 = (precioMin.value / maxTotal) * 100;
   const dep2 = (precioMax.value / maxTotal) * 100;
@@ -58,14 +44,12 @@ const estiloBarra = computed(() => {
   };
 });
 
-// Categorías que aún no han sido seleccionadas
 const categoriasDisponibles = computed(() => {
   return categorias.value.filter(
     (cat) => !categoriasSeleccionadas.value.includes(cat.id),
   );
 });
 
-// Filtro en tiempo real para el nuevo buscador de categorías
 const categoriasFiltradasPorBusqueda = computed(() => {
   const query = busquedaCategoria.value.toLowerCase();
   return categoriasDisponibles.value.filter((cat) =>
@@ -73,33 +57,27 @@ const categoriasFiltradasPorBusqueda = computed(() => {
   );
 });
 
-// El motor principal: Filtra y ordena los productos
 const productosFiltrados = computed(() => {
   return productos.value
     .filter((p) => {
-      // 1. Ocultar mis propios productos
       const idDuenoProducto = Number(p.user_id || p.user?.id);
       const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
       const esMio = idMio && idDuenoProducto === idMio;
       if (esMio) return false;
 
-      // 2. Filtro por buscador de texto
       const query = searchQuery.value.toLowerCase();
       const cumpleNombre =
         !query ||
         (p.title || "").toLowerCase().includes(query) ||
         (p.description || "").toLowerCase().includes(query);
 
-      // 3. Filtro por categorías seleccionadas
       const cumpleCategoria =
         categoriasSeleccionadas.value.length === 0 ||
         p.categories?.some((c) => categoriasSeleccionadas.value.includes(c.id));
 
-      // 4. Filtro por rango de precios
       const cumplePrecio =
         p.price >= precioMin.value && p.price <= precioMax.value;
 
-      // 5. Filtro por estrellas
       const ratingMinimo = calificaciones.find(
         (c) => c.label === calificacionSeleccionada.value,
       )?.value;
@@ -109,7 +87,6 @@ const productosFiltrados = computed(() => {
       return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
     })
     .sort((a, b) => {
-      // Ordenamiento final
       if (ordenSeleccionado.value === "Precio: Menor a Mayor")
         return a.price - b.price;
       if (ordenSeleccionado.value === "Precio: Mayor a Menor")
@@ -119,10 +96,6 @@ const productosFiltrados = computed(() => {
       return 0;
     });
 });
-
-// ==========================================
-// 4. MÉTODOS DE LA UI (Filtros y Rangos)
-// ==========================================
 
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
@@ -147,7 +120,6 @@ const limpiarFiltros = () => {
   mostrarFiltros.value = false;
 };
 
-// --- NUEVO: Métodos del Buscador Desplegable ---
 const seleccionarCategoria = (categoria) => {
   if (categoria && !categoriasSeleccionadas.value.includes(categoria.id)) {
     categoriasSeleccionadas.value.push(categoria.id);
@@ -156,7 +128,6 @@ const seleccionarCategoria = (categoria) => {
   mostrarDropdownCategorias.value = false;
 };
 
-// Conservado tu método antiguo por si acaso
 const añadirCategoria = (event) => {
   const id = Number(event.target.value);
   if (id && !categoriasSeleccionadas.value.includes(id)) {
@@ -174,10 +145,6 @@ const quitarCategoria = (id) => {
 const nombreCategoria = (id) => {
   return categorias.value.find((c) => c.id === id)?.name || "";
 };
-
-// ==========================================
-// 5. LLAMADAS A LA API (Datos)
-// ==========================================
 
 const obtenerCategorias = async () => {
   try {
@@ -234,17 +201,11 @@ const handleAgregado = (productId) => {
   alert("¡Producto añadido al carrito correctamente!");
 };
 
-// ==========================================
-// 6. CICLO DE VIDA
-// ==========================================
 onMounted(async () => {
   await cargarDatos();
   await obtenerCategorias();
 });
 
-// ==========================================
-// 7. CONTROL DE SCROLL (Fondo bloqueado)
-// ==========================================
 watch(mostrarFiltros, (estaAbierto) => {
   if (estaAbierto) {
     document.body.style.overflow = 'hidden';

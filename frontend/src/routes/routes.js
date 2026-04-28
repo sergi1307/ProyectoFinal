@@ -14,6 +14,7 @@ import Cart from '@/views/user/Cart.vue';
 import Perfil from '@/views/perfil/Perfil.vue';
 import NotFound from '@/components/Error/NotFound.vue';
 import Suscripciones from '@/components/Suscripciones/Suscripciones.vue';
+import Pedidos from '@/components/Pedidos/Pedidos.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -101,12 +102,14 @@ const router = createRouter({
             name: 'Suscripciones',
             component: Suscripciones
         },
+        {
+            path: '/pedidos',
+            name: 'Pedidos',
+            component: Pedidos
+        },
     ]
 });
 
-// ==========================================
-// SEGURIDAD DE LAS RUTAS
-// ==========================================
 router.beforeEach((to, from, next) => {
     const userData = localStorage.getItem("usuario");
     let user = null;
