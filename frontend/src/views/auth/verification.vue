@@ -6,29 +6,23 @@ import "../../assets/css/auth.css";
 
 const route = useRoute();
 const router = useRouter();
-
-// Variables de estado
 const email = ref("");
 const code = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 const errorMsg = ref("");
-
-// Control del flujo
 const mode = ref("verify");
-const paso = ref(1); // 1: Email, 2: Código, 3: Nueva contraseña
+const paso = ref(1);
 
 onMounted(() => {
   mode.value = route.query.mode || "verify";
   email.value = route.query.email || "";
 
-  // Si ya venimos con un email (ej. desde el registro), saltamos al paso 2
   if (email.value) {
     paso.value = 2;
   }
 });
 
-// PASO 1: Enviar correo
 const solicitarCodigo = async () => {
   errorMsg.value = "";
   if (!email.value) {
@@ -43,13 +37,12 @@ const solicitarCodigo = async () => {
       email: email.value,
     });
 
-    paso.value = 2; // Avanzamos al paso del código
+    paso.value = 2;
   } catch (error) {
     errorMsg.value = "Hubo un error al intentar enviar el correo.";
   }
 };
 
-// PASO 2: Validar código en frontend y decidir qué hacer
 const procesarCodigo = async () => {
   errorMsg.value = "";
   if (!code.value || code.value.length !== 6) {
@@ -58,7 +51,6 @@ const procesarCodigo = async () => {
   }
 
   if (mode.value === "verify") {
-    // Si estamos verificando cuenta nueva, aquí termina el flujo y llamamos a la API
     try {
       await axios.post(`http://localhost:8080/api/auth/verificar-email`, {
         email: email.value,
@@ -70,12 +62,10 @@ const procesarCodigo = async () => {
       errorMsg.value = "Código incorrecto o expirado.";
     }
   } else {
-    // Si estamos reseteando contraseña, pasamos al Paso 3 para pedir las claves
     paso.value = 3;
   }
 };
 
-// PASO 3: Enviar la nueva contraseña (Solo modo Reset)
 const cambiarPassword = async () => {
   errorMsg.value = "";
 
@@ -102,11 +92,10 @@ const cambiarPassword = async () => {
   } catch (error) {
     errorMsg.value =
       "El código ha expirado o es incorrecto. Vuelve a intentarlo.";
-    paso.value = 1; // Le devolvemos al inicio si falló en el backend
+    paso.value = 1;
   }
 };
 
-// Reutilizamos la función de solicitar código para el botón de "Reenviar"
 const reenviarCodigo = async () => {
   await solicitarCodigo();
   alert("Te hemos enviado un nuevo código.");

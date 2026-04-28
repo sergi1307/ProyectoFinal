@@ -6,9 +6,6 @@ import imagenPorDefecto from "@/assets/logos/Logo.png";
 import Navbar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 
-// ==========================================
-// ESTADO (Refs)
-// ==========================================
 const route = useRoute();
 const producto = ref(null);
 const cargando = ref(true);
@@ -17,9 +14,6 @@ const enviandoReview = ref(false);
 const hoverRating = ref(0);
 const nuevaReview = ref({ rating: 5, comment: "" });
 
-// ==========================================
-// PROPIEDADES COMPUTADAS (Detalles del archivo)
-// ==========================================
 const formatoArchivo = computed(() => {
   if (!producto.value?.file_url) return "Desconocido";
   return producto.value.file_url.split('.').pop().toUpperCase();
@@ -39,9 +33,6 @@ const fechaActualizacion = computed(() => {
   return new Date(producto.value.updated_at).toLocaleDateString();
 });
 
-// ==========================================
-// MÉTODOS DE DATOS
-// ==========================================
 const obtenerProducto = async () => {
   try {
     cargando.value = true;
@@ -70,9 +61,6 @@ const manejarErrorImagen = (event) => {
   event.target.src = imagenPorDefecto;
 };
 
-// ==========================================
-// ACCIONES DEL USUARIO (Carrito y Favoritos)
-// ==========================================
 const agregarAlCarrito = async () => {
   try {
     agregando.value = true;
@@ -107,9 +95,6 @@ const toggleFavorito = async () => {
   }
 };
 
-// ==========================================
-// MÉTODOS DE REVIEWS
-// ==========================================
 const calcularRating = (event, n) => {
   const rect = event.target.getBoundingClientRect();
   return (event.clientX - rect.left) < rect.width / 2 ? n - 0.5 : n;
@@ -130,7 +115,7 @@ const enviarReview = async () => {
     nuevaReview.value = { rating: 5, comment: "" };
     hoverRating.value = 0;
     
-    await obtenerProducto(); // Recarga los datos mágicamente
+    await obtenerProducto();
   } catch (error) {
     console.error("Error al enviar la review:", error);
     alert("No se pudo enviar la valoración.");
@@ -139,9 +124,6 @@ const enviarReview = async () => {
   }
 };
 
-// ==========================================
-// CICLO DE VIDA
-// ==========================================
 onMounted(obtenerProducto);
 </script>
 

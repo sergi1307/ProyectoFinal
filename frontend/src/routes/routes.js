@@ -110,9 +110,6 @@ const router = createRouter({
     ]
 });
 
-// ==========================================
-// SEGURIDAD DE LAS RUTAS
-// ==========================================
 router.beforeEach((to, from, next) => {
     const userData = localStorage.getItem("usuario");
     let user = null;

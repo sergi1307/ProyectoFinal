@@ -2,8 +2,6 @@
 import { ref } from "vue";
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
-
-// Importamos las vistas de las pestañas
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
@@ -305,7 +303,6 @@ const tabs = [
   }
 }
 
-/* Selector Móvil */
 .mobile-tab-selector {
   display: none;
 }
