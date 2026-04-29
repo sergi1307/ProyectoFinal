@@ -83,7 +83,8 @@ class AuthController extends Controller
                 'name'  => $user->name,
                 'email' => $user->email,
                 'role'  => $user->role,
-                'avatar' => $user->avatar
+                'avatar' => $user->avatar,
+                'plan'   => $user->plan
             ]
         ], 200);
     }
@@ -172,6 +173,25 @@ class AuthController extends Controller
     }
 
     // ================================
+    // ACTUALIZAR SUSCRIPCIÓN
+    // ================================
+    public function updateSubscription(Request $request)
+    {
+        $request->validate([
+            'plan' => 'required|string|in:Básico,Pro,Ultra'
+        ]);
+
+        $user = $request->user();
+        $user->plan = $request->plan;
+        $user->save();
+
+        return response()->json([
+            'mensaje' => 'Suscripción actualizada correctamente',
+            'plan' => $user->plan
+        ]);
+    }
+
+    // ================================
     // TODOS LOS USUARIOS
     // ================================
     public function index()
@@ -185,11 +205,12 @@ class AuthController extends Controller
     // ================================
     public function perfilStats(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()->fresh();;
         
         return response()->json([
             'favoritos' => $user->favorites()->count(),
             'pedidos' => $user->cart()->count(),
+            'plan' => $user->plan,
         ]);
     }
 
@@ -252,6 +273,7 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'email'  => $user->email,
                 'avatar' => $user->avatar,
+                'plan'  => $user->plan
             ]
         ], 200);
     }

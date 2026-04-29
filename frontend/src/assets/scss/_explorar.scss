@@ -1,8 +1,5 @@
 @use "variables" as *;
 
-/* ========================================== */
-/* 1. LAYOUT PRINCIPAL                        */
-/* ========================================== */
 .explorar-page {
     background-color: $bg-color;
     min-height: 100vh;
@@ -20,14 +17,11 @@
     }
 }
 
-/* ========================================== */
-/* 2. CABECERA Y BÚSQUEDA                     */
-/* ========================================== */
 .cabecera-explorar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 3rem; // Combinado
+    margin-bottom: 3rem;
     flex-wrap: wrap;
     gap: 1rem;
 
@@ -126,9 +120,6 @@
     }
 }
 
-/* ========================================== */
-/* 3. GRID DE PRODUCTOS                       */
-/* ========================================== */
 .rejilla-productos,
 .rejilla-favoritos {
     display: grid !important;
@@ -138,9 +129,6 @@
     justify-items: stretch !important;
 }
 
-/* ========================================== */
-/* 4. PANEL LATERAL DE FILTROS                */
-/* ========================================== */
 .overlay-oscuro {
     position: fixed;
     inset: 0;
@@ -387,9 +375,6 @@
     }
 }
 
-/* ========================================== */
-/* 5. NUEVO: BUSCADOR DE CATEGORÍAS           */
-/* ========================================== */
 .buscador-categorias-wrapper {
     position: relative;
     width: 100%;

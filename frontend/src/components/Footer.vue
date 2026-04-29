@@ -189,7 +189,6 @@ p {
   margin-bottom: 1rem;
 }
 
-/* CAMBIO AQUÍ: Actualizada la clase en CSS */
 .footer-contenedor a {
   display: table;
   color: #cbd5e1;
@@ -298,7 +297,6 @@ p {
 .derechos p { color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem; }
 .derechos p.copy { color: #e2e8f0; font-size: 0.95rem; margin-bottom: 0.5rem; }
 
-/* CAMBIO AQUÍ: Actualizada la clase en CSS */
 .footer-contenedor {
   display: grid;
   grid-template-columns: 2.5fr 1fr 1.5fr 1fr;

@@ -11,6 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
 
 // ==========================================
 // 1. RUTAS PÚBLICAS
@@ -37,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [AuthController::class, 'index']);
     Route::post('/users/{id}/toggle-status', [AuthController::class, 'toggleStatus']);
 
+    Route::post('/user/subscribe', [AuthController::class, 'updateSubscription']);
+
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     Route::prefix('/products')->group(function () {
@@ -48,6 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/tendencias', [ProductController::class, 'tendencias']);
         Route::get('/{id}', [ProductController::class, 'show']);
     });
+
+    Route::get('/orders', [OrderController::class, 'index']);
 
     Route::prefix('/seller')->group(function () {
         Route::get('/balance', [SellerController::class, 'obtenerBalances']);

@@ -38,7 +38,6 @@ const cargarDatosHome = async () => {
     cargandoDestacados.value = false;
   }
 
-  // Cargar Tendencias
   try {
     const res = await axios.get(`http://localhost:8080/api/products/tendencias`, { headers: authHeader });
     productosTendencia.value = res.data;
@@ -51,7 +50,6 @@ const cargarDatosHome = async () => {
 
 onMounted(cargarDatosHome);
 
-// Manejo de Favoritos sincronizado con la BD
 const manejarFavorito = async (producto) => {
   if (!token) {
     alert("Debes iniciar sesión para guardar favoritos");
@@ -176,7 +174,6 @@ const manejarAgregado = (id) => {
 </template>
 
 <style scoped>
-/* ESTILOS DE CARGA Y SECCIONES */
 .loader-placeholder {
   text-align: center;
   padding: 4rem;
@@ -188,7 +185,6 @@ const manejarAgregado = (id) => {
   margin-bottom: 6rem;
 }
 
-/* REJILLA UNIFICADA PARA QUE AMBAS SECCIONES SE VEAN IGUAL */
 .rejilla-comun-nexus {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -196,7 +192,6 @@ const manejarAgregado = (id) => {
   width: 100%;
 }
 
-/* CABECERAS DE SECCIÓN */
 .cabecera-destacados, .cabecera-tendencias {
   display: flex;
   justify-content: space-between;
@@ -227,7 +222,6 @@ const manejarAgregado = (id) => {
   color: #007a8f;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
   .rejilla-comun-nexus {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
