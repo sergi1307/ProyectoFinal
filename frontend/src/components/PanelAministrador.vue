@@ -5,6 +5,7 @@ import Footer from "./Footer.vue";
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
+import Reembolsos from "./NavPanelAdmin/Reembolsos.vue";
 
 const activeTab = ref("incidencias");
 
@@ -191,6 +192,10 @@ const tabs = [
 
       <div v-else-if="activeTab === 'ingresos'" class="fade-in">
         <Ingresos />
+      </div>
+
+      <div v-else-if="activeTab === 'reembolsos'" class="fade-in">
+        <Reembolsos />
       </div>
 
       <div v-else class="fade-in">

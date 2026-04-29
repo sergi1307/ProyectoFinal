@@ -14,7 +14,7 @@ import Cart from '@/views/user/Cart.vue';
 import Perfil from '@/views/perfil/Perfil.vue';
 import NotFound from '@/components/Error/NotFound.vue';
 import Suscripciones from '@/components/Suscripciones/Suscripciones.vue';
-import Pedidos from '@/components/Pedidos/Pedidos.vue';
+import Pedidos from '@/views/Pedidos/Pedidos.vue';
 
 const router = createRouter({
     history: createWebHistory(),

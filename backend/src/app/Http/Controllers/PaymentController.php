@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PurchaseReceiptMail;
@@ -140,10 +139,8 @@ class PaymentController extends Controller
                 });
             }
 
-            Log::error("Fallo de PayPal Capture:", $response->json());
             return response()->json($response->json(), $response->status());
         } catch (\Exception $e) {
-            Log::error("Error en captureOrder: " . $e->getMessage());
             return response()->json(['error' => 'Hubo un problema al procesar el pedido: ' . $e->getMessage()], 500);
         }
     }
@@ -154,8 +151,6 @@ class PaymentController extends Controller
             $id_order = (int) $id_order;
 
             $order = DB::table('orders')->where('id_order', $id_order)->first();
-
-            Log::info("ID Recibido: " . $id_order);
 
             if (!$order) {
                 return response()->json([
@@ -195,6 +190,13 @@ class PaymentController extends Controller
                             'status' => 'refunded',
                             'updated_at' => now()
                         ]);
+
+                    DB::table('refund_requests')
+                        ->where('order_id', $id_order)
+                        ->update([
+                            'status' => 'approved',
+                            'updated_at' => now()
+                        ]);
                 });
 
                 return response()->json([
@@ -203,15 +205,14 @@ class PaymentController extends Controller
                 ], 200);
             }
 
-            Log::error('Fallo de Paypal Refund:', $response->json());
             return response()->json([
                 'error' => 'Paypal rechazó el reembolso'
             ], 400);
 
         } catch (\Exception $e) {
-            Log::error('Error en refundOrder:', $e->getMessage());
             return response()->json([
-                'error' => 'Error interno procesando la devolución.'
+                'error' => 'Error interno procesando la devolución.',
+                'detalles' => $e->getMessage()
             ], 500);
         }
     }
