@@ -5,6 +5,16 @@
 - [2. Análisis de Requisitos](#2-análisis-de-requisitos)
     - [2.1 Requisitos Funcionales](#21-requisitos-funcionales)
     - [2.2 Requisitos No Funcionales](#22-requisitos-no-funcionales)
+- [3. Stack Tecnológico y Herramientas](#3-stack-tecnólogico-y-herramientas)
+    - [3.1 Frontend](#31-frontend)  
+    - [3.2 Backend](#32-backend)
+    - [3.3 Base de Datos](#33-base-de-datos)  
+    - [3.4 Integraciones y Servicios de Terceros](#34-integraciones-y-servicios-de-terceros)
+    - [3.5 Herramientas de Desarrollo y Diseño](#35-herramientas-de-desarrollo-y-diseño)
+- [4. Arquitectura y Diseño](#4-arquitectura-y-diseño)
+    - [4.1 Arquitectura del Sistema](#41-arquitectura-del-sistema)
+    - [4.2 Modelo de Datos - Diagrama Entidad-Relación](#42-modelo-de-datos-diagrama-entidad-relación)
+    - [4.3 Diseño Interfaz (UI/UX)](#43-diseño-de-interfaz-uiux)
 
 # 1. Introducción y Objetivos
 
@@ -85,4 +95,44 @@ En este capítulo se detallan las tecnologías, lenguajes de programación y her
 
 ## 3.4 Integraciones y Servicios de Terceros
 
-- **Pasarela de Pago (PayPal)**: 
+- **Pasarela de Pago (PayPal)**: Integrada para procesar las transacciones económicas de la plataforma. Se ha elegido por su fiabilidad y facilidad de uso, permitiendo gestionar los pagos de compra directa de forma segura, garantizando que no se almacenen datos bancarios sensibles en los servidores de Nexus.
+
+## 3.5 Herramientas de Desarrollo y Diseño
+
+- **Visual Studio Code**: Editor de código fuente principal utilizado para el desarrollo tanto del frontend como del backend, apoyado por extensiones específicas para Vue.js y Laravel que han optimizado el flujo de trabajo.
+- **Git y GitHub**: Sistema de control de versiones utilizado para gestionar el código de forma segura, permitiendo mantener un historial de cambios y facilitar el despliegue del proyecto.
+- **Figma**: Herramienta de diseño de interfaces (UI) y experiencia de usuario (UX) empleada para crear los prototipos visuales y el diseño artístico de Nexus antes de su implementación.
+- **Draw.io**: Utilizada específicamente para el modelo de la base de datos, permitiendo diseñar los diagramas entidad-relación necesarios para estructurar la información en SQL de forma lógica y visual.
+
+# 4 Arquitectura y Diseño
+
+En este apartado se describe la estructura interna de la plataforma Nexus, detallando cómo se organizan los componentes del software y cómo se ha diseñado la persistencia de los datos y la interfaz de usuario.
+
+## 4.1 Arquitectura del Sistema
+
+Para el desarrollo de Nexus se ha optado por una arquitectura de aplicaciones web modernas basada en la separación del Frontend y el Backend.
+
+- **Backend (API REST)**: Laravel funciona como el motor central del sistema. Utiliza el patrón MVC (Modelo-Vista-Controlador) para gestionar la lógica de negocio y exponer una API REST. Esta API es la encargada de procesar las peticiones, gestionar la seguridad y servir los datos necesarios en formato JSON.
+- **Frontend (SPA)**: La interfaz de usuario, desarrollada con Vue.js, funciona como una Single Page Application (SPA). Esto significa que la aplicación se carga una sola vez y se comunica de forma asíncrona con el backend de Laravel, lo que proporciona una navegación fluida y rápida, similar a una aplicación de escritorio.
+
+## 4.2 Modelo de Datos (Diagrama Entidad-Relación)
+
+El diseño de la base de datos se ha realizado mediante un modelo relacional utilizando la herramienta draw.io. El objetivo ha sido normalizar la información para evitar redundancias y asegurar la integridad de los datos.
+
+Las entidad principales definidas en el sistema son:
+- **Users**: Almacena la información de perfiles, credenciales encriptadas y roles.
+- **Products**: Contiene los detalles de los recursos digitales, precios y archivos.
+- **Orders**: Registra las compras realizadas y el estado de los pagos procesados a través de PayPal.
+- **Categories**: Registra todas las categorías que pueden tener los productos.
+- **Reviews**: Para que cada producto tenga su propia valoración.
+
+<p align="center">
+    <img src="../imgs/entidadRelacion.jpg" alt="Diagrama E-R Proyecto Nexus" width="100%">
+</p>
+
+## 4.3 Diseño de Interfaz (UI/UX)
+
+El diseño visual de Nexus se ha centrado en la usabilidad y limpieza, buscando que el usuario encuentre el contenido digital de forma intuitiva.
+
+- **Prototipo de Figma**: Antes de comenzar la fase de programación, se crearon wireframes y prototipos de alta fidelidad en Figma. Esto permitió definir la paleta de colores, la tipografía y la disposición de los elementos (como el carrito de compra y el panel de administrador) de forma previa.
+- **Diseño Responsive**: Gracias al uso de SCSS y las capacidades visuales de Vue, la interfaz se ha diseñado para ser totalmente adaptable. El marketplace es perfectamente funcional tanto en navegadores de escritorio como en dispositivos móviles, ajustando sus menús y rejillas de productos automáticamente.

@@ -29,7 +29,7 @@
 Aquí mostramos el diseño final de la base de datos. Lo hemos planteado para que soporte un modelo P2P donde cualquier usuario puede vender y comprar. Además, un producto puede pertenecer a varias categorías gracias a la tabla pivote.
 
 <p align="center">
-    <img src="./imgs/entidadRelacion.jpg" alt="Diagrama E-R Proyecto Nexus" width="100%">
+    <img src="../imgs/entidadRelacion.jpg" alt="Diagrama E-R Proyecto Nexus" width="100%">
 </p>
 
 ---
