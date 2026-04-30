@@ -12,5 +12,17 @@
 @use 'producto-detalle';
 @use 'admin';
 @use 'perfil';
-// @use 'productos';
+@use 'productos';
 @use 'cookies';
+@use 'notFound';
+@use 'incidencias';
+@use 'usuarios';
+@use 'ingresos';
+@use 'pedidos';
+@use 'productCard';
+@use 'suscripciones';
+@use 'footer';
+@use 'modalIncidencias';
+@use 'navBar';
+@use 'panelAdministrador';
+@use 'legal';
