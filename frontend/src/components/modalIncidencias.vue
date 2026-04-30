@@ -109,7 +109,9 @@ const handleSubmit = async () => {
                 <textarea
                   id="descripcion"
                   v-model="form.descripcion"
-                  rows="5"
+                  rows="8"
+                  no-resize
+                  spellcheck="false"
                   placeholder="Describe el problema en detalle..."
                   required
                 ></textarea>

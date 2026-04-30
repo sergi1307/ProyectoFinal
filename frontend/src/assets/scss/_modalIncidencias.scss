@@ -115,9 +115,19 @@ textarea {
 }
 
 textarea {
-  height: 85px;
-  resize: none;
+  height: 100px;
+  resize: none !important;
   display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+  }
 }
 
 .select-wrapper {
