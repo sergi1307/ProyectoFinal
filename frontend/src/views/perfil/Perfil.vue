@@ -165,7 +165,7 @@ watch(
   <main class="contenedor-principal">
     <h1 class="titulo-pagina">Mi Perfil</h1>
 
-    <div class="cuadricula-perfil">
+    <div class="cuadricula-perfil" :class="{ 'solo-admin': usuario.rol === 'admin' }">
       <section class="tarjeta-principal">
         <div class="cabecera-tarjeta">
           <h2>Información Personal</h2>
