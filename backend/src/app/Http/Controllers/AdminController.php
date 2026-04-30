@@ -50,4 +50,22 @@ class AdminController extends Controller
             ], 500);
         }
     }
+
+    public function getPendingReports() {
+        return \App\Models\Product::whereHas('reports', function($q) {
+            $q->where('resolved', false);
+        })->with(['reports.user', 'user'])->get();
+    }
+
+    public function approveProduct($id) {
+        \App\Models\Report::where('product_id', $id)->update(['resolved' => true]);
+        return response()->json(['message' => 'Producto verificado.']);
+    }
+
+    public function rejectProduct($id) {
+        $product = \App\Models\Product::findOrFail($id);
+        $product->update(['active' => false]);
+        \App\Models\Report::where('product_id', $id)->update(['resolved' => true]);
+        return response()->json(['message' => 'Producto bloqueado y ocultado del marketplace.']);
+    }
 }

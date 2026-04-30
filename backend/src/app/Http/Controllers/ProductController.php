@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Report;
 
 class ProductController extends Controller
 {
@@ -191,7 +192,6 @@ class ProductController extends Controller
             ->where('active', true)
             ->has('details')
             ->withAvg('reviews', 'rating')
-            /* AGREGAMOS ESTA LÍNEA: */
             ->withCount('reviews')
             ->withCount(['details as sales_count' => function ($query) {
                 $query->whereHas('order', function ($q) {
@@ -218,4 +218,20 @@ class ProductController extends Controller
 
         return response()->json($productos);
     }
+
+    public function report(Request $request, $id) {
+    $request->validate([
+        'reason' => 'required|string',
+        'details' => 'nullable|string'
+    ]);
+
+    Report::create([
+        'product_id' => $id,
+        'user_id' => Auth::id(),
+        'reason' => $request->reason,
+        'details' => $request->details
+    ]);
+
+    return response()->json(['message' => 'Denuncia recibida correctamente.']);
+}
 }

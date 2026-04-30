@@ -52,6 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [ProductController::class, 'show']);
     });
 
+    Route::post('/products/{id}/report', [ProductController::class, 'report']);
+
     Route::get('/orders', [OrderController::class, 'index']);
 
     Route::prefix('/seller')->group(function () {
@@ -90,5 +92,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/ingresos', [AdminController::class, 'ingresos']);
         Route::post('/reembolsar/{id_order}', [PaymentController::class, 'refundOrder']);
+        Route::get('/reports', [AdminController::class, 'getPendingReports']);
+        Route::post('/products/{id}/approve', [AdminController::class, 'approveProduct']);
+        Route::post('/products/{id}/reject', [AdminController::class, 'rejectProduct']);
     });
 });

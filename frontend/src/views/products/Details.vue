@@ -13,6 +13,17 @@ const agregando = ref(false);
 const enviandoReview = ref(false);
 const hoverRating = ref(0);
 const nuevaReview = ref({ rating: 5, comment: "" });
+const mostrarModalReporte = ref(false);
+const enviandoReporte = ref(false);
+const reporte = ref({ reason: "Contenido inapropiado", details: "" });
+const motivosReporte = [
+  "Contenido inapropiado",
+  "Imagen engañosa",
+  "Precio abusivo o falso",
+  "Derechos de autor / Plagio",
+  "Estafa o Fraude",
+  "Otro"
+];
 
 const formatoArchivo = computed(() => {
   if (!producto.value?.file_url) return "Desconocido";
@@ -124,6 +135,29 @@ const enviarReview = async () => {
   }
 };
 
+const enviarDenuncia = async () => {
+  try {
+    enviandoReporte.value = true;
+    const token = localStorage.getItem("token");
+    
+    // await axios.post(`http://localhost:8080/api/products/${producto.value.id}/report`, reporte.value, {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // });
+
+    console.log("Intentando conectar a:", `http://localhost:8080/api/admin/reports`);
+  const response = await axios.get(`http://localhost:8080/api/admin/reports`);
+
+    alert("Gracias. El equipo de moderación revisará el producto.");
+    mostrarModalReporte.value = false;
+    reporte.value = { reason: "Contenido inapropiado", details: "" };
+  } catch (error) {
+    console.error("Error al enviar denuncia:", error);
+    alert("No se pudo enviar la denuncia.");
+  } finally {
+    enviandoReporte.value = false;
+  }
+};
+
 onMounted(obtenerProducto);
 </script>
 
@@ -225,6 +259,14 @@ onMounted(obtenerProducto);
             <router-link to="/">Ver perfil completo</router-link>
           </div>
         </div>
+
+        <button @click="mostrarModalReporte = true" class="btn-reportar-enlace">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+            <line x1="4" y1="22" x2="4" y2="15"></line>
+          </svg>
+          Denunciar este producto
+        </button>
       </div>
     </div>
 
@@ -301,5 +343,30 @@ onMounted(obtenerProducto);
     <div class="spinner"></div>
   </div>
   
-  <Footer />
+  <div v-if="mostrarModalReporte" class="overlay-reporte" @click.self="mostrarModalReporte = false">
+      <div class="modal-reporte">
+        <h3>Denunciar producto</h3>
+        <p>Ayúdanos a mantener Nexus seguro. ¿Por qué reportas este contenido?</p>
+        
+        <div class="campo">
+          <label>Motivo</label>
+          <select v-model="reporte.reason">
+            <option v-for="motivo in motivosReporte" :key="motivo" :value="motivo">{{ motivo }}</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Detalles adicionales (opcional)</label>
+          <textarea v-model="reporte.details" placeholder="Explica brevemente el problema..."></textarea>
+        </div>
+
+        <div class="acciones-modal">
+          <button @click="mostrarModalReporte = false" class="btn-cancelar">Cancelar</button>
+          <button @click="enviarDenuncia" :disabled="enviandoReporte" class="btn-confirmar">
+            {{ enviandoReporte ? 'Enviando...' : 'Enviar denuncia' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  <Footer/>
 </template>
