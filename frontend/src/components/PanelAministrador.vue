@@ -5,6 +5,7 @@ import Footer from "./Footer.vue";
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
+import Moderador from "./NavPanelAdmin/Moderador.vue";
 
 const activeTab = ref("incidencias");
 
@@ -13,7 +14,7 @@ const tabs = [
   { id: "usuarios", label: "Usuarios" },
   { id: "ingresos", label: "Ingresos" },
   { id: "reembolsos", label: "Reembolsos" },
-  { id: "imagenes", label: "Imágenes" },
+  { id: "moderador", label: "Moderador" },
   { id: "mantenimiento", label: "Mantenimiento" },
   { id: "logs", label: "Logs" },
 ];
@@ -103,7 +104,7 @@ const tabs = [
               <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path>
             </svg>
             <svg
-              v-if="tab.id === 'imagenes'"
+              v-if="tab.id === 'moderador'"
               width="18"
               height="18"
               viewBox="0 0 24 24"
@@ -191,6 +192,10 @@ const tabs = [
 
       <div v-else-if="activeTab === 'ingresos'" class="fade-in">
         <Ingresos />
+      </div>
+
+      <div v-else-if="activeTab === 'moderador'" class="fade-in">
+        <Moderador />
       </div>
 
       <div v-else class="fade-in">

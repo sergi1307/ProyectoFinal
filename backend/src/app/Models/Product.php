@@ -45,4 +45,9 @@ class Product extends Model
     {
         return $this->hasMany(Detail::class, 'id_product', 'id');
     }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

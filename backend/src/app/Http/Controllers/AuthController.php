@@ -79,7 +79,7 @@ class AuthController extends Controller
             'mensaje' => 'Login exitoso',
             'token'   => $token,
             'usuario' => [
-                'id'    => $user->id_user, 
+                'id'    => $user->id, 
                 'name'  => $user->name,
                 'email' => $user->email,
                 'role'  => $user->role,
