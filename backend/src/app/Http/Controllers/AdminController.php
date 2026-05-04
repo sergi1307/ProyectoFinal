@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Product;
 
 class AdminController extends Controller
 {
@@ -52,9 +53,19 @@ class AdminController extends Controller
     }
 
     public function getPendingReports() {
-        return \App\Models\Product::whereHas('reports', function($q) {
+        return Product::whereHas('reports', function($q) {
             $q->where('resolved', false);
-        })->with(['reports.user', 'user'])->get();
+        })->where('active', true)
+          ->with(['reports.user', 'user'])
+          ->get();
+    }
+
+    public function getHistoryReports() {
+        return Product::whereHas('reports', function($q) {
+            $q->where('resolved', true);
+        })->where('active', false)
+          ->with(['reports.user', 'user'])
+          ->get();
     }
 
     public function approveProduct($id) {

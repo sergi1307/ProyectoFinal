@@ -7,6 +7,8 @@
 
   .section-header {
     margin-bottom: 2rem;
+    text-align: center;
+
     h2 {
       font-size: 1.5rem;
       color: $primary-blue;
@@ -15,6 +17,37 @@
     }
     p {
       color: $text-muted;
+    }
+  }
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+
+  button {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid rgba($primary-blue, 0.15);
+    background-color: $bg-card;
+    color: $text-muted;
+    cursor: pointer;
+    border-radius: $border-radius-md;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: $transition-base;
+
+    &:hover {
+      background-color: rgba($primary-blue, 0.04);
+      color: $text-main;
+    }
+
+    &.activo {
+      background-color: $primary-blue;
+      color: white;
+      border-color: $primary-blue;
+      box-shadow: 0 4px 12px rgba($primary-glow, 0.2);
     }
   }
 }
@@ -42,12 +75,15 @@
 
   .image-container {
     width: 100%;
-    height: 200px;
     background: $bg-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
   }
 
@@ -88,8 +124,76 @@
     color: $text-muted;
     padding-top: 0.5rem;
     border-top: 1px solid rgba($primary-blue, 0.05);
-    p { margin-bottom: 0.2rem; }
-    strong { color: $text-main; }
+    p {
+      margin-bottom: 0.2rem;
+    }
+    strong {
+      color: $text-main;
+    }
+  }
+
+  .caja-denuncias {
+    margin: 15px 0;
+    padding: 12px;
+    background-color: #fee2e2;
+    border-left: 4px solid #ef4444;
+    border-radius: $border-radius-sm;
+
+    .titulo-denuncia {
+      color: #b91c1c;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .lista-motivos {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 80px;
+      overflow-y: auto;
+      padding-right: 5px;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #fca5a5;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+
+      li {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #fca5a5;
+        font-size: 0.9rem;
+
+        &:last-child {
+          margin-bottom: 0;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+
+        strong {
+          color: #7f1d1d;
+          display: block;
+        }
+
+        .detalle-txt {
+          font-style: italic;
+          color: #450a0a;
+          margin: 4px 0;
+        }
+
+        .reportador {
+          font-size: 0.8rem;
+          color: #991b1b;
+        }
+      }
+    }
   }
 
   .card-actions {
@@ -108,24 +212,36 @@
       font-size: 0.9rem;
     }
 
-    .btn-aprobar { 
-      background: $primary-blue; 
-      color: white; 
-      
-      &:hover { 
+    .btn-aprobar {
+      background: $primary-blue;
+      color: white;
+
+      &:hover {
         background: $primary-hover;
         box-shadow: 0 0 12px rgba($primary-glow, 0.3);
-      } 
+      }
     }
-    
-    .btn-rechazar { 
+
+    .btn-rechazar {
       background: #ef4444;
-      color: white; 
-      
-      &:hover { 
-        background: #dc2626; 
-      } 
+      color: white;
+
+      &:hover {
+        background: #dc2626;
+      }
     }
+  }
+
+  .historial-badge {
+    text-align: center;
+    color: #dc2626;
+    font-weight: 700;
+    padding: 0.75rem;
+    background: #fee2e2;
+    border-radius: $border-radius-md;
+    font-size: 0.9rem;
+    border: 1px dashed #fca5a5;
+    margin-top: auto;
   }
 }
 
@@ -143,6 +259,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

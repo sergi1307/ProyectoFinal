@@ -93,6 +93,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::get('/ingresos', [AdminController::class, 'ingresos']);
         Route::post('/reembolsar/{id_order}', [PaymentController::class, 'refundOrder']);
         Route::get('/reports', [AdminController::class, 'getPendingReports']);
+        Route::get('/reports/history', [AdminController::class, 'getHistoryReports']);
         Route::post('/products/{id}/approve', [AdminController::class, 'approveProduct']);
         Route::post('/products/{id}/reject', [AdminController::class, 'rejectProduct']);
     });

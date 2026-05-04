@@ -138,15 +138,22 @@ const enviarReview = async () => {
 const enviarDenuncia = async () => {
   try {
     enviandoReporte.value = true;
-    const token = localStorage.getItem("token");
-    
-    // await axios.post(`http://localhost:8080/api/products/${producto.value.id}/report`, reporte.value, {
-    //   headers: { Authorization: `Bearer ${token}` },
-    // });
-
-    console.log("Intentando conectar a:", `http://localhost:8080/api/admin/reports`);
-  const response = await axios.get(`http://localhost:8080/api/admin/reports`);
-
+    let token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión para denunciar un producto.");
+      return;
+    }
+    token = token.replace(/^"(.*)"$/, '$1');
+    await axios.post(
+      `http://localhost:8080/api/products/${producto.value.id}/report`, 
+      reporte.value, 
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
     alert("Gracias. El equipo de moderación revisará el producto.");
     mostrarModalReporte.value = false;
     reporte.value = { reason: "Contenido inapropiado", details: "" };
