@@ -15,6 +15,7 @@ import Perfil from '@/views/perfil/Perfil.vue';
 import NotFound from '@/components/Error/NotFound.vue';
 import Suscripciones from '@/components/Suscripciones/Suscripciones.vue';
 import Pedidos from '@/components/Pedidos/Pedidos.vue';
+import { mostrarLoader, ocultarLoader } from '@/loaderState';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -111,6 +112,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    mostrarLoader();
+
     const userData = localStorage.getItem("usuario");
     let user = null;
 
@@ -141,6 +144,10 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+});
+
+router.afterEach(() => {
+    ocultarLoader();
 });
 
 export default router;
