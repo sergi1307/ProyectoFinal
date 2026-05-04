@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->decimal('balance', 10, 2)->default(0.00);
+            $table->boolean('primer_login')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

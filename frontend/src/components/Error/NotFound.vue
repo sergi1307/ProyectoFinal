@@ -1,4 +1,15 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const volverAtras = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/');
+  }
+};
 </script>
 
 <template>
@@ -19,9 +30,9 @@
         La página que buscas en Nexus no existe, ha sido movida o actualmente no está disponible.
       </p>
 
-      <router-link to="/" class="btn-home">
-        Volver al Inicio
-      </router-link>
+      <button @click="volverAtras" class="btn-home" style="cursor: pointer; border: none; font-family: inherit;">
+        Volver a la página anterior
+      </button>
     </div>
   </div>
 </template>
