@@ -55,6 +55,8 @@ const enviarDatos = async () => {
 
       if (userData.role === 'admin') {
         router.push('/admin');
+      } else if (userData.primer_login === true || userData.primer_login === 1) {
+        router.push('/suscripciones');
       } else {
         router.push('/general');
       }

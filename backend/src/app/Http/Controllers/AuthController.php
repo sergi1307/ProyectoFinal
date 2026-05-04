@@ -73,18 +73,26 @@ class AuthController extends Controller
             ], 403);
         }
 
+        $esPrimerLogin = (bool) $user->primer_login;
+
+        if ($esPrimerLogin) {
+            $user->primer_login = false;
+            $user->save();
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'mensaje' => 'Login exitoso',
             'token'   => $token,
             'usuario' => [
-                'id'    => $user->id, 
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role,
-                'avatar' => $user->avatar,
-                'plan'   => $user->plan
+                'id'           => $user->id, 
+                'name'         => $user->name,
+                'email'        => $user->email,
+                'role'         => $user->role,
+                'avatar'       => $user->avatar,
+                'plan'         => $user->plan,
+                'primer_login' => $esPrimerLogin, 
             ]
         ], 200);
     }
