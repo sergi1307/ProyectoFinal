@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Incident;
+use App\Models\Log as AdminLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +32,16 @@ class IncidentController extends Controller
             'status'      => 'pendiente',
         ]);
 
+        AdminLog::create([
+            'clase' => 'Incidencia',
+            'accion' => 'Crear',
+            'descripcion' => "El usuario ha abierto una nueva incidencia: '{$incident->subject}' (ID: {$incident->id_incident}).",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'asunto' => $incident->subject
+            ]
+        ]);
+
         return response()->json([
             'status'  => 'success',
             'message' => 'Incidencia enviada correctamente',
@@ -41,8 +52,20 @@ class IncidentController extends Controller
     public function update(Request $request, $id)
     {
         $incident = Incident::findOrFail($id);
+        $estadoAnterior = $incident->status;
         $incident->status = $request->status;
         $incident->save();
+
+        AdminLog::create([
+            'clase' => 'Incidencia',
+            'accion' => 'Actualizar Estado',
+            'descripcion' => "Estado de incidencia ID: {$id} modificado de '{$estadoAnterior}' a '{$request->status}'.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'id_incidencia' => $id,
+                'nuevo_estado' => $request->status
+            ]
+        ]);
 
         return response()->json($incident, 200);
     }

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
+use App\Models\Log as AdminLog;
+use App\Models\Report;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -69,14 +72,35 @@ class AdminController extends Controller
     }
 
     public function approveProduct($id) {
-        \App\Models\Report::where('product_id', $id)->update(['resolved' => true]);
+        $product = Product::findOrFail($id);
+
+        Report::where('product_id', $id)->update(['resolved' => true]);
+
+        AdminLog::create([
+            'clase' => 'Producto',
+            'accion' => 'Aprobar',
+            'descripcion' => "Se ha aprobado el producto: {$product->title} (ID: {$id}). Se marcaron los reportes como resueltos.",
+            'user_id' => Auth::id(),
+            'payload' => ['product_id' => $id, 'title' => $product->title]
+        ]);
+
         return response()->json(['message' => 'Producto verificado.']);
     }
 
     public function rejectProduct($id) {
-        $product = \App\Models\Product::findOrFail($id);
+        $product = Product::findOrFail($id);
         $product->update(['active' => false]);
-        \App\Models\Report::where('product_id', $id)->update(['resolved' => true]);
+
+        Report::where('product_id', $id)->update(['resolved' => true]);
+
+        AdminLog::create([
+            'clase' => 'Producto',
+            'accion' => 'Rechazar',
+            'descripcion' => "Se ha rechazado y ocultado el producto: {$product->title} (ID: {$id}).",
+            'user_id' => Auth::id(),
+            'payload' => ['product_id' => $id, 'title' => $product->title]
+        ]);
+
         return response()->json(['message' => 'Producto bloqueado y ocultado del marketplace.']);
     }
 }

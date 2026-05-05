@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Log as AdminLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -123,6 +124,18 @@ class ProductController extends Controller
 
         $product->categories()->attach($request->categorias);
 
+        AdminLog::create([
+            'clase' => 'Producto',
+            'accion' => 'Crear',
+            'descripcion' => "El usuario ha publicado un nuevo producto: '{$product->title}' por {$product->price}€.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'product_id' => $product->id,
+                'categorias' => $request->categorias,
+                'file_size' => $tamanioArchivo
+            ]
+        ]);
+
         return response()->json(['message' => '¡Éxito!'], 201);
     }
 
@@ -133,6 +146,14 @@ class ProductController extends Controller
         $user->favorites()->toggle($product->id);
 
         $isFavorite = $user->favorites()->where('product_id', $product->id)->exists();
+
+        AdminLog::create([
+            'clase' => 'Favoritos',
+            'accion' => $isFavorite ? 'Añadir' : 'Quitar',
+            'descripcion' => ($isFavorite ? "Añadido a favoritos: " : "Eliminado de favoritos: ") . "'{$product->title}'.",
+            'user_id' => $user->id,
+            'payload' => ['product_id' => $product->id]
+        ]);
 
         return response()->json([
             'message' => $isFavorite ? 'Añadido a favoritos' : 'Eliminado de favoritos',
@@ -225,12 +246,26 @@ class ProductController extends Controller
         'details' => 'nullable|string'
     ]);
 
+    $product = Product::findOrFail($id);
+
     Report::create([
         'product_id' => $id,
         'user_id' => Auth::id(),
         'reason' => $request->reason,
         'details' => $request->details
     ]);
+
+    AdminLog::create([
+            'clase' => 'Producto',
+            'accion' => 'Denunciar',
+            'descripcion' => "Denuncia recibida para '{$product->title}': {$request->reason}.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'product_id' => $id,
+                'motivo' => $request->reason,
+                'detalles' => $request->details
+            ]
+        ]);
 
     return response()->json(['message' => 'Denuncia recibida correctamente.']);
 }

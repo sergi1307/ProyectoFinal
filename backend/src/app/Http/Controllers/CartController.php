@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Log as AdminLog;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,6 +40,8 @@ class CartController extends Controller
             'user_id' => Auth::id()
         ]);
 
+        $product = Product::find($request->product_id);
+
         $cartItem = CartItem::where('cart_id', $cart->id_cart)
                             ->where('product_id', $request->product_id)
                             ->first();
@@ -52,6 +56,18 @@ class CartController extends Controller
                 'quantity' => $request->quantity
             ]);
         }
+
+        AdminLog::create([
+            'clase' => 'Carrito',
+            'accion' => 'Añadir',
+            'descripcion' => "Añadido al carrito: {$request->quantity}x '{$product->title}'.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'product_id' => $product->id,
+                'quantity' => $request->quantity,
+                'price' => $product->price
+            ]
+        ]);
 
         $cart->touch();
 
@@ -72,8 +88,21 @@ class CartController extends Controller
                 $query->where('user_id', Auth::id());
             })->firstOrFail();
 
+        $cantidadOriginal = $cartItem->quantity;
         $cartItem->update(['quantity' => $request->quantity]);
         
+        AdminLog::create([
+            'clase' => 'Carrito',
+            'accion' => 'Actualizar',
+            'descripcion' => "Cantidad cambiada para '{$cartItem->product->title}': de {$cantidadOriginal} a {$request->quantity}.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'item_id' => $id_cart_item,
+                'old_quantity' => $cantidadOriginal,
+                'new_quantity' => $request->quantity
+            ]
+        ]);
+
         $cartItem->cart->touch();
 
         return response()->json(['message' => 'Cantidad actualizada correctamente']);
@@ -88,6 +117,14 @@ class CartController extends Controller
             ->whereHas('cart', function($query) {
                 $query->where('user_id', Auth::id());
             })->firstOrFail();
+
+        AdminLog::create([
+            'clase' => 'Carrito',
+            'accion' => 'Quitar',
+            'descripcion' => "Eliminado '{$cartItem->product->title}' del carrito.",
+            'user_id' => Auth::id(),
+            'payload' => ['product_id' => $cartItem->product_id]
+        ]);
 
         $cartItem->cart->touch();
         $cartItem->delete();
