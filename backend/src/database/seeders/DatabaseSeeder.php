@@ -7,242 +7,193 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\Incident;
+use App\Models\Report;
 use App\Models\Cart;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
+    /**
+     * Seed the application's database.
+     */
     public function run(): void
     {
+        DB::disableQueryLog();
+        $faker = Faker::create('es_ES');
+
+        $this->command->info('Iniciando el seeder de Nexus...');
+
         // --- 1. USUARIOS ---
-        $admin = User::create([
-            'name' => 'Admin Nexus',
+        $this->command->info('Creando usuarios...');
+        $users = [];
+        
+        $users[] = User::create([
+            'name' => 'Admin General',
             'email' => 'admin@nexus.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
-            'email_verified' => true,
+            'plan' => 'Ultra',
             'active' => true,
+            'email_verified' => true,
+            'primer_login' => false,
         ]);
 
-        $dani = User::create([
-            'name' => 'Dani Renza',
-            'email' => 'dani@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'email_verified' => true,
-            'active' => true,
-        ]);
+        $vendedoresIds = [];
+        for ($i = 0; $i < 14; $i++) {
+            $user = User::create([
+                'name' => $faker->company . ' Digital Studio',
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'plan' => $faker->randomElement(['Pro', 'Ultra']),
+                'active' => true,
+                'email_verified' => true,
+                'primer_login' => false,
+            ]);
+            $users[] = $user;
+            $vendedoresIds[] = $user->id;
+        }
 
-        $sara = User::create([
-            'name' => 'Sara Renza',
-            'email' => 'sara@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'email_verified' => true,
-            'active' => true,
-        ]);
-
-        $carlos = User::create([
-            'name' => 'Carlos Dev',
-            'email' => 'carlos@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'email_verified' => true,
-            'active' => true,
-        ]);
+        $compradoresIds = [];
+        for ($i = 0; $i < 35; $i++) {
+            $user = User::create([
+                'name' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'plan' => 'Básico',
+                'active' => $faker->boolean(90),
+                'email_verified' => $faker->boolean(95),
+                'primer_login' => $faker->boolean(30),
+            ]);
+            $users[] = $user;
+            $compradoresIds[] = $user->id;
+        }
 
         // --- 2. CATEGORÍAS ---
-        $categorias = ['Cursos', 'eBooks', 'Software', 'Plantillas', 'Audios', 'Fotografías', 'Vídeos', 'Fuentes', 'Gaming', 'Extensiones', 'Servicios Web', 'Otros' ];
+        $this->command->info('Creando categorías...');
+        $categorias = ['Cursos', 'eBooks', 'Software', 'Plantillas', 'Audios', 'Fotografías', 'Vídeos', 'Fuentes', 'Gaming', 'Extensiones', 'Servicios Web', 'Otros'];
         $catIds = [];
         foreach ($categorias as $cat) {
             $c = Category::create(['name' => $cat]);
-            $catIds[] = $c->id;
+            $catIds[$cat] = $c->id;
         }
 
-        // --- 3. PRODUCTOS (AHORA CON FILE_SIZE) ---
-        $p1 = Product::create([
-            'title' => 'Nexus UI Kit Pro',
-            'description' => 'Un paquete de componentes profesionales para Vue y Figma.',
-            'price' => 49.99,
-            'file_url' => 'files/nexus-ui.zip',
-            'file_size' => 85400000, // ~81 MB
-            'image_url' => 'https://images.unsplash.com/photo-1586717791821-3f44a563eb4c',
-            'user_id' => $admin->id,
-            'active' => true,
-        ]);
-        $p1->categories()->attach([$catIds[0], $catIds[1]]);
-
-        $p2 = Product::create([
-            'title' => 'Curso de Laravel 11 Avanzado',
-            'description' => 'Aprende a crear APIs robustas desde cero.',
-            'price' => 29.50,
-            'file_url' => 'files/laravel-course.zip',
-            'file_size' => 1572864000, // ~1.5 GB
-            'image_url' => 'https://images.unsplash.com/photo-1531403009284-440f080d1e12',
-            'user_id' => $dani->id,
-            'active' => true,
-        ]);
-        $p2->categories()->attach([$catIds[0]]);
-
-        $p3 = Product::create([
-            'title' => 'Lofi Hip Hop Beats Pack',
-            'description' => '50 beats sin copyright para tus streams.',
-            'price' => 15.00,
-            'file_url' => 'files/music-pack.zip',
-            'file_size' => 314572800, // ~300 MB
-            'image_url' => 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',
-            'user_id' => $sara->id,
-            'active' => true,
-        ]);
-        $p3->categories()->attach([$catIds[4]]);
-
-        $p4 = Product::create([
-            'title' => 'Plantilla E-commerce Vue 3',
-            'description' => 'Plantilla completa con carrito, pasarela de pago y panel.',
-            'price' => 89.00,
-            'file_url' => 'files/ecommerce-vue.zip',
-            'file_size' => 12500000, // ~12 MB
-            'image_url' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
-            'user_id' => $admin->id,
-            'active' => true,
-        ]);
-        $p4->categories()->attach([$catIds[3], $catIds[10]]);
-
-        $p5 = Product::create([
-            'title' => 'Fotografías 4K Paisajes',
-            'description' => 'Pack de 100 fotos de alta calidad.',
-            'price' => 10.00,
-            'file_url' => 'files/fotos.zip',
-            'file_size' => 4294967296, // ~4 GB
-            'image_url' => 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e',
-            'user_id' => $carlos->id,
-            'active' => true,
-        ]);
-        $p5->categories()->attach([$catIds[5]]);
-
-
-        // --- 4. PEDIDOS Y DETALLES (NUEVO) ---
-        // Uso DB::table por si los modelos Order y Detail no tienen configuradas las primary keys personalizadas (id_order, id_detail)
+        // --- 3. PRODUCTOS DIGITALES ---
+        $this->command->info('Creando 200 productos con imágenes de animales...');
+        $productosIds = [];
         
-        // Pedido 1: Carlos compra a Admin (Completado)
-        $idOrder1 = DB::table('orders')->insertGetId([
-            'total' => 138.99,
-            'status' => 'completed',
-            'user_id' => $carlos->id,
-            'created_at' => Carbon::now()->subDays(10),
-            'updated_at' => Carbon::now()->subDays(10),
-        ]);
-        DB::table('details')->insert([
-            ['id_order' => $idOrder1, 'id_product' => $p1->id, 'price' => 49.99, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['id_order' => $idOrder1, 'id_product' => $p4->id, 'price' => 89.00, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-        ]);
+        $nombresPorCat = [
+            'Cursos' => ['Masterclass de Laravel', 'Curso de Marketing Digital', 'Aprende Python desde cero', 'Diseño UI/UX Avanzado', 'Taller de Node.js'],
+            'eBooks' => ['Guía de Nutrición', 'Manual de Inversiones', 'Recetario Vegano', 'El Arte de la Guerra Digital', 'Ebook de Productividad'],
+            'Software' => ['Gestor de Inventarios', 'Antivirus Nexus Pro', 'Editor de Código Ligero', 'Calculadora Financiera', 'SaaS de Facturación'],
+            'Plantillas' => ['Landing Page Minimalista', 'Curriculum Vitae Moderno', 'Plantilla de Facturación Excel', 'Dashboard Administrativo', 'Layout para Blog'],
+            'Audios' => ['Pack de Efectos de Sonido', 'Música Lo-fi para Streaming', 'Ambiente de Bosque HD', 'Podcast: Futuro Tech', 'Samples de Batería'],
+            'Fotografías' => ['Texturas de Cemento', 'Paisajes de los Alpes', 'Pack de Fondos Abstractos', 'Macrofotografía de Flores', 'Cielo Estrellado HD'],
+            'Vídeos' => ['Metraje de Dron 4K', 'Transiciones para Streamers', 'Fondo Animado Galaxia', 'Intro para YouTube', 'Efecto de Humo Cinematic'],
+            'Fuentes' => ['Tipografía Serif Elegante', 'Fuente Script para Logos', 'Pack de Fuentes Modernas', 'Letra estilo Retro', 'Fuente Sans Compacta'],
+            'Gaming' => ['Mapa para RPG Maker', 'Skin de Espada Legendaria', 'Asset de Bosque Pixel Art', 'Script de Inventario Unity', 'Pack de Sonidos 8-bit'],
+            'Extensiones' => ['Bloqueador de Anuncios Pro', 'Plugin de SEO para Chrome', 'Extensión de Productividad', 'Traductor en Tiempo Real', 'Widget de Clima'],
+            'Servicios Web' => ['Hosting Mensual Pro', 'Certificado SSL Anual', 'Mantenimiento de WordPress', 'Auditoría de Seguridad', 'Optimización de Velocidad'],
+            'Otros' => ['Pack de Iconos SVG', 'Pinceles para Procreate', 'Manual de Usuario Genérico', 'Lista de Contactos B2B', 'Filtros para Redes Sociales']
+        ];
 
-        // Pedido 2: Sara compra a Dani (Completado)
-        $idOrder2 = DB::table('orders')->insertGetId([
-            'total' => 29.50,
-            'status' => 'completed',
-            'user_id' => $sara->id,
-            'created_at' => Carbon::now()->subDays(5),
-            'updated_at' => Carbon::now()->subDays(5),
-        ]);
-        DB::table('details')->insert([
-            ['id_order' => $idOrder2, 'id_product' => $p2->id, 'price' => 29.50, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-        ]);
+        for ($i = 0; $i < 200; $i++) {
+            $categoriaRandom = $faker->randomElement($categorias);
+            $nombreBase = $faker->randomElement($nombresPorCat[$categoriaRandom]);
+            $titulo = $nombreBase . ' ' . $faker->word; 
 
-        // Pedido 3: Dani compra a Sara (Completado)
-        $idOrder3 = DB::table('orders')->insertGetId([
-            'total' => 15.00,
-            'status' => 'completed',
-            'user_id' => $dani->id,
-            'created_at' => Carbon::now()->subDays(2),
-            'updated_at' => Carbon::now()->subDays(2),
-        ]);
-        DB::table('details')->insert([
-            ['id_order' => $idOrder3, 'id_product' => $p3->id, 'price' => 15.00, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-        ]);
+            $product = Product::create([
+                'title' => ucfirst($titulo),
+                'description' => 'Producto digital premium de la categoría ' . $categoriaRandom . '. Incluye documentación completa, archivos originales y soporte técnico de por vida.',
+                'price' => $faker->randomFloat(2, 4.99, 149.99),
+                'file_url' => 'files/nexus_' . $faker->uuid . '.zip',
+                'file_size' => $faker->numberBetween(5242880, 524288000),
+                'image_url' => 'https://picsum.photos/seed/' . $i . '/800/600', 
+                'user_id' => $faker->randomElement($vendedoresIds),
+                'active' => $faker->boolean(95),
+            ]);
 
-        // Pedido 4: Admin compra a Carlos (Pendiente)
-        $idOrder4 = DB::table('orders')->insertGetId([
-            'total' => 10.00,
-            'status' => 'pending',
-            'user_id' => $admin->id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-        DB::table('details')->insert([
-            ['id_order' => $idOrder4, 'id_product' => $p5->id, 'price' => 10.00, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-        ]);
+            $product->categories()->attach($catIds[$categoriaRandom]);
+            $productosIds[] = $product->id;
+        }
 
-        // Pedido 5: Sara intenta comprar a Admin (Cancelado)
-        $idOrder5 = DB::table('orders')->insertGetId([
-            'total' => 49.99,
-            'status' => 'cancelled',
-            'user_id' => $sara->id,
-            'created_at' => Carbon::now()->subMonth(),
-            'updated_at' => Carbon::now()->subMonth(),
-        ]);
-        DB::table('details')->insert([
-            ['id_order' => $idOrder5, 'id_product' => $p1->id, 'price' => 49.99, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-        ]);
+        // --- 4. PEDIDOS ---
+        $this->command->info('Creando pedidos y ventas...');
+        for ($i = 0; $i < 300; $i++) {
+            $buyerId = $faker->randomElement($compradoresIds);
+            $fechaCompra = Carbon::now()->subDays($faker->numberBetween(1, 365));
+            $estado = $faker->randomElement(['completed', 'completed', 'completed', 'pending', 'cancelled']);
 
+            $idOrder = DB::table('orders')->insertGetId([
+                'total' => 0,
+                'status' => $estado,
+                'user_id' => $buyerId,
+                'is_paid_to_seller' => ($estado === 'completed') ? $faker->boolean(80) : false,
+                'created_at' => $fechaCompra,
+                'updated_at' => $fechaCompra,
+            ]);
 
-        // --- 5. RESEÑAS (REVIEWS) ---
-        Review::create([
-            'rating' => 5.0,
-            'comment' => '¡Increíble UI Kit! Me ha ahorrado semanas de trabajo.',
-            'user_id' => $carlos->id,
-            'product_id' => $p1->id,
-        ]);
+            $numProductos = $faker->numberBetween(1, 3);
+            $totalPedido = 0;
+            $productosComprados = $faker->randomElements($productosIds, $numProductos);
 
-        Review::create([
-            'rating' => 4.5,
-            'comment' => 'Muy buen curso, aunque me gustaría más contenido de Testing.',
-            'user_id' => $sara->id,
-            'product_id' => $p2->id,
-        ]);
+            foreach ($productosComprados as $prodId) {
+                $precio = Product::find($prodId)->price;
+                $totalPedido += $precio;
 
-        Review::create([
-            'rating' => 5.0,
-            'comment' => 'Excelentes beats, los uso en mis streams de Twitch todos los días.',
-            'user_id' => $dani->id,
-            'product_id' => $p3->id,
-        ]);
+                DB::table('details')->insert([
+                    'id_order' => $idOrder,
+                    'id_product' => $prodId,
+                    'price' => $precio,
+                    'created_at' => $fechaCompra,
+                    'updated_at' => $fechaCompra,
+                ]);
+            }
+            DB::table('orders')->where('id_order', $idOrder)->update(['total' => $totalPedido]);
+        }
 
+        // --- 5. RESEÑAS ---
+        $this->command->info('Escribiendo reseñas...');
+        for ($i = 0; $i < 400; $i++) {
+            Review::create([
+                'rating' => $faker->randomFloat(1, 3.5, 5.0),
+                'comment' => $faker->randomElement(['Excelente calidad', 'Justo lo que necesitaba', 'Funciona perfectamente', 'Muy buen soporte del vendedor', 'Gran relación calidad-precio']),
+                'user_id' => $faker->randomElement($compradoresIds),
+                'product_id' => $faker->randomElement($productosIds),
+                'created_at' => Carbon::now()->subDays($faker->numberBetween(1, 300)),
+            ]);
+        }
 
-        // --- 6. FAVORITOS ---
-        DB::table('favorites')->insert([
-            ['user_id' => $dani->id, 'product_id' => $p3->id, 'created_at' => Carbon::now()],
-            ['user_id' => $sara->id, 'product_id' => $p1->id, 'created_at' => Carbon::now()],
-            ['user_id' => $carlos->id, 'product_id' => $p2->id, 'created_at' => Carbon::now()],
-        ]);
+        // --- 6. INCIDENCIAS ---
+        $this->command->info('Generando 35 incidencias...');
+        $asuntos = ['Error al descargar archivo', 'Duda sobre licencia', 'Factura no recibida', 'El archivo ZIP está dañado', 'Problema con el pago'];
+        
+        for ($i = 0; $i < 35; $i++) {
+            Incident::create([
+                'user_id' => $faker->randomElement($users)->id,
+                'subject' => $faker->randomElement($asuntos),
+                'description' => 'Consulta técnica o problema reportado por el usuario sobre un producto digital recientemente adquirido.',
+                'status' => $faker->randomElement(['pendiente', 'pendiente', 'resuelta']),
+                'created_at' => Carbon::now()->subDays($faker->numberBetween(1, 60)),
+            ]);
+        }
 
-        // --- 7. CARRITOS ---
-        $cart1 = Cart::create(['user_id' => $dani->id]);
-        DB::table('cart_items')->insert([
-            'cart_id' => $cart1->id_cart,
-            'product_id' => $p1->id,
-            'quantity' => 1,
-            'added_at' => Carbon::now()
-        ]);
+        // --- 7. REPORTES DE PRODUCTOS ---
+        for ($i = 0; $i < 10; $i++) {
+            Report::create([
+                'product_id' => $faker->randomElement($productosIds),
+                'user_id' => $faker->randomElement($compradoresIds),
+                'reason' => $faker->randomElement(['Contenido Inapropiado', 'Derechos de Autor', 'Archivo Corrupto']),
+                'details' => 'Reporte preventivo para moderación.',
+                'resolved' => $faker->boolean(40),
+            ]);
+        }
 
-        // --- 8. INCIDENCIAS ---
-        Incident::create([
-            'user_id' => $dani->id,
-            'subject' => 'Error en la descarga',
-            'description' => 'No puedo descargar el archivo del Nexus UI Kit.',
-            'status' => 'pendiente'
-        ]);
-
-        Incident::create([
-            'user_id' => $sara->id,
-            'subject' => 'Consulta sobre licencia',
-            'description' => '¿Puedo usar el UI kit en múltiples proyectos comerciales?',
-            'status' => 'resuelta'
-        ]);
-
-        $this->command->info('Base de datos rellenada con éxito para Nexus App (con pedidos y file_sizes).');
+        $this->command->info('✅ ¡Éxito! DB rellena: 50 Usuarios, 12 Categorías, 200 Productos (Animales), 300 Pedidos y 35 Incidencias.');
     }
 }
