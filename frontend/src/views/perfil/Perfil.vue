@@ -165,7 +165,10 @@ watch(
   <main class="contenedor-principal">
     <h1 class="titulo-pagina">Mi Perfil</h1>
 
-    <div class="cuadricula-perfil" :class="{ 'solo-admin': usuario.rol === 'admin' }">
+    <div
+      class="cuadricula-perfil"
+      :class="{ 'solo-admin': usuario.rol === 'admin' }"
+    >
       <section class="tarjeta-principal">
         <div class="cabecera-tarjeta">
           <h2>Información Personal</h2>
@@ -173,13 +176,15 @@ watch(
         </div>
 
         <div class="contenedor-avatar">
-          <div class="circulo-avatar">
+          <div
+            class="circulo-avatar"
+            :class="['plan-' + usuario.plan?.toLowerCase()]"
+          >
             <img
               v-if="usuario.avatar && obtenerRutaAvatar(usuario.avatar)"
               :src="obtenerRutaAvatar(usuario.avatar)"
               class="imagen-perfil"
             />
-
             <svg
               v-else
               viewBox="0 0 24 24"
@@ -213,7 +218,13 @@ watch(
             </div>
             <div class="textos-campo">
               <span class="etiqueta-campo">Nombre</span>
-              <span class="valor-campo">{{ usuario.nombre }}</span>
+              <div class="nombre-wrapper">
+                <span class="valor-campo">{{ usuario.nombre }}</span>
+                <span v-if="usuario.plan && usuario.plan !== 'Básico'" 
+                      :class="['badge-exclusivo', 'badge-' + usuario.plan.toLowerCase()]">
+                  {{ usuario.plan }}
+                </span>
+              </div>
             </div>
           </div>
 
