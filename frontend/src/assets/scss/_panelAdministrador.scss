@@ -37,6 +37,7 @@
   margin: 0 !important;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   padding: 12px 28px;
   border: none;
@@ -48,6 +49,12 @@
   border-radius: 14px;
   transition: all 0.3s ease-in-out;
   white-space: nowrap;
+
+  .tab-text {
+    display: inline-block;
+    line-height: normal;
+    transform: translateY(1.5px);
+  }
 
   &.active {
     background: #ffffff;
@@ -63,13 +70,29 @@
   }
 }
 
+/* ICONOS */
 .icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  color: inherit;
+  border-radius: 50%;
+  background-color: #f0f9ff;
+  flex-shrink: 0; 
+  
+  width: 34px; 
+  height: 34px;
+  
+  margin: 0 !important; 
+
+  svg,
+  img {
+    width: 18px; 
+    height: 18px;
+    min-width: 18px; 
+    min-height: 18px;
+    margin: 0 !important; 
+    display: block;
+  }
 }
 
 .tab-content {

@@ -5,6 +5,7 @@ import Footer from "./Footer.vue";
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
+import Reembolsos from "./NavPanelAdmin/Reembolsos.vue";
 import Moderador from "./NavPanelAdmin/Moderador.vue";
 
 const activeTab = ref("incidencias");
@@ -154,7 +155,7 @@ const tabs = [
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </span>
-          {{ tab.label }}
+          <span class="tab-text">{{ tab.label }}</span>
         </button>
       </nav>
 
@@ -192,6 +193,10 @@ const tabs = [
 
       <div v-else-if="activeTab === 'ingresos'" class="fade-in">
         <Ingresos />
+      </div>
+
+      <div v-else-if="activeTab === 'reembolsos'" class="fade-in">
+        <Reembolsos />
       </div>
 
       <div v-else-if="activeTab === 'moderador'" class="fade-in">

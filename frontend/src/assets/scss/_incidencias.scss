@@ -75,6 +75,9 @@ $bg-light: #f8fafc;
   overflow: visible !important;
   position: relative;
   z-index: 1;
+  max-width: 100%; 
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .empty-state-text {

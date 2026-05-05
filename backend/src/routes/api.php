@@ -12,6 +12,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RefundRequestController;
 
 // ==========================================
 // 1. RUTAS PÚBLICAS
@@ -54,7 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/products/{id}/report', [ProductController::class, 'report']);
 
-    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/products/{id}/report', [ProductController::class, 'report']);
+
+    Route::prefix('/orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/{id_order}/refund', [RefundRequestController::class, 'store']);
+    });
 
     Route::prefix('/seller')->group(function () {
         Route::get('/balance', [SellerController::class, 'obtenerBalances']);
@@ -91,7 +97,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/ingresos', [AdminController::class, 'ingresos']);
-        Route::post('/reembolsar/{id_order}', [PaymentController::class, 'refundOrder']);
+        Route::get('/refund-requests', [RefundRequestController::class, 'index']);
+        Route::post('/refunds/{id_order}/approve', [PaymentController::class, 'refundOrder']);
         Route::get('/reports', [AdminController::class, 'getPendingReports']);
         Route::get('/reports/history', [AdminController::class, 'getHistoryReports']);
         Route::post('/products/{id}/approve', [AdminController::class, 'approveProduct']);

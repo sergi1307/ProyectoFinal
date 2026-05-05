@@ -1,5 +1,8 @@
 @import "variables";
 
+/* ESTILOS ESPECÍFICOS DEL MODAL DE INCIDENCIAS */
+/* Los estilos base (.modal-overlay, .modal-content, .modal-header, etc.) están en _components.scss */
+
 h2 {
   img {
     width: 150px;
@@ -8,81 +11,9 @@ h2 {
   }
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(15, 23, 42, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-.modal-content {
-  background-color: #ffffff;
-  width: 90%;
-  max-width: 600px;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  overflow: hidden;
-  max-height: 90vh;
-}
-
-.modal-header {
-  background-color: #0f172a;
-  padding: 1.5rem 1.5rem 1rem;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  h2 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.2rem;
-  }
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  position: absolute;
-  top: 1rem;
-  right: 1.2rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-body {
-  padding: 1.2rem 1.5rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
+/* Customización del formulario dentro del modal */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.3rem !important;
   margin: 0 !important;
 
   label {
@@ -151,23 +82,16 @@ select {
   cursor: pointer;
 }
 
-.modal-footer {
-  background-color: transparent;
-  padding: 1.2rem 1.5rem 1.8rem;
-  display: flex;
-  gap: 1rem;
-  border-top: none;
-}
-
+/* Botones específicos del modal */
 .btn-cancel,
 .btn-submit {
-  border: none;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1.2rem !important;
   font-size: 0.95rem;
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
   margin: 0;
+  border: none;
 }
 
 .btn-cancel {
@@ -180,10 +104,29 @@ select {
   background-color: #0cc0df;
   color: #0f172a;
   flex: 1;
+  width: auto !important;
+  padding: 0.6rem 1.2rem !important;
 
   &:hover {
     background-color: #0aa5c0;
   }
+}
+
+/* Sobreescribir estilos del header específico de este modal */
+.modal-header {
+  background-color: #0f172a;
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body {
+  padding: 1.2rem 1.5rem 0;
+}
+
+.modal-footer {
+  padding: 1.2rem 1.5rem 1.8rem;
 }
 
 :global(.Vue-Toastification__container) {

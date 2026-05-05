@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import NavBar from '../NavBar.vue';
-import Footer from '../Footer.vue';
-
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import NavBar from "../../components/NavBar.vue";
+import Footer from "../../components/Footer.vue";
 
 const pedidos = ref([]);
 const cargando = ref(true);
@@ -10,54 +10,87 @@ const error = ref(null);
 
 const infoEstado = (status) => {
   const estados = {
-    'pending': { texto: 'Pendiente', clase: 'status-pending' },
-    'completed': { texto: 'Completado', clase: 'status-completed' },
-    'cancelled': { texto: 'Cancelado', clase: 'status-cancelled' },
-    'refunded': { texto: 'Reembolsado', clase: 'status-refunded' }
+    pending: { texto: "Pendiente", clase: "status-pending" },
+    completed: { texto: "Completado", clase: "status-completed" },
+    cancelled: { texto: "Cancelado", clase: "status-cancelled" },
+    refunded: { texto: "Reembolsado", clase: "status-refunded" },
   };
-  return estados[status] || { texto: status, clase: 'status-default' };
+  return estados[status] || { texto: status, clase: "status-default" };
 };
 
 const formatearFecha = (fecha) => {
-  if (!fecha) return '';
+  if (!fecha) return "";
   const date = new Date(fecha);
-  return new Intl.DateTimeFormat('es-ES', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric', 
-    hour: '2-digit', 
-    minute: '2-digit' 
+  return new Intl.DateTimeFormat("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   }).format(date);
 };
 
 const cargarPedidos = async () => {
   try {
     cargando.value = true;
-    error.value = null; 
-    
-    const token = localStorage.getItem('token'); 
-    
-    const respuesta = await fetch('http://localhost:8080/api/orders', {
-      method: 'GET',
+    error.value = null;
+
+    const token = localStorage.getItem("token");
+
+    const respuesta = await fetch("http://localhost:8080/api/orders", {
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}` 
-      }
-    }); 
-    
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     if (!respuesta.ok) {
-      throw new Error('No se pudo conectar con el servidor.');
+      throw new Error("No se pudo conectar con el servidor.");
     }
-    
+
     const datos = await respuesta.json();
     console.log("DATOS RECIBIDOS DE LARAVEL:", datos);
     pedidos.value = datos;
-    
   } catch (e) {
     error.value = e.message;
     console.error("Error cargando los pedidos:", e);
   } finally {
     cargando.value = false;
+  }
+};
+
+const solicitarReembolso = async (idPedido) => {
+  // 1. Confirmación de seguridad
+  if (
+    !confirm(
+      "¿Estás seguro de que quieres solicitar el reembolso de este pedido?",
+    )
+  ) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const respuesta = await axios.post(
+      `http://localhost:8080/api/orders/${idPedido}/refund`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    alert("Reembolso solicitado correctamente.");
+
+    await cargarPedidos();
+  } catch (e) {
+    const mensajeError =
+      e.response?.data?.error || "No se pudo procesar el reembolso.";
+    alert("Error: " + mensajeError);
+    console.error("Error en la petición de reembolso:", e);
   }
 };
 
@@ -74,7 +107,9 @@ onMounted(() => {
       <header class="cabecera-explorar">
         <div class="info-titulo">
           <h1 class="titulo-seccion">Mis Pedidos</h1>
-          <p class="contador-productos">{{ pedidos.length }} pedidos en tu historial</p>
+          <p class="contador-productos">
+            {{ pedidos.length }} pedidos en tu historial
+          </p>
         </div>
 
         <div class="acciones-derecha">
@@ -103,7 +138,7 @@ onMounted(() => {
         <div v-if="cargando" class="status-message">
           <p>Cargando tus pedidos...</p>
         </div>
-        
+
         <div v-else-if="error" class="status-message error">
           <p>Hubo un problema: {{ error }}</p>
         </div>
@@ -113,41 +148,55 @@ onMounted(() => {
         </div>
 
         <template v-else>
-          <div v-for="pedido in pedidos" :key="pedido.id_order" class="order-card">
-            
+          <div
+            v-for="pedido in pedidos"
+            :key="pedido.id_order"
+            class="order-card"
+          >
             <div class="order-header">
               <div class="order-info-main">
                 <div class="order-title-status">
                   <h2 class="order-id">Pedido #{{ pedido.id_order }}</h2>
-                  <span class="status-badge" :class="infoEstado(pedido.status).clase">
+                  <span
+                    class="status-badge"
+                    :class="infoEstado(pedido.status).clase"
+                  >
                     {{ infoEstado(pedido.status).texto }}
                   </span>
                 </div>
-                <p class="order-date">{{ formatearFecha(pedido.created_at) }}</p>
+                <p class="order-date">
+                  {{ formatearFecha(pedido.created_at) }}
+                </p>
               </div>
               <div class="order-total">
                 <p class="total-price">{{ pedido.total }}€</p>
-                <p class="total-products">{{ pedido.details?.length || 0 }} productos</p>
+                <p class="total-products">
+                  {{ pedido.details?.length || 0 }} productos
+                </p>
               </div>
             </div>
 
             <div class="products-list">
-              <div v-for="detalle in pedido.details" :key="detalle.id_detail" class="product-item">
-                
-                <div 
-                  class="product-image" 
-                  :style="{ 
-                    backgroundImage: detalle.product?.image_url 
-                      ? `url(${detalle.product.image_url})` 
-                      : 'linear-gradient(135deg, #1e293b, #0f172a)' 
+              <div
+                v-for="detalle in pedido.details"
+                :key="detalle.id_detail"
+                class="product-item"
+              >
+                <div
+                  class="product-image"
+                  :style="{
+                    backgroundImage: detalle.product?.image_url
+                      ? `url(${detalle.product.image_url})`
+                      : 'linear-gradient(135deg, #1e293b, #0f172a)',
                   }"
                 ></div>
 
                 <div class="product-details">
-                  <p class="product-name">{{ detalle.product?.title || 'Producto no disponible' }}</p>
+                  <p class="product-name">
+                    {{ detalle.product?.title || "Producto no disponible" }}
+                  </p>
                   <p class="product-quantity">Precio: {{ detalle.price }}€</p>
                 </div>
-                
               </div>
             </div>
 
@@ -185,10 +234,38 @@ onMounted(() => {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <path
+                      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                    ></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
                   Ver Detalles
+                </button>
+                <button
+                  v-if="pedido.status === 'completed'"
+                  @click="solicitarReembolso(pedido.id_order)"
+                  class="btn-card-action btn-refund"
+                >
+                  <svg
+                    class="btn-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M11 15h2a2 2 0 1 0 0-4h-3c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2h2"
+                    ></path>
+                    <path d="M12 3v2m0 14v2"></path>
+                    <path d="M20 12h-13"></path>
+                    <polyline points="10 15 7 12 10 9"></polyline>
+                  </svg>
+                  Solicitar Reembolso
                 </button>
               </div>
             </div>
