@@ -1,90 +1,18 @@
-@use 'variables' as *;
+@import "variables";
 
-.explorar-page {
-  background-color: $bg-color;
-  min-height: 100vh;
-  padding: 1rem 0 4rem 0;
-}
+/* ESTILOS ESPECÍFICOS DE PEDIDOS */
+/* Los estilos base (.explorar-page, .explorar-contenedor, .cabecera-explorar, .status-badge) 
+   están en _components.scss */
 
-.explorar-contenedor,
-.favoritos-contenedor {
-  max-width: 1200px;
-  margin: 0.9rem auto;
-  padding: 0 1.5rem;
-
-  main {
-    display: block;
-    width: 100%;
-  }
-}
-
+/* Customizaciones específicas para la página de pedidos */
 .cabecera-explorar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  .info-titulo {
-    margin-right: auto;
-
-    .titulo-seccion {
-      font-size: 2rem;
-      font-weight: 800;
-      color: $text-main;
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
-    }
-
-    .contador-productos {
-      color: $text-muted;
-      font-size: 1rem;
-      margin: 0;
-      line-height: 1.2;
-    }
-  }
-
-  .acciones-derecha {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex: 1;
-    justify-content: flex-end;
-    max-width: 600px;
-
-    .buscador-explorar {
-      flex-grow: 1;
-      max-width: 400px;
-    }
-  }
-
   .boton-filtros-disparador {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.8rem 1.6rem;
     background-image: linear-gradient(145deg, $primary-blue, $primary-hover);
-    background-color: $primary-blue;
-
-    border: none;
-    border-radius: $border-radius-md;
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    box-shadow:
-      0 4px 6px rgba(0, 151, 178, 0.15),
-      0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 151, 178, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
 
     &:hover {
       background-image: linear-gradient(145deg, $primary-hover, $primary-blue);
-      transform: translateY(-2px);
-      box-shadow:
-        0 8px 15px rgba(0, 151, 178, 0.25),
-        0 4px 6px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 15px rgba(0, 151, 178, 0.25), 0 4px 6px rgba(0, 0, 0, 0.08);
     }
 
     svg {
@@ -132,7 +60,7 @@
   padding: 4px 12px;
   border-radius: 20px;
   background-color: rgba($primary-glow, 0.12);
-  color: $primary-hover; 
+  color: $primary-hover;
   border: 1px solid rgba($primary-light, 0.3);
 }
 
@@ -144,12 +72,14 @@
 
 .order-total {
   text-align: right;
+
   .total-price {
     font-size: 1.3rem;
     font-weight: 800;
     color: $primary-blue;
     margin: 0;
   }
+
   .total-products {
     font-size: 0.8rem;
     color: $text-muted;
@@ -189,7 +119,7 @@
     font-weight: 600;
     margin: 0;
   }
-  
+
   .product-quantity {
     font-size: 0.75rem;
     color: $text-muted;
@@ -208,6 +138,7 @@
     font-size: 0.85rem;
     color: $text-muted;
     margin: 0;
+
     strong {
       color: $text-main;
     }
@@ -254,6 +185,7 @@
     align-items: flex-start;
     gap: 15px;
   }
+
   .cabecera-explorar .info-titulo .titulo-seccion {
     font-size: 1.5rem;
   }

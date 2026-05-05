@@ -1,7 +1,19 @@
+/* ================================================= */
+/* ORDEN DE IMPORTACIÓN OPTIMIZADO                  */
+/* 1. Variables y Reset                            */
+/* 2. Componentes reutilizables                    */
+/* 3. Páginas y secciones específicas               */
+/* ================================================= */
+
+/* VARIABLES Y RESET */
 @use 'variables';
 @use 'reset';
+
+/* COMPONENTES REUTILIZABLES (incluye formularios, botones, modales, etc.) */
+@use 'components';
+
+/* PÁGINAS ESPECÍFICAS */
 @use 'auth';
-@use 'forms';
 @use 'home';
 @use 'general';
 @use 'explorar';
@@ -10,7 +22,39 @@
 @use 'vender';
 @use 'carrito';
 @use 'producto-detalle';
-@use 'admin';
 @use 'perfil';
 @use 'pedidos';
 @use 'cookies';
+@use 'notFound';
+
+/* ADMIN Y MODERACIÓN */
+@use 'admin';
+@use 'incidencias';
+@use 'usuarios';
+@use 'panelAdministrador';
+@use 'moderador';
+
+/* COMPONENTES ADICIONALES */
+@use 'productCard';
+@use 'suscripciones';
+@use 'footer';
+@use 'navBar';
+@use 'legal';
+@import "loadingSpinner";
+
+/* LOADER GLOBAL CON ESTILOS ESPECÍFICOS DE FULLSCREEN */
+.superglobal-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.65); 
+  backdrop-filter: blur(3px); 
+  -webkit-backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.3s ease-in-out;
+}

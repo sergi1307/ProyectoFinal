@@ -277,7 +277,3 @@ onMounted(() => {
 
   <Footer></Footer>
 </template>
-
-<style scoped lang="scss">
-@import "../../assets/scss/pedidos";
-</style>
