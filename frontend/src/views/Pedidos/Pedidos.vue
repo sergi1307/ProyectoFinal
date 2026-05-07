@@ -61,7 +61,6 @@ const cargarPedidos = async () => {
 };
 
 const solicitarReembolso = async (idPedido) => {
-  // 1. Confirmación de seguridad
   if (
     !confirm(
       "¿Estás seguro de que quieres solicitar el reembolso de este pedido?",
@@ -134,7 +133,7 @@ onMounted(() => {
         </div>
       </header>
 
-      <main>
+      <main class="pedidos">
         <div v-if="cargando" class="status-message">
           <p>Cargando tus pedidos...</p>
         </div>
@@ -259,11 +258,15 @@ onMounted(() => {
                     stroke-linejoin="round"
                   >
                     <path
-                      d="M11 15h2a2 2 0 1 0 0-4h-3c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2h2"
+                      d="M10 1.5l-4 3 4 3.5"
+                      transform="rotate(-10, 7.5, 4.5)"
                     ></path>
-                    <path d="M12 3v2m0 14v2"></path>
-                    <path d="M20 12h-13"></path>
-                    <polyline points="10 15 7 12 10 9"></polyline>
+                    <path d="M20 12c0-4.4-3.6-8-8-8-0.8 0-1.6.1-2.4.3"></path>
+                    <path
+                      d="M14 22.5l4-3-4-3.5"
+                      transform="rotate(-10, 16.5, 19.5)"
+                    ></path>
+                    <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path>
                   </svg>
                   Solicitar Reembolso
                 </button>
