@@ -186,7 +186,11 @@ const logout = () => {
                 </router-link>
               </template>
               
-              <router-link to="/perfil" class="action-btn profile-link hide-on-mobile">
+              <router-link 
+                to="/perfil" 
+                class="action-btn profile-link hide-on-mobile"
+                :class="usuarioActual?.plan && usuarioActual.plan !== 'Básico' ? 'plan-' + usuarioActual.plan.toLowerCase() : ''"
+              >
                 <template v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)">
                   <img 
                     :src="obtenerRutaAvatar(usuarioActual.avatar)" 
@@ -194,12 +198,13 @@ const logout = () => {
                     class="avatar-circle"
                   />
                 </template>
-                
                 <template v-else>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                  <div class="avatar-circle svg-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
                 </template>
               </router-link>
               
@@ -222,13 +227,19 @@ const logout = () => {
         <div class="mobile-drawer-content">
           
           <div v-if="userRole" class="mobile-user-profile">
-            <img v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)" :src="obtenerRutaAvatar(usuarioActual.avatar)" class="mobile-avatar" />
-            <div v-else class="mobile-avatar-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
+            <div 
+              class="mobile-avatar-wrapper"
+              :class="usuarioActual?.plan && usuarioActual.plan !== 'Básico' ? 'plan-' + usuarioActual.plan.toLowerCase() : ''"
+            >
+              <img v-if="usuarioActual?.avatar && obtenerRutaAvatar(usuarioActual.avatar)" :src="obtenerRutaAvatar(usuarioActual.avatar)" class="mobile-avatar" />
+              <div v-else class="mobile-avatar-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
             </div>
+            
             <div class="mobile-user-info">
               <span class="mobile-user-name">{{ usuarioActual?.name || 'Usuario' }}</span>
               <span class="mobile-user-email">{{ usuarioActual?.email || '' }}</span>

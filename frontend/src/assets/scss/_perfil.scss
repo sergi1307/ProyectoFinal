@@ -260,12 +260,15 @@ button {
   .circulo-icono-estadistica {
     width: 52px;
     height: 52px;
-    background-color: lighten($primary-blue, 45%);
+    background-color: $primary-blue;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $primary-blue;
+  }
+
+  svg {
+    color:white;
   }
 
   .textos-estadistica {

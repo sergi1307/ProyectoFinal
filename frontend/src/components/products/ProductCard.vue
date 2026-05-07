@@ -142,7 +142,16 @@ const agregarAlCarrito = async () => {
         <span class="reviews">({{ producto.reviews_count || 0 }} reseñas)</span>
       </div>
 
-      <p v-if="!esMiProducto || modoPublico" class="autor">Por <span>{{ producto.user?.name || 'Vendedor Nexus' }}</span></p>
+      <div v-if="!esMiProducto || modoPublico" class="autor-wrapper">
+        <p class="autor">Por <span class="nombre-vendedor">{{ producto.user?.name || 'Vendedor Nexus' }}</span></p>
+        
+        <span 
+          v-if="producto.user?.plan && producto.user.plan !== 'Básico'" 
+          :class="['badge-vendedor', 'badge-' + producto.user.plan.toLowerCase()]"
+        >
+          {{ producto.user.plan }}
+        </span>
+      </div>
 
       <hr class="linea-separacion">
 
