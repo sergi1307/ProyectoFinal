@@ -147,7 +147,11 @@ const agregarAlCarrito = async () => {
         
         <span 
           v-if="producto.user?.plan && producto.user.plan !== 'Básico'" 
-          :class="['badge-vendedor', 'badge-' + producto.user.plan.toLowerCase()]"
+          :class="[
+            'badge-vendedor-titulo', 
+            'badge-exclusivo',
+            'badge-' + producto.user.plan.toLowerCase()
+          ]"
         >
           {{ producto.user.plan }}
         </span>

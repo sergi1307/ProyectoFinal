@@ -1,6 +1,5 @@
 @import "variables";
 
-// Variables de colores (extraídas de tu código original)
 $primary-color: #0097b2;
 $primary-hover: #00869e;
 $text-main: #0f172a;
@@ -51,7 +50,6 @@ $bg-light: #f8fafc;
     color: $text-main;
   }
 
-  // Media queries anidadas
   @media (max-width: 1200px) {
     flex: 0 0 calc(33.333% - 14px);
   }
@@ -61,7 +59,6 @@ $bg-light: #f8fafc;
   }
 }
 
-// Clases de utilidad de color
 .text-blue { color: #2563eb !important; }
 .text-orange { color: #d97706 !important; }
 .text-green { color: #16a34a !important; }
@@ -75,9 +72,6 @@ $bg-light: #f8fafc;
   overflow: visible !important;
   position: relative;
   z-index: 1;
-  max-width: 100%; 
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .empty-state-text {
