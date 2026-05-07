@@ -8,6 +8,7 @@ import Usuarios from "./NavPanelAdmin/Usuarios.vue";
 import Reembolsos from "./NavPanelAdmin/Reembolsos.vue";
 import Moderador from "./NavPanelAdmin/Moderador.vue";
 import LogsPanel from "./NavPanelAdmin/LogsPanel.vue";
+import Mantenimiento from "./NavPanelAdmin/Mantenimiento.vue";
 
 const activeTab = ref("incidencias");
 
@@ -202,6 +203,10 @@ const tabs = [
 
       <div v-else-if="activeTab === 'moderador'" class="fade-in">
         <Moderador />
+      </div>
+
+      <div v-else-if="activeTab === 'mantenimiento'" class="fade-in">
+        <Mantenimiento />
       </div>
 
       <div v-else-if="activeTab === 'logs'" class="fade-in">

@@ -1,0 +1,183 @@
+@use "variables" as *;
+
+.panel-mantenimiento {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .glass-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.mantenimiento-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+}
+
+/* Visual del Estado (ORB) */
+.status-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .orb-container {
+    position: relative;
+    margin-bottom: 2rem;
+
+    .orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+      z-index: 2;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      &.orb-blue {
+        background: linear-gradient(135deg, $primary-blue 0%, $primary-glow 100%);
+        box-shadow: 0 10px 30px rgba($primary-blue, 0.4);
+      }
+
+      &.orb-red {
+        background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+        box-shadow: 0 10px 30px rgba(#f43f5e, 0.4);
+        transform: scale(1.1);
+      }
+    }
+
+    .pulse-ring {
+      position: absolute;
+      top: -10%; left: -10%; width: 120%; height: 120%;
+      border: 2px solid $primary-blue;
+      border-radius: 50%;
+      animation: ripple 2s infinite;
+      opacity: 0;
+    }
+  }
+}
+
+/* El Interruptor "Master" */
+.master-switch-wrapper {
+  margin: 2rem 0;
+
+  .master-switch {
+    cursor: pointer;
+    display: inline-block;
+
+    input { display: none; }
+
+    .switch-design {
+      width: 160px;
+      height: 60px;
+      background: #e2e8f0;
+      border-radius: 50px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+
+      .switch-text {
+        flex: 1;
+        text-align: center;
+        font-weight: 900;
+        font-size: 0.8rem;
+        z-index: 1;
+        color: #94a3b8;
+        transition: all 0.3s;
+      }
+
+      .switch-slider {
+        position: absolute;
+        width: 70px;
+        height: 50px;
+        background: white;
+        border-radius: 40px;
+        left: 5px;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+    }
+
+    input:checked + .switch-design {
+      background: #1e293b;
+      .switch-slider {
+        left: 85px;
+        background: #f43f5e;
+      }
+      .on { color: white; }
+    }
+    input:not(:checked) + .switch-design .off { color: $primary-blue; }
+  }
+}
+
+.warning-box {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85rem;
+  color: $text-muted;
+  border: 1px solid #e2e8f0;
+
+  &.critical {
+    background: #fff1f2;
+    color: #e11d48;
+    border-color: #fecaca;
+  }
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.badge-sistema {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.8rem;
+
+  .punto-latido {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+
+  &.modo-critico {
+    background: #fff1f2;
+    color: #e11d48;
+  }
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}

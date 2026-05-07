@@ -122,5 +122,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         
         // Sistema de Auditoría
         Route::get('/logs', [LogController::class, 'index']);
+
+        // Modo Mantenimiento
+        Route::get('/maintenance-status', [AdminController::class, 'getMaintenanceStatus']);
+        Route::post('/toggle-maintenance', [AdminController::class, 'toggleMaintenance']);
     });
 });
