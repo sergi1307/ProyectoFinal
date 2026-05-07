@@ -103,4 +103,31 @@ class AdminController extends Controller
 
         return response()->json(['message' => 'Producto bloqueado y ocultado del marketplace.']);
     }
+
+    public function getMaintenanceStatus()
+    {
+        $status = DB::table('settings')->where('key', 'maintenance_mode')->value('value');
+        return response()->json(['active' => $status === '1']);
+    }
+
+    public function toggleMaintenance(Request $request)
+    {
+        $request->validate([
+            'active' => 'required|boolean'
+        ]);
+
+        $newValue = $request->active ? '1' : '0';
+
+        DB::table('settings')->where('key', 'maintenance_mode')->update(['value' => $newValue, 'updated_at' => now()]);
+
+        AdminLog::create([
+            'clase' => 'Sistema',
+            'accion' => $request->active ? 'Mantenimiento ON' : 'Mantenimiento OFF',
+            'descripcion' => "El administrador " . Auth::user()->name . " cambió el estado del mantenimiento.",
+            'user_id' => Auth::id(),
+            'payload' => ['ip' => $request->ip()]
+        ]);
+
+        return response()->json(['message' => 'Estado de mantenimiento actualizado.']);
+    }
 }
