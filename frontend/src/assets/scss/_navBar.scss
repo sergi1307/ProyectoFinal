@@ -277,19 +277,18 @@
       bottom: -6px;
       left: 50%;
       transform: translateX(-50%);
-      white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+      white-space: nowrap;
       background: $primary-blue;
       color: white;
       font-size: 7px;
       font-weight: 900;
       padding: 1px 5px;
       border-radius: 10px;
-      border: 1px solid white;
+      border: 2px solid white;
       line-height: 1;
     }
   }
 
-  /* Estilos para el plan ULTRA */
   &.plan-ultra {
     background: $color-ultra-cyber;
     background-size: 300% 300%;
@@ -299,25 +298,26 @@
     isolation: isolate;
 
     &::after {
-      content: 'ULTRA';
+      content: "ULTRA" !important;
       position: absolute;
-      bottom: -6px;
+      bottom: -4px;
       left: 50%;
       transform: translateX(-50%);
-      white-space: nowrap; /* Evita que el texto se parta en dos líneas */
       z-index: 99;
       color: white;
-      font-size: 7px;
+      font-size: 10px;
       font-weight: 900;
-      padding: 1px 5px;
-      border-radius: 10px;
-      border: 1px solid white;
-      background-image: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      line-height: 1;
+      padding: 2px 12px;
+      border-radius: 30px;
+      border: 2px solid white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background-image: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%), linear-gradient(135deg, #00d2ff, #3a7bd5) !important;
+      background-size: 300% 300%, 100% 100% !important;
+      background-repeat: no-repeat !important;
+      animation: shineBadgeReverse 3s infinite linear !important;
     }
   }
 
-  /* Estilos internos de la imagen/svg para que queden dentro del arco */
   .avatar-circle {
     width: 100%;
     height: 100%;
@@ -612,7 +612,7 @@
       font-weight: 900;
       padding: 1px 5px;
       border-radius: 10px;
-      border: 1px solid white;
+      border: 2px solid white;
       line-height: 1;
     }
   }
@@ -635,7 +635,7 @@
       font-weight: 900;
       padding: 1px 5px;
       border-radius: 10px;
-      border: 1px solid white;
+      border: 2px solid white;
       background-image: linear-gradient(135deg, #00d2ff, #3a7bd5);
       line-height: 1;
     }
@@ -693,7 +693,7 @@
       font-weight: 900;
       padding: 1px 6px;
       border-radius: 10px;
-      border: 1px solid white;
+      border: 3px solid white;
     }
   }
 
@@ -712,8 +712,16 @@
       font-weight: 900;
       padding: 1px 6px;
       border-radius: 10px;
-      border: 1px solid white;
+      border: 3px solid white;
       background-image: linear-gradient(135deg, #00d2ff, #3a7bd5);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background-image: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%), linear-gradient(135deg, #00d2ff, #3a7bd5) !important;
+      background-size: 300% 300%, 100% 100% !important;
+      background-repeat: no-repeat !important;
+      animation: shineBadgeReverse 3s infinite linear !important;
     }
   }
 
