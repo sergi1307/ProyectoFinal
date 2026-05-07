@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PurchaseReceiptMail;
+use App\Models\Log as AdminLog;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -53,6 +55,20 @@ class PaymentController extends Controller
                     ]
                 ]
             ]);
+        
+        $paypalResponse = $response->json();
+
+        AdminLog::create([
+            'clase' => 'Pago',
+            'accion' => 'Crear Orden',
+            'descripcion' => "El usuario inició un proceso de pago por un total de {$totalFinal}€.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'paypal_order_id' => $paypalResponse['id'] ?? 'N/A',
+                'total' => $totalFinal,
+                'items_count' => count($items)
+            ]
+        ]);
 
         return response()->json($response->json());
     }
@@ -79,7 +95,7 @@ class PaymentController extends Controller
                 }
 
                 return DB::transaction(function () use ($paypalData, $orderId) {
-                    $user = auth()->user();
+                    $user = Auth::user();
 
                     $cart = DB::table('carts')->where('user_id', $user->id)->first();
 
@@ -112,6 +128,18 @@ class PaymentController extends Controller
                         'is_paid_to_seller' => false,
                         'created_at' => now(),
                         'updated_at' => now()
+                    ]);
+
+                    AdminLog::create([
+                        'clase' => 'Pago',
+                        'accion' => 'Capturar',
+                        'descripcion' => "Pago confirmado y pedido #{$idOrder} creado. Total: {$totalPagado}€.",
+                        'user_id' => $user->id,
+                        'payload' => [
+                            'order_id' => $idOrder,
+                            'paypal_capture_id' => $payPalCapturedId,
+                            'total' => $totalPagado
+                        ]
                     ]);
 
                     $details = $items->map(function ($item) use ($idOrder) {
@@ -198,6 +226,18 @@ class PaymentController extends Controller
                             'updated_at' => now()
                         ]);
                 });
+
+                AdminLog::create([
+                    'clase' => 'Pago',
+                    'accion' => 'Reembolsar',
+                    'descripcion' => "Se ha procesado un reembolso para el pedido #{$id_order} por un total de {$order->total}€.",
+                    'user_id' => Auth::id(),
+                    'payload' => [
+                        'order_id' => $id_order,
+                        'paypal_capture_id' => $order->paypal_capture_id,
+                        'monto_reembolsado' => $order->total
+                    ]
+                ]);
 
                 return response()->json([
                     'status' => 'REFUNDED',
