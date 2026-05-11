@@ -70,7 +70,6 @@ onMounted(cargarUsuarios);
           <tr>
             <th>Nombre</th>
             <th>Email</th>
-            <th>Estado</th>
             <th>Rol</th>
             <th class="text-center">Acciones</th>
           </tr>
@@ -79,26 +78,6 @@ onMounted(cargarUsuarios);
           <tr v-for="user in usuarios" :key="user.id">
             <td class="nombre-cell">{{ user.name }}</td>
             <td class="email-cell">{{ user.email }}</td>
-            <td>
-              <span
-                :class="[
-                  'badge',
-                  user.active == 0 &&
-                  user.active !== null &&
-                  user.active !== undefined
-                    ? 'badge-baneado'
-                    : 'badge-activo',
-                ]"
-              >
-                {{
-                  user.active == 0 &&
-                  user.active !== null &&
-                  user.active !== undefined
-                    ? "Baneado"
-                    : "Activo"
-                }}
-              </span>
-            </td>
             <td>
               <span class="badge-rol">{{ user.role }}</span>
             </td>
