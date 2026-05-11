@@ -80,6 +80,7 @@ onMounted(fetchStatus);
               <i v-else class="fas fa-tools"></i>
             </div>
             <div class="pulse-ring"></div>
+            <div class="pulse-ring" :class="isMaintenance ? 'ring-red' : 'ring-blue'"></div>
           </div>
           <div class="status-text-central">
             <h2>{{ isMaintenance ? 'Acceso Restringido' : 'Acceso Público' }}</h2>
