@@ -18,6 +18,7 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\LogController;
+use App\Models\Order;
 
 // ==========================================
 // 1. RUTAS PÚBLICAS
@@ -73,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/orders')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::post('/{id_order}/refund', [RefundRequestController::class, 'store']);
+        Route::post('/{id_order}/invoice', [OrderController::class, 'sendOfficialInvoice']);
     });
 
     // Vendedor

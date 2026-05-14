@@ -7,6 +7,7 @@ import Footer from "../../components/Footer.vue";
 const pedidos = ref([]);
 const cargando = ref(true);
 const error = ref(null);
+const solicitandoFactura = ref({});
 
 const infoEstado = (status) => {
   const estados = {
@@ -90,6 +91,32 @@ const solicitarReembolso = async (idPedido) => {
       e.response?.data?.error || "No se pudo procesar el reembolso.";
     alert("Error: " + mensajeError);
     console.error("Error en la petición de reembolso:", e);
+  }
+};
+
+const solicitarFactura = async (idPedido) => {
+  solicitandoFactura.value[idPedido] = true;
+  try {
+    const token = localStorage.getItem("token");
+
+    const respuesta = await axios.post(
+      `http://localhost:8080/api/orders/${idPedido}/invoice`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("¡Éxito! " + respuesta.data.message);
+  } catch (e) {
+    const mensajeError =
+      e.response?.data?.message || "No se pudo solicitar la factura.";
+    alert("Error: " + mensajeError);
+    console.error("Error al pedir la factura:", e);
+  } finally {
+    solicitandoFactura.value[idPedido] = false;
   }
 };
 
@@ -201,7 +228,12 @@ onMounted(() => {
 
             <div class="order-footer">
               <div class="order-actions">
-                <button class="btn-card-action">
+                <button 
+                  v-if="pedido.status === 'completed'"
+                  @click="solicitarFactura(pedido.id_order)"
+                  :disabled="solicitandoFactura[pedido.id_order]"
+                  class="btn-card-action"
+                >
                   <svg
                     class="btn-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +250,7 @@ onMounted(() => {
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  Factura
+                  {{ solicitandoFactura[pedido.id_order] ? "Enviando..." : "Factura" }}
                 </button>
                 <button class="btn-card-action">
                   <svg
