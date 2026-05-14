@@ -16,11 +16,48 @@ class ProductController extends Controller
     {
         $userId = auth('sanctum')->id();
 
+        // Iniciamos la consulta
         $query = Product::with(['categories', 'user'])
             ->withCount('reviews')
             ->withAvg('reviews', 'rating')
             ->where('active', true)
             ->where('user_id', '!=', $userId);
+
+        // 1. Filtro de Búsqueda (solo si hay texto)
+        if ($request->filled('search')) {
+            $search = $request->query('search');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // 2. Filtro de Categorías
+        if ($request->filled('categories')) {
+            $categories = explode(',', $request->query('categories'));
+            $query->whereHas('categories', function($q) use ($categories) {
+                $q->whereIn('categories.id', $categories);
+            });
+        }
+
+        // 3. Filtro de Precio (Asegúrate de que min_price no sea null)
+        $min = $request->query('min_price', 0);
+        $max = $request->query('max_price', 100000);
+        $query->whereBetween('price', [$min, $max]);
+
+        // 4. EL CULPABLE: Filtro de Rating
+        // Solo aplicamos el filtro si el usuario pide una calificación específica
+        if ($request->filled('min_rating') && $request->query('min_rating') !== 'todas') {
+            $query->having('reviews_avg_rating', '>=', (float)$request->query('min_rating'));
+        }
+
+        // Ordenación
+        switch ($request->query('order')) {
+            case 'Precio: Menor a Mayor': $query->orderBy('price', 'asc'); break;
+            case 'Precio: Mayor a Menor': $query->orderBy('price', 'desc'); break;
+            case 'Mejor calificados': $query->orderByDesc('reviews_avg_rating'); break;
+            default: $query->latest(); break;
+        }
 
         if ($userId) {
             $query->withExists(['favoritedBy as is_favorite' => function ($q) use ($userId) {
@@ -28,17 +65,7 @@ class ProductController extends Controller
             }]);
         }
 
-        $productos = $query->latest()->get();
-
-        $productos->transform(function ($producto) {
-            $producto->reviews_avg_rating = $producto->reviews_avg_rating
-                ? round($producto->reviews_avg_rating, 1)
-                : 0;
-
-            return $producto;
-        });
-
-        return response()->json($productos);
+        return response()->json($query->paginate(20));
     }
 
     public function show($id)

@@ -5,6 +5,8 @@ import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
 
+const paginaActual = ref(1);
+const totalPaginas = ref(1);
 const productos = ref([]);
 const categorias = ref([]);
 const cargando = ref(true);
@@ -158,20 +160,31 @@ const obtenerCategorias = async () => {
 const cargarDatos = async () => {
   try {
     cargando.value = true;
+    const token = localStorage.getItem("token");
 
-    const userData = localStorage.getItem("usuario");
-    if (userData) {
-      usuarioActual.value = JSON.parse(userData);
+    const params = {
+      page: paginaActual.value,
+      search: searchQuery.value,
+      categories: categoriasSeleccionadas.value.join(","),
+      min_price: precioMin.value,
+      max_price: precioMax.value,
+      min_rating: calificaciones.find(
+        (c) => c.label === calificacionSeleccionada.value,
+      )?.value,
+      order: ordenSeleccionado.value,
     }
 
     const resProd = await axios.get(
       "http://localhost:8080/api/products/index",
       {
+        params,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       },
     );
 
-    productos.value = resProd.data;
+    productos.value = resProd.data.data;
+    totalPaginas.value = resProd.data.last_page;
+    paginaActual.value = resProd.data.current_page;
     console.log("Productos recibidos (ya filtrados):", productos.value.length);
   } catch (error) {
     console.error("Error al cargar productos:", error);
@@ -179,6 +192,17 @@ const cargarDatos = async () => {
     cargando.value = false;
   }
 };
+
+watch([searchQuery, categoriasSeleccionadas, precioMin, precioMax, calificacionSeleccionada, ordenSeleccionado], () => {
+  paginaActual.value = 1;
+  cargarDatos();
+});
+
+const cambiarPagina = (p) => {
+  paginaActual.value = p;
+  cargarDatos();
+  window.scrollTo(0, 0);
+}
 
 const toggleFavorito = async (productId) => {
   try {
@@ -486,6 +510,22 @@ const manejarScroll = () => {
           </svg>
         </button>
       </transition>
+
+      <div class="paginacion-container" v-if="totalPaginas > 1">
+  <button 
+    :disabled="paginaActual === 1" 
+    @click="cambiarPagina(paginaActual - 1)"
+    class="btn-pag"
+  > Anterior </button>
+
+  <span class="info-pag">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+
+  <button 
+    :disabled="paginaActual === totalPaginas" 
+    @click="cambiarPagina(paginaActual + 1)"
+    class="btn-pag"
+  > Siguiente </button>
+</div>
 
     </div>
   </div>
