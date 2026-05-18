@@ -5,7 +5,9 @@ import axios from "axios";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import Navbar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const route = useRoute();
 const producto = ref(null);
 const cargando = ref(true);
@@ -150,7 +152,7 @@ const enviarReview = async () => {
     await obtenerProducto();
   } catch (error) {
     console.error("Error al enviar la review:", error);
-    alert("No se pudo enviar la valoración.");
+    addToast("No se pudo enviar la valoración.", 'error');
   } finally {
     enviandoReview.value = false;
   }
@@ -161,7 +163,7 @@ const enviarDenuncia = async () => {
     enviandoReporte.value = true;
     let token = localStorage.getItem("token");
     if (!token) {
-      alert("Debes iniciar sesión para denunciar un producto.");
+      addToast("Debes iniciar sesión para denunciar un producto.", 'error');
       return;
     }
     token = token.replace(/^"(.*)"$/, "$1");
@@ -175,12 +177,12 @@ const enviarDenuncia = async () => {
         },
       },
     );
-    alert("Gracias. El equipo de moderación revisará el producto.");
+    addToast("Gracias. El equipo de moderación revisará el producto.", 'success');
     mostrarModalReporte.value = false;
     reporte.value = { reason: "Contenido inapropiado", details: "" };
   } catch (error) {
     console.error("Error al enviar denuncia:", error);
-    alert("No se pudo enviar la denuncia.");
+    addToast("No se pudo enviar la denuncia.", 'error');
   } finally {
     enviandoReporte.value = false;
   }

@@ -43,6 +43,7 @@
 @use 'navBar';
 @use 'legal';
 @import "loadingSpinner";
+@import "toasts.scss";
 
 /* LOADER GLOBAL CON ESTILOS ESPECÍFICOS DE FULLSCREEN */
 .superglobal-loader {

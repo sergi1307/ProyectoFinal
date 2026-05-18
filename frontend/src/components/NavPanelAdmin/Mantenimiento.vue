@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const isMaintenance = ref(false);
 const loading = ref(false);
 const lastUpdate = ref(null);
@@ -47,7 +49,7 @@ const toggleStatus = async () => {
     isMaintenance.value = nuevoEstado;
     lastUpdate.value = new Date();
   } catch (error) {
-    alert("No se pudo cambiar el estado. Verifica tus permisos.");
+    addToast("No se pudo cambiar el estado. Verifica tus permisos.", 'error');
   } finally {
     loading.value = false;
   }

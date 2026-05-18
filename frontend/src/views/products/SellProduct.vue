@@ -4,9 +4,10 @@ import Footer from "@/components/Footer.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const router = useRouter();
-
 const cargando = ref(false);
 const vistaPrevia = ref(null);
 const archivoImagen = ref(null);
@@ -54,7 +55,7 @@ const manejarSubidaImagen = (evento) => {
 
 const crearProducto = async () => {
   if (producto.value.categorias.length === 0) {
-    alert("Por favor, selecciona al menos una categoría.");
+    addToast("Por favor, selecciona al menos una categoría.", 'error');
     return;
   }
 
@@ -80,7 +81,7 @@ const crearProducto = async () => {
     router.push("/mis-productos");
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al crear el producto.");
+    addToast("Error al crear el producto.", 'error');
   } finally {
     cargando.value = false;
   }

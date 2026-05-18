@@ -2,7 +2,9 @@
 import { defineProps, defineEmits, computed, ref } from "vue";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const props = defineProps({
   producto: {
     type: Object,
@@ -102,7 +104,7 @@ const agregarAlCarrito = async () => {
     
   } catch (error) {
     console.error("Error al agregar al carrito:", error);
-    alert("Hubo un error al agregar el producto. Quizás tu sesión expiró.");
+    addToast("Hubo un error al agregar el producto. Quizás tu sesión expiró.", 'error');
   } finally {
     agregando.value = false;
   }

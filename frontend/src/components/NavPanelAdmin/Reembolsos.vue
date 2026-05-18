@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const solicitudes = ref([]);
 const cargando = ref(true);
 const token = localStorage.getItem('token');
@@ -42,11 +44,11 @@ const procesarAccion = async (idOrder, ruta) => {
     await axios.post(`http://localhost:8080/api/admin/refunds/${idOrder}/${ruta}`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    alert('Operación finalizada');
+    addToast('Operación finalizada', 'success');
     cerrarModal();
     cargarSolicitudes();
   } catch (error) {
-    alert("Error: " + (error.response?.data?.error || "Error de servidor"));
+    addToast("Error: " + (error.response?.data?.error || "Error de servidor", 'error'));
   }
 };
 

@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const incidencias = ref([]);
 const loading = ref(true);
 const busqueda = ref("");
@@ -84,7 +86,7 @@ const actualizarEstadisticas = () => {
 
 const enviarmensaje = (email, asunto) => {
   if (!email) {
-    alert("Este usuario no tiene un correo electrónico asociado.");
+    addToast("Este usuario no tiene un correo electrónico asociado.", 'error');
     return;
   }
   const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;

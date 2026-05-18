@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const usuarios = ref([]);
 const cargando = ref(true);
 
@@ -47,10 +49,10 @@ const alternarBan = async (user) => {
 
     user.active = !user.active;
 
-    alert(`Usuario ${user.active ? "activado" : "baneado"} con éxito`);
+    addToast(`Usuario ${user.active ? "activado" : "baneado"} con éxito`, 'success');
   } catch (error) {
     console.error("Error al cambiar estado:", error);
-    alert("No se pudo procesar la acción en el servidor.");
+    addToast("No se pudo procesar la acción en el servidor.", 'error');
   }
 };
 

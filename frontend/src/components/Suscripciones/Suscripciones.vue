@@ -4,7 +4,9 @@ import axios from "axios";
 import NavBar from "../NavBar.vue";
 import Footer from "../Footer.vue";
 import { useRouter } from "vue-router";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const router = useRouter();
 
 const planes = ref([
@@ -83,12 +85,12 @@ const suscribirse = async (planId) => {
 
     window.dispatchEvent(new Event("perfil-actualizado"));
 
-    alert("¡Plan actualizado a " + response.data.plan + "!");
+    addToast("¡Plan actualizado a " + response.data.plan + "!", 'success');
 
     router.push("/perfil");
   } catch (error) {
     console.error(error);
-    alert("Error al cambiar de plan");
+    addToast("Error al cambiar de plan", 'error');
   }
 };
 </script>

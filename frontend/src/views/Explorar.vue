@@ -4,7 +4,9 @@ import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const productos = ref([]);
 const categorias = ref([]);
 const cargando = ref(true);
@@ -198,7 +200,7 @@ const toggleFavorito = async (productId) => {
 };
 
 const handleAgregado = (productId) => {
-  alert("¡Producto añadido al carrito correctamente!");
+  addToast("¡Producto añadido al carrito correctamente!", 'success');
 };
 
 onMounted(async () => {

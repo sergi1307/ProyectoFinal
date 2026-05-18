@@ -3,7 +3,9 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import "../../assets/css/auth.css";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const route = useRoute();
 const router = useRouter();
 const email = ref("");
@@ -56,7 +58,7 @@ const procesarCodigo = async () => {
         email: email.value,
         code: code.value,
       });
-      alert("Email verificado con éxito. Ya puedes iniciar sesión.");
+      addToast("Email verificado con éxito. Ya puedes iniciar sesión.", 'success');
       router.push("/login");
     } catch (error) {
       errorMsg.value = "Código incorrecto o expirado.";
@@ -85,9 +87,7 @@ const cambiarPassword = async () => {
       code: code.value,
       password: newPassword.value,
     });
-    alert(
-      "Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.",
-    );
+    addToast("Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.", 'success');
     router.push("/login");
   } catch (error) {
     errorMsg.value =
@@ -98,7 +98,7 @@ const cambiarPassword = async () => {
 
 const reenviarCodigo = async () => {
   await solicitarCodigo();
-  alert("Te hemos enviado un nuevo código.");
+  addToast("Te hemos enviado un nuevo código.", 'success');
 };
 </script>
 

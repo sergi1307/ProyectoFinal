@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const listaProductos = ref([]);
 const vistaActual = ref('pendientes');
 
@@ -44,7 +46,7 @@ const aprobar = async (id) => {
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);
   } catch (error) {
     console.error("Error al aprobar:", error);
-    alert("Error al aprobar el producto.");
+    addToast("Error al aprobar el producto.", 'error');
   }
 };
 
@@ -58,7 +60,7 @@ const rechazar = async (id) => {
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);
   } catch (error) {
     console.error("Error al rechazar:", error);
-    alert("Error al rechazar el producto.");
+    addToast("Error al rechazar el producto.", 'error');
   }
 };
 

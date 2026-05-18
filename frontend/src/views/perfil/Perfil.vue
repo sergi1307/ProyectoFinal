@@ -4,9 +4,10 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const route = useRoute();
-
 const usuario = ref({
   nombre: "",
   email: "",
@@ -110,7 +111,7 @@ const actualizarPerfil = async () => {
     guardando.value = false;
   } catch (error) {
     guardando.value = false;
-    alert("Hubo un error al guardar los cambios.");
+    addToast("Hubo un error al guardar los cambios.", 'error');
   }
 };
 
@@ -129,7 +130,7 @@ const confirmarEliminarCuenta = async () => {
     window.location.href = "/";
   } catch (error) {
     guardando.value = false;
-    alert("No se pudo eliminar la cuenta.");
+    addToast("No se pudo eliminar la cuenta.", error);
   }
 };
 
