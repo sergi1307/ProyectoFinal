@@ -72,8 +72,8 @@ onMounted(() => {
 <template>
   <div class="moderacion-section fade-in">
     <header class="section-header">
-      <h2>Moderación de Productos</h2>
-      <p>Gestiona las denuncias pendientes o revisa el historial de productos retirados.</p>
+      <h2>{{ $t('moderacion.titulo') }}</h2>
+      <p>{{ $t('moderacion.descripcion') }}</p>
     </header>
 
     <div class="tabs-container">
@@ -81,18 +81,18 @@ onMounted(() => {
         @click="cargarVista('pendientes')" 
         :class="{ activo: vistaActual === 'pendientes' }"
       >
-        Denuncias Pendientes
+        {{ $t('moderacion.tabPendientes') }}
       </button>
       <button 
         @click="cargarVista('historial')" 
         :class="{ activo: vistaActual === 'historial' }"
       >
-        Historial de Retirados
+        {{ $t('moderacion.tabHistorial') }}
       </button>
     </div>
 
     <div v-if="listaProductos.length === 0" class="empty-state">
-      <p>No hay productos en esta sección en este momento.</p>
+      <p>{{ $t('moderacion.emptyState') }}</p>
     </div>
 
     <div class="moderacion-grid" v-else>
@@ -106,34 +106,34 @@ onMounted(() => {
           <div class="product-info">
             <h3 class="product-title">{{ item.title }}</h3>
             <p class="product-desc">{{ item.description }}</p>
-            <p class="product-price">Precio: <span>{{ Number(item.price || 0).toFixed(2) }}€</span></p>
+            <p class="product-price">{{ $t('moderacion.precio') }} <span>{{ Number(item.price || 0).toFixed(2) }}€</span></p>
           </div>
 
           <div class="user-meta">
-            <p><strong>Subido por:</strong> {{ item.user?.name || 'Desconocido' }}</p>
-            <p><strong>Fecha:</strong> {{ new Date(item.created_at).toLocaleDateString() }}</p>
+            <p><strong>{{ $t('moderacion.subidoPor') }}</strong> {{ item.user?.name || $t('moderacion.desconocido') }}</p>
+            <p><strong>{{ $t('moderacion.fecha') }}</strong> {{ new Date(item.created_at).toLocaleDateString() }}</p>
           </div>
 
           <div class="caja-denuncias" v-if="item.reports && item.reports.length > 0">
             <p class="titulo-denuncia">
-              🚨 Denuncias ({{ item.reports.length }})
+              🚨 {{ $t('moderacion.denuncias') }} ({{ item.reports.length }})
             </p>
             <ul class="lista-motivos">
               <li v-for="reporte in item.reports" :key="reporte.id">
                 <strong>{{ reporte.reason }}</strong>
                 <p v-if="reporte.details" class="detalle-txt">"{{ reporte.details }}"</p>
-                <span class="reportador">Por: {{ reporte.user?.name || 'Anónimo' }}</span>
+                <span class="reportador">{{ $t('moderacion.por') }} {{ reporte.user?.name || $t('moderacion.anonimo') }}</span>
               </li>
             </ul>
           </div>
 
           <div class="card-actions" v-if="vistaActual === 'pendientes'">
-            <button @click="aprobar(item.id)" class="btn-aprobar">Aprobar</button>
-            <button @click="rechazar(item.id)" class="btn-rechazar">Rechazar</button>
+            <button @click="aprobar(item.id)" class="btn-aprobar">{{ $t('moderacion.btnAprobar') }}</button>
+            <button @click="rechazar(item.id)" class="btn-rechazar">{{ $t('moderacion.btnRechazar') }}</button>
           </div>
 
           <div class="historial-badge" v-else>
-            <span>🛑 Retirado del Marketplace</span>
+            <span>🛑 {{ $t('moderacion.badgeRetirado') }}</span>
           </div>
         </div>
       </article>

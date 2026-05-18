@@ -4,6 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import "../../assets/css/auth.css";
 import { useToast } from '@/composables/useToast';
+import NavBar from "@/components/NavBar.vue";
+import Footer from "@/components/Footer.vue";
 
 const { addToast } = useToast();
 const route = useRoute();
@@ -103,8 +105,9 @@ const reenviarCodigo = async () => {
 </script>
 
 <template>
+  <NavBar></NavBar>
   <main>
-    <router-link to="/login" class="inicio">← Volver al login</router-link>
+    <router-link to="/login" class="inicio">{{ $t('verificacion.volverLogin') }}</router-link>
 
     <form
       class="container"
@@ -117,7 +120,7 @@ const reenviarCodigo = async () => {
       "
     >
       <h1>
-        {{ mode === "reset" ? "Recuperar Contraseña" : "Verificar Email" }}
+        {{ mode === "reset" ? $t('verificacion.tituloRecuperar') : $t('verificacion.tituloVerificar') }}
       </h1>
 
       <p
@@ -134,27 +137,27 @@ const reenviarCodigo = async () => {
 
       <template v-if="paso === 1">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Introduce tu correo electrónico para recibir el código de 6 dígitos.
+          {{ $t('verificacion.descPaso1') }}
         </p>
-        <label for="email">Correo electrónico:</label>
+        <label for="email">{{ $t('verificacion.lblEmail') }}</label>
         <input
           type="email"
           id="email"
           v-model="email"
-          placeholder="tu@email.com"
+          :placeholder="$t('verificacion.phEmail')"
           required
         />
 
-        <button type="submit">Enviar código</button>
+        <button type="submit">{{ $t('verificacion.btnEnviar') }}</button>
       </template>
 
       <template v-if="paso === 2">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Introduce el código de 6 dígitos que te hemos enviado a
+          {{ $t('verificacion.descPaso2') }}
           <strong>{{ email }}</strong>
         </p>
 
-        <label for="code">Código de verificación:</label>
+        <label for="code">{{ $t('verificacion.lblCodigo') }}</label>
         <input
           type="text"
           id="code"
@@ -165,23 +168,23 @@ const reenviarCodigo = async () => {
         />
 
         <button type="submit">
-          {{ mode === "reset" ? "Siguiente paso" : "Verificar cuenta" }}
+          {{ mode === "reset" ? $t('verificacion.btnSiguiente') : $t('verificacion.btnVerificar') }}
         </button>
 
         <p id="normal">
-          ¿No has recibido el código?
+          {{ $t('verificacion.preguntaCodigo') }}
           <span id="cambiar" @click="reenviarCodigo" style="cursor: pointer"
-            >Reenviar código</span
+            >{{ $t('verificacion.btnReenviar') }}</span
           >
         </p>
       </template>
 
       <template v-if="paso === 3">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Crea una nueva contraseña para tu cuenta.
+          {{ $t('verificacion.descPaso3') }}
         </p>
 
-        <label for="newPassword">Nueva contraseña:</label>
+        <label for="newPassword">{{ $t('verificacion.lblNuevaPass') }}</label>
         <input
           type="password"
           id="newPassword"
@@ -190,7 +193,7 @@ const reenviarCodigo = async () => {
           required
         />
 
-        <label for="confirmPassword">Confirmar contraseña:</label>
+        <label for="confirmPassword">{{ $t('verificacion.lblConfirmaPass') }}</label>
         <input
           type="password"
           id="confirmPassword"
@@ -199,8 +202,9 @@ const reenviarCodigo = async () => {
           required
         />
 
-        <button type="submit">Guardar y cambiar contraseña</button>
+        <button type="submit">{{ $t('verificacion.btnGuardarPass') }}</button>
       </template>
     </form>
   </main>
+  <Footer></Footer>
 </template>

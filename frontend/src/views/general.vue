@@ -107,7 +107,7 @@ const manejarAgregado = (id) => {
       <div class="contenido-destacados">
         <div class="cabecera-destacados">
           <div class="titulos-seccion">
-            <h2>Destacados</h2>
+            <h2>{{ $t('explorar.destacados') }}</h2>
             <p class="descripcion-seccion">{{ $t("home.whyNexusSub") }}</p>
           </div>
           <router-link to="/explorar" class="enlace-ver-todo"

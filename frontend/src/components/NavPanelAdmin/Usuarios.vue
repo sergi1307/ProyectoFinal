@@ -62,18 +62,18 @@ onMounted(cargarUsuarios);
 <template>
   <div class="gestion-container">
     <header class="gestion-header">
-      <h2>Gestión de Usuarios</h2>
-      <p>Gestiona los usuarios de la plataforma</p>
+      <h2>{{ $t('gestionUsuarios.titulo') }}</h2>
+      <p>{{ $t('gestionUsuarios.descripcion') }}</p>
     </header>
 
     <div class="tabla-wrapper">
       <table class="tabla-usuarios">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th class="text-center">Acciones</th>
+            <th>{{ $t('gestionUsuarios.thNombre') }}</th>
+            <th>{{ $t('gestionUsuarios.thEmail') }}</th>
+            <th>{{ $t('gestionUsuarios.thRol') }}</th>
+            <th class="text-center">{{ $t('gestionUsuarios.thAcciones') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -89,7 +89,7 @@ onMounted(cargarUsuarios);
                   v-if="user.active != 0"
                   @click="alternarBan(user)"
                   class="btn-ban btn-rojo"
-                  title="Banear usuario"
+                  :title="$t('gestionUsuarios.titleBanear')"
                 >
                   <svg
                     width="18"
@@ -110,7 +110,7 @@ onMounted(cargarUsuarios);
                   v-else
                   @click="alternarBan(user)"
                   class="btn-ban btn-verde"
-                  title="Activar usuario"
+                  :title="$t('gestionUsuarios.titleActivar')"
                 >
                   <svg
                     width="18"
@@ -130,7 +130,7 @@ onMounted(cargarUsuarios);
                 </button>
               </div>
 
-              <span v-else class="texto-protegido">Protegido</span>
+              <span v-else class="texto-protegido">{{ $t('gestionUsuarios.protegido') }}</span>
             </td>
           </tr>
         </tbody>
