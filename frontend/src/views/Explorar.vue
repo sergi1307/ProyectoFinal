@@ -4,7 +4,9 @@ import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const productos = ref([]);
 const categorias = ref([]);
 const cargando = ref(true);
@@ -198,7 +200,7 @@ const toggleFavorito = async (productId) => {
 };
 
 const handleAgregado = (productId) => {
-  alert("¡Producto añadido al carrito correctamente!");
+  addToast("¡Producto añadido al carrito correctamente!", 'success');
 };
 
 onMounted(async () => {
@@ -242,10 +244,8 @@ const manejarScroll = () => {
     <div class="explorar-contenedor">
       <header class="cabecera-explorar">
         <div class="info-titulo">
-          <h1 class="titulo-seccion">Explorar Productos</h1>
-          <p class="contador-productos">
-            {{ productosFiltrados.length }} productos encontrados
-          </p>
+          <h1 class="titulo-seccion">{{ $t('explorar.featured') }} {{ $t('navbar.products') }}</h1>
+          {{ productosFiltrados.length }} {{ $t('explorar.productsFound').toLowerCase() }}
         </div>
 
         <div class="acciones-derecha">
@@ -292,7 +292,7 @@ const manejarScroll = () => {
             <line x1="9" y1="8" x2="15" y2="8"></line>
             <line x1="17" y1="16" x2="23" y2="16"></line>
           </svg>
-          Filtros
+          {{ $t('explorar.filters') || 'Filtros' }}
         </button>
       </header>
 
@@ -317,8 +317,8 @@ const manejarScroll = () => {
       <aside :class="['panel-lateral', { abierto: mostrarFiltros }]">
         <div class="panel-header">
           <div class="header-txt">
-            <h3>Personalizar Filtros</h3>
-            <p>Encuentra exactamente lo que buscas</p>
+            <h3>{{ $t('explorar.customizeFilters') || 'Personalizar Filtros' }}</h3>
+            <p>{{ $t('explorar.findExactly') || 'Encuentra exactamente lo que buscas' }}</p>
           </div>
           <button class="close-btn" @click="mostrarFiltros = false">
             &times;
@@ -327,7 +327,7 @@ const manejarScroll = () => {
 
         <div class="panel-scroll">
           <section class="seccion-f">
-            <h4>Ordenar por</h4>
+            <h4>{{ $t('explorar.sortBy') || 'Ordenar por' }}</h4>
             <div
               v-for="opcion in opcionesOrden"
               :key="opcion"
@@ -347,13 +347,13 @@ const manejarScroll = () => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Categorías</h4>
+            <h4>{{ $t('explorar.categoriesLabel') }}</h4>
 
             <div class="buscador-categorias-wrapper">
               <input
                 type="text"
                 v-model="busquedaCategoria"
-                placeholder="Buscar y añadir categoría..."
+                :placeholder="$t('explorar.searchCategory') || 'Buscar y añadir categoría...'"
                 class="input-buscar-categoria"
                 @focus="mostrarDropdownCategorias = true"
                 @blur="
@@ -383,7 +383,7 @@ const manejarScroll = () => {
                 "
                 class="dropdown-categorias vacio"
               >
-                No se encontraron categorías
+                {{ $t('explorar.noCategoriesFound') }}
               </div>
             </div>
 
@@ -407,7 +407,7 @@ const manejarScroll = () => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Rango de Precio</h4>
+            <h4>{{ $t('explorar.priceRange') || 'Rango de Precio' }}</h4>
             <div class="contenedor-rango">
               <div class="barra-progreso" :style="estiloBarra"></div>
               <input
@@ -439,7 +439,7 @@ const manejarScroll = () => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Calificación Mínima</h4>
+            <h4>{{ $t('explorar.minRating') || 'Calificación Mínima' }}</h4>
             <div class="calif-box">
               <div
                 v-for="c in calificaciones"
@@ -459,10 +459,10 @@ const manejarScroll = () => {
 
         <div class="panel-footer">
           <button class="btn-ver-prod" @click="mostrarFiltros = false">
-            Ver {{ productosFiltrados.length }} Productos
+            {{ $t('explorar.see') || 'Ver' }} {{ productosFiltrados.length }} {{ $t('navbar.products') }}
           </button>
           <button class="btn-limpiar" @click="limpiarFiltros">
-            Limpiar filtros
+            {{ $t('explorar.clearFilters') || 'Limpiar filtros' }}
           </button>
         </div>
       </aside>

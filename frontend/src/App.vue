@@ -2,6 +2,7 @@
 import { cargandoGlobal } from '@/loaderState';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner.vue';
 import CookieBanner from './components/Cookies/CookieBanner.vue';
+import ToastContainer from './components/ToastContainer.vue';
 </script>
 
 <template>
@@ -10,6 +11,9 @@ import CookieBanner from './components/Cookies/CookieBanner.vue';
   </div>
 
   <router-view></router-view>
+
+  <ToastContainer />
+  
   <CookieBanner></CookieBanner>
 </template>
 

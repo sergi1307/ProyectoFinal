@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useI18n } from 'vue-i18n';
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
@@ -10,17 +11,19 @@ import Moderador from "./NavPanelAdmin/Moderador.vue";
 import LogsPanel from "./NavPanelAdmin/LogsPanel.vue";
 import Mantenimiento from "./NavPanelAdmin/Mantenimiento.vue";
 
+const { t } = useI18n();
+
 const activeTab = ref("incidencias");
 
-const tabs = [
-  { id: "incidencias", label: "Incidencias" },
-  { id: "usuarios", label: "Usuarios" },
-  { id: "ingresos", label: "Ingresos" },
-  { id: "reembolsos", label: "Reembolsos" },
-  { id: "moderador", label: "Moderador" },
-  { id: "mantenimiento", label: "Mantenimiento" },
-  { id: "logs", label: "Logs" },
-];
+const tabs = computed(() => [
+  { id: "incidencias", label: t('panelAdmin.tabIncidencias') },
+  { id: "usuarios", label: t('panelAdmin.tabUsuarios') },
+  { id: "ingresos", label: t('panelAdmin.tabIngresos') },
+  { id: "reembolsos", label: t('panelAdmin.tabReembolsos') },
+  { id: "moderador", label: t('panelAdmin.tabModerador') },
+  { id: "mantenimiento", label: t('panelAdmin.tabMantenimiento') },
+  { id: "logs", label: t('panelAdmin.tabLogs') },
+]);
 </script>
 
 <template>
@@ -164,7 +167,7 @@ const tabs = [
       <div class="mobile-tab-selector">
         <select v-model="activeTab">
           <option v-for="tab in tabs" :key="tab.id" :value="tab.id">
-            Sección: {{ tab.label }}
+            {{ $t('panelAdmin.seccionLabel') }} {{ tab.label }}
           </option>
         </select>
         <div class="select-arrow">
@@ -216,7 +219,7 @@ const tabs = [
       <div v-else class="fade-in">
         <div class="main-container">
           <p class="empty-state-text">
-            Sección de {{ activeTab }} en desarrollo...
+            {{ $t('panelAdmin.enDesarrollo', { tab: activeTab }) }}
           </p>
         </div>
       </div>

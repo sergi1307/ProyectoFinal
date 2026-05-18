@@ -1,62 +1,66 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 import NavBar from "../NavBar.vue";
 import Footer from "../Footer.vue";
 import { useRouter } from "vue-router";
+import { useToast } from '@/composables/useToast';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
+const { addToast } = useToast();
 const router = useRouter();
 
-const planes = ref([
+const planes = computed(() => [
   {
     id: "basico",
-    name: "Nexus Básico",
-    target: "Para creadores que empiezan",
+    name: t('planes.nombreBasico'),
+    target: t('planes.basicoTarget'),
     price: "0",
-    period: "/ mes",
+    period: t('planes.mes'),
     highlighted: false,
     features: [
-      "30% de comisión retenida",
-      "Máximo 10 productos en tienda",
-      "Visibilidad estándar en buscador",
-      "Soporte por email (48h)",
-      "Retiros mensuales por PayPal",
+      t('planes.bFeat1'),
+      t('planes.bFeat2'),
+      t('planes.bFeat3'),
+      t('planes.bFeat4'),
+      t('planes.bFeat5'),
     ],
-    buttonText: "Empezar a Vender",
+    buttonText: t('planes.btnEmpezar'),
   },
   {
     id: "pro",
     name: "Nexus Pro",
-    target: "Para vendedores regulares",
+    target: t('planes.proTarget'),
     price: "14.99",
-    period: "/ mes",
+    period: t('planes.mes'),
     highlighted: true,
-    badge: "Más Rentable",
+    badge: t('planes.badgeRentable'),
     features: [
-      "Solo 15% de comisión retenida",
-      "Productos ilimitados",
-      'Insignia de "Vendedor Pro"',
-      'Aparición en sección "Tendencias"',
-      "Retiros prioritarios",
+      t('planes.pFeat1'),
+      t('planes.pFeat2'),
+      t('planes.pFeat3'),
+      t('planes.pFeat4'),
+      t('planes.pFeat5'),
     ],
-    buttonText: "Hacerme Pro",
+    buttonText: t('planes.btnPro'),
   },
   {
     id: "studio",
     name: "Nexus Ultra",
-    target: "Para agencias y top sellers",
+    target: t('planes.ultraTarget'),
     price: "39.99",
-    period: "/ mes",
+    period: t('planes.mes'),
     highlighted: false,
     features: [
-      "Solo 5% de comisión retenida",
-      "Productos ilimitados",
-      'Aparición en portada "Destacados"',
-      'Insignia de "Vendedor Ultra"',
-      "Panel de analíticas avanzadas",
-      "Soporte VIP directo",
+      t('planes.uFeat1'),
+      t('planes.uFeat2'),
+      t('planes.uFeat3'),
+      t('planes.uFeat4'),
+      t('planes.uFeat5'),
+      t('planes.uFeat6'),
     ],
-    buttonText: "Subir a Studio",
+    buttonText: t('planes.btnUltra'),
   },
 ]);
 
@@ -83,12 +87,13 @@ const suscribirse = async (planId) => {
 
     window.dispatchEvent(new Event("perfil-actualizado"));
 
-    alert("¡Plan actualizado a " + response.data.plan + "!");
+    // Traducimos también los toasts
+    addToast(t('planes.toastSuccess') + " " + response.data.plan + "!", 'success');
 
     router.push("/perfil");
   } catch (error) {
     console.error(error);
-    alert("Error al cambiar de plan");
+    addToast(t('planes.toastError'), 'error');
   }
 };
 </script>
@@ -97,11 +102,8 @@ const suscribirse = async (planId) => {
   <NavBar></NavBar>
   <div class="pricing-container">
     <div class="pricing-header">
-      <h2>Monetiza tu creatividad en Nexus</h2>
-      <p>
-        Elige el plan de vendedor que mejor se adapte a tu volumen de ventas y
-        maximiza tus beneficios.
-      </p>
+      <h2>{{ $t('planes.titulo') }}</h2>
+      <p>{{ $t('planes.subtitulo') }}</p>
     </div>
 
     <div class="pricing-grid">

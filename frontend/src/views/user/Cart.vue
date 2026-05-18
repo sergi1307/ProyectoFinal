@@ -4,7 +4,9 @@ import axios from "axios";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const paypalRendered = ref(false);
 const productosCarrito = ref([]);
 const cargando = ref(true);
@@ -101,7 +103,7 @@ const eliminarProducto = async (item) => {
     
   } catch (error) {
     console.error("Error al eliminar del carrito:", error);
-    alert("No se pudo eliminar el producto.");
+    addToast("No se pudo eliminar el producto.", 'error');
     item.procesando = false;
   }
 };
@@ -143,11 +145,11 @@ const inicializarPaypal = () => {
         onApprove: async (data) => {
           try {
             await axios.post(
-              `http://localhost:8080/api/paypal/capture-order/${data.orderID}`, // Ajusta la URL si hace falta
+              `http://localhost:8080/api/paypal/capture-order/${data.orderID}`,
               {},
               { headers: { Authorization: `Bearer ${token}` } },
             );
-            alert("¡Pago completado!");
+            addToast("¡Pago completado!", 'success');
             productosCarrito.value = [];
             localStorage.removeItem("carrito");
 

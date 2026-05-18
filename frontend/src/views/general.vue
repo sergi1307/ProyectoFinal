@@ -5,7 +5,9 @@ import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import ProductCard from "@/components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const { t } = useI18n();
 
 const token = localStorage.getItem("token");
@@ -52,7 +54,7 @@ onMounted(cargarDatosHome);
 
 const manejarFavorito = async (producto) => {
   if (!token) {
-    alert("Debes iniciar sesión para guardar favoritos");
+    addToast("Debes iniciar sesión para guardar favoritos", 'error');
     return;
   }
   try {
@@ -105,7 +107,7 @@ const manejarAgregado = (id) => {
       <div class="contenido-destacados">
         <div class="cabecera-destacados">
           <div class="titulos-seccion">
-            <h2>Destacados</h2>
+            <h2>{{ $t('explorar.destacados') }}</h2>
             <p class="descripcion-seccion">{{ $t("home.whyNexusSub") }}</p>
           </div>
           <router-link to="/explorar" class="enlace-ver-todo"

@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const incidencias = ref([]);
 const loading = ref(true);
 const busqueda = ref("");
@@ -84,7 +86,7 @@ const actualizarEstadisticas = () => {
 
 const enviarmensaje = (email, asunto) => {
   if (!email) {
-    alert("Este usuario no tiene un correo electrónico asociado.");
+    addToast("Este usuario no tiene un correo electrónico asociado.", 'error');
     return;
   }
   const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;
@@ -148,23 +150,23 @@ onMounted(() => {
   <div class="panel-incidencias">
     <div class="stats-grid">
       <div class="stat-card">
-        <span class="label">Total</span>
+        <span class="label">{{ $t('incidencias.total') }}</span>
         <span class="value">{{ stats.total }}</span>
       </div>
       <div class="stat-card abiertos">
-        <span class="label text-blue">Abiertas</span>
+        <span class="label text-blue">{{ $t('incidencias.abiertas') }}</span>
         <span class="value text-blue">{{ stats.abiertas }}</span>
       </div>
       <div class="stat-card progreso">
-        <span class="label text-orange">En Progreso</span>
+        <span class="label text-orange">{{ $t('incidencias.enProgreso') }}</span>
         <span class="value text-orange">{{ stats.progreso }}</span>
       </div>
       <div class="stat-card resueltas">
-        <span class="label text-green">Resueltas</span>
+        <span class="label text-green">{{ $t('incidencias.resueltas') }}</span>
         <span class="value text-green">{{ stats.resueltas }}</span>
       </div>
       <div class="stat-card cerradas">
-        <span class="label text-gray">Cerradas</span>
+        <span class="label text-gray">{{ $t('incidencias.cerradas') }}</span>
         <span class="value text-gray">{{ stats.cerradas }}</span>
       </div>
     </div>
@@ -173,7 +175,7 @@ onMounted(() => {
       <div class="toolbar-incidencias">
         <div class="toolbar-left">
           <button @click="cargarIncidencias" class="btn-refresh">
-            Actualizar Lista
+            {{ $t('incidencias.btnActualizar') }}
           </button>
         </div>
 
@@ -197,7 +199,7 @@ onMounted(() => {
             <input
               type="text"
               v-model="busqueda"
-              placeholder="Buscar incidencia..."
+              :placeholder="$t('incidencias.buscar')"
               class="input-buscador"
             />
           </div>
@@ -230,13 +232,13 @@ onMounted(() => {
               </template>
             </svg>
 
-            {{ mostrandoHistorial ? "Volver atrás" : "Historial" }}
+            {{ mostrandoHistorial ? $t('incidencias.volverAtras') : $t('incidencias.historial') }}
           </button>
         </div>
       </div>
 
       <div v-if="loading" class="empty-state-text" style="padding: 20px">
-        Cargando incidencias...
+        {{ $t('incidencias.cargando') }}
       </div>
 
       <p
@@ -244,7 +246,7 @@ onMounted(() => {
         class="empty-state-text"
         style="padding: 20px"
       >
-        No hay incidencias registradas.
+        {{ $t('incidencias.noHay') }}
       </p>
 
       <div v-else class="table-responsive">
@@ -252,12 +254,12 @@ onMounted(() => {
           <thead>
             <tr>
               <th>ID</th>
-              <th class="hide-mobile">Usuario</th>
-              <th>Asunto</th>
-              <th class="hide-tablet">Descripción</th>
-              <th>Estado</th>
-              <th class="hide-mobile">Fecha</th>
-              <th style="text-align: center">Acciones</th>
+              <th class="hide-mobile">{{ $t('incidencias.thUsuario') }}</th>
+              <th>{{ $t('incidencias.thAsunto') }}</th>
+              <th class="hide-tablet">{{ $t('incidencias.thDescripcion') }}</th>
+              <th>{{ $t('incidencias.thEstado') }}</th>
+              <th class="hide-mobile">{{ $t('incidencias.thFecha') }}</th>
+              <th style="text-align: center">{{ $t('incidencias.thAcciones') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -293,7 +295,7 @@ onMounted(() => {
                   <button
                     @click="abrirModal(incidencia)"
                     class="icon-btn view-btn"
-                    title="Ver detalles"
+                    :title="$t('incidencias.titleVerDetalles')"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -314,7 +316,7 @@ onMounted(() => {
                   </button>
 
                   <div class="edit-dropdown">
-                    <button class="icon-btn pencil-btn" title="Cambiar estado">
+                    <button class="icon-btn pencil-btn" :title="$t('incidencias.titleCambiarEstado')">
                       <svg
                         width="18"
                         height="18"
@@ -334,18 +336,18 @@ onMounted(() => {
                       <button
                         @click="cambiarEstado(incidencia.id, 'pendiente')"
                       >
-                        Pendiente
+                        {{ $t('incidencias.estadoPendiente') }}
                       </button>
                       <button
                         @click="cambiarEstado(incidencia.id, 'en proceso')"
                       >
-                        En proceso
+                        {{ $t('incidencias.estadoProceso') }}
                       </button>
                       <button @click="cambiarEstado(incidencia.id, 'resuelta')">
-                        Resuelta
+                        {{ $t('incidencias.estadoResuelta') }}
                       </button>
                       <button @click="cambiarEstado(incidencia.id, 'cerrada')">
-                        Cerrada
+                        {{ $t('incidencias.estadoCerrada') }}
                       </button>
                     </div>
                   </div>
@@ -355,7 +357,7 @@ onMounted(() => {
                       enviarmensaje(incidencia.user?.email, incidencia.subject)
                     "
                     class="icon-btn msg-btn"
-                    title="Enviar correo"
+                    :title="$t('incidencias.titleEnviarCorreo')"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -383,35 +385,35 @@ onMounted(() => {
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Detalles de Incidencia #{{ incidenciaSeleccionada?.id }}</h2>
+          <h2>{{ $t('incidencias.detallesTitulo') }} #{{ incidenciaSeleccionada?.id }}</h2>
           <button @click="cerrarModal" class="close-btn">&times;</button>
         </div>
 
         <div class="modal-body" v-if="incidenciaSeleccionada">
           <div class="detail-group">
             <div class="detail-item">
-              <span class="detail-label">Usuario:</span>
+              <span class="detail-label">{{ $t('incidencias.lblUsuario') }}</span>
               <span class="detail-value">{{
-                incidenciaSeleccionada.user?.name || "Desconocido"
+                incidenciaSeleccionada.user?.name || $t('incidencias.desconocido')
               }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Email:</span>
+              <span class="detail-label">{{ $t('incidencias.lblEmail') }}</span>
               <span class="detail-value">{{
-                incidenciaSeleccionada.user?.email || "Sin email"
+                incidenciaSeleccionada.user?.email || $t('incidencias.sinEmail')
               }}</span>
             </div>
           </div>
 
           <div class="detail-group">
             <div class="detail-item">
-              <span class="detail-label">Fecha:</span>
+              <span class="detail-label">{{ $t('incidencias.lblFecha') }}</span>
               <span class="detail-value">{{
                 new Date(incidenciaSeleccionada.created_at).toLocaleString()
               }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Estado:</span>
+              <span class="detail-label">{{ $t('incidencias.lblEstado') }}</span>
               <span
                 :class="[
                   'status-badge',
@@ -424,14 +426,14 @@ onMounted(() => {
           </div>
 
           <div class="detail-block">
-            <span class="detail-label">Asunto:</span>
+            <span class="detail-label">{{ $t('incidencias.lblAsunto') }}</span>
             <div class="detail-box subject-box">
               {{ incidenciaSeleccionada.subject }}
             </div>
           </div>
 
           <div class="detail-block">
-            <span class="detail-label">Descripción:</span>
+            <span class="detail-label">{{ $t('incidencias.lblDescripcion') }}</span>
             <div class="detail-box desc-box">
               {{ incidenciaSeleccionada.description }}
             </div>
@@ -439,7 +441,7 @@ onMounted(() => {
         </div>
 
         <div class="modal-footer">
-          <button class="btn-cancel" @click="cerrarModal">Cerrar</button>
+          <button class="btn-cancel" @click="cerrarModal">{{ $t('incidencias.btnCerrar') }}</button>
           <button
             class="btn-reply"
             @click="
@@ -449,7 +451,7 @@ onMounted(() => {
               )
             "
           >
-            Responder por correo
+            {{ $t('incidencias.btnResponder') }}
           </button>
         </div>
       </div>

@@ -4,9 +4,10 @@ import Footer from "@/components/Footer.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const router = useRouter();
-
 const cargando = ref(false);
 const vistaPrevia = ref(null);
 const archivoImagen = ref(null);
@@ -54,7 +55,7 @@ const manejarSubidaImagen = (evento) => {
 
 const crearProducto = async () => {
   if (producto.value.categorias.length === 0) {
-    alert("Por favor, selecciona al menos una categoría.");
+    addToast("Por favor, selecciona al menos una categoría.", 'error');
     return;
   }
 
@@ -80,7 +81,7 @@ const crearProducto = async () => {
     router.push("/mis-productos");
   } catch (error) {
     console.error("Error:", error);
-    alert("Error al crear el producto.");
+    addToast("Error al crear el producto.", 'error');
   } finally {
     cargando.value = false;
   }
@@ -98,34 +99,34 @@ onMounted(() => obtenerCategorias());
     <div class="vender-contenedor">
       
       <header class="form-nav">
-        <button @click="volver" class="btn-back-visual">← Volver</button>
+        <button @click="volver" class="btn-back-visual">← {{ $t('vender.volver') }}</button>
       </header>
 
       <main class="wide-card">
         <div class="header-text">
-          <h1>Crear Nuevo Producto</h1>
-          <p>Introduce los detalles de tu producto digital a continuación</p>
+          <h1>{{ $t('vender.titulo') }}</h1>
+          <p>{{ $t('vender.subtitulo') }}</p>
         </div>
 
         <form @submit.prevent="crearProducto">
           
           <div class="input-block">
-            <label for="nombre">Nombre del Producto *</label>
-            <input id="nombre" v-model="producto.nombre" type="text" placeholder="Ej: Curso de Programación Avanzada" required />
+            <label for="nombre">{{ $t('vender.lblNombre') }}</label>
+            <input id="nombre" v-model="producto.nombre" type="text" :placeholder="$t('vender.phNombre')" required />
           </div>
 
           <div class="input-block">
-            <label for="descripcion">Descripción *</label>
-            <textarea id="descripcion" v-model="producto.descripcion" placeholder="Explica de qué trata tu producto..." rows="6" required></textarea>
+            <label for="descripcion">{{ $t('vender.lblDescripcion') }}</label>
+            <textarea id="descripcion" v-model="producto.descripcion" :placeholder="$t('vender.phDescripcion')" rows="6" required></textarea>
           </div>
 
           <div class="two-columns">
             <div class="input-block">
-              <label for="precio">Precio (€) *</label>
+              <label for="precio">{{ $t('vender.lblPrecio') }}</label>
               <input id="precio" v-model="producto.precio" type="number" step="0.01" min="0" placeholder="0.00" required />
             </div>
             <div class="input-block">
-              <label>Categorías *</label>
+              <label>{{ $t('vender.lblCategorias') }}</label>
               <div class="pills-flex">
                 <label v-for="cat in categoriasDisponibles" :key="cat.id" class="pill">
                   <input type="checkbox" :value="cat.id" v-model="producto.categorias" />
@@ -137,21 +138,21 @@ onMounted(() => obtenerCategorias());
 
           <div class="upload-grid">
             <div class="input-block">
-              <label>Archivo Digital (ZIP, PDF, etc.) *</label>
+              <label>{{ $t('vender.lblArchivo') }}</label>
               <div :class="['upload-zone', { 'done': archivoReal }]">
                 <input type="file" @change="manejarSubidaArchivoReal" required />
                 <div class="zone-info">
-                  <span>{{ archivoReal ? '✅ Archivo cargado' : '📁 Seleccionar archivo' }}</span>
+                  <span>{{ archivoReal ? '✅ ' + $t('vender.archivoCargado') : '📁 ' + $t('vender.seleccionarArchivo') }}</span>
                 </div>
               </div>
             </div>
 
             <div class="input-block">
-              <label>Imagen de Portada (JPG, PNG)</label>
+              <label>{{ $t('vender.lblImagen') }}</label>
               <div :class="['upload-zone', { 'done': archivoImagen }]">
                 <input type="file" accept="image/*" @change="manejarSubidaImagen" />
                 <div class="zone-info">
-                  <span>{{ archivoImagen ? '🖼️ Imagen cargada' : '📸 Seleccionar imagen' }}</span>
+                  <span>{{ archivoImagen ? '🖼️ ' + $t('vender.imagenCargada') : '📸 ' + $t('vender.seleccionarImagen') }}</span>
                 </div>
               </div>
             </div>
@@ -163,7 +164,7 @@ onMounted(() => obtenerCategorias());
 
           <div class="actions">
             <button type="submit" class="btn-main" :disabled="cargando">
-              {{ cargando ? "Guardando..." : "Crear Producto" }}
+              {{ cargando ? $t('vender.guardando') : $t('vender.btnCrear') }}
             </button>
           </div>
         </form>

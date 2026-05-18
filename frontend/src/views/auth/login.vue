@@ -115,7 +115,7 @@ const enviarDatos = async () => {
         required 
       />
 
-      <router-link class="resetPassword" to="/verificar-email?mode=reset">¿Has olvidado la contraseña?</router-link>
+      <router-link class="resetPassword" to="/verificar-email?mode=reset">{{ $t('auth.forgotPassword') }}</router-link>
 
       <button type="submit">{{ $t('auth.titleLogin') }}</button>
       
