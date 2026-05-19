@@ -386,7 +386,7 @@ onMounted(() => {
       <div class="modal-content">
         <div class="modal-header">
           <h2>{{ $t('incidencias.detallesTitulo') }} #{{ incidenciaSeleccionada?.id }}</h2>
-          <button @click="cerrarModal" class="close-btn">&times;</button>
+          <button @click="cerrarModal" class="close-btn-modal">&times;</button>
         </div>
 
         <div class="modal-body" v-if="incidenciaSeleccionada">

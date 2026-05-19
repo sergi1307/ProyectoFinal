@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import ModalIncidencias from "./modalIncidencias.vue";
 
+const isLoggedIn = ref(false);
 const esAdmin = ref(false);
 const { t } = useI18n();
 const isModalOpen = ref(false);
@@ -11,8 +12,11 @@ const verificarRol = async () => {
   const usuarioRaw = JSON.parse(localStorage.getItem("usuario"));
 
   if (usuarioRaw) {
+    isLoggedIn.value = true;
     esAdmin.value = usuarioRaw.role === "admin";
     console.log(esAdmin.value);
+  } else {
+    isLoggedIn.value = false;
   }
 };
 
@@ -106,7 +110,8 @@ onMounted(() => {
           <a href="mailto:soporte@nexus.com">soporte@nexus.com</a>
           <p class="horario">{{ $t("footer.hours") }}</p>
         </div>
-        <div v-if="!esAdmin" id="incidencias">
+        
+        <div v-if="isLoggedIn && !esAdmin" id="incidencias">
           <button @click="isModalOpen = true">
             <svg
               class="icono-incidencia"
@@ -139,7 +144,7 @@ onMounted(() => {
           </button>
         </div>
         <ModalIncidencias
-          v-if="!esAdmin"
+          v-if="isLoggedIn && !esAdmin"
           :isOpen="isModalOpen"
           @close="isModalOpen = false"
         />
