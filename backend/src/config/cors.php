@@ -22,6 +22,8 @@ return [
     'allowed_origins' => [
         'http://localhost:5173',
         'http://127.0.0.1:5173',
+        'https://nexus-isaria.es',
+        'https://www.nexus-isaria.es',
     ],
 
     'allowed_origins_patterns' => [],

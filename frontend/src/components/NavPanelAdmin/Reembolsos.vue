@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import api from "@/services/api";
 
 const solicitudes = ref([]);
 const cargando = ref(true);
@@ -11,7 +11,7 @@ const solicitudSeleccionada = ref(null);
 const cargarSolicitudes = async () => {
   try {
     cargando.value = true;
-    const res = await axios.get('http://localhost:8080/api/admin/refund-requests', {
+    const res = await api.get('/admin/refund-requests', {
       headers: { Authorization: `Bearer ${token}` }
     });
     solicitudes.value = res.data;
@@ -39,7 +39,7 @@ const procesarAccion = async (idOrder, ruta) => {
   if (!confirm(msg)) return;
 
   try {
-    await axios.post(`http://localhost:8080/api/admin/refunds/${idOrder}/${ruta}`, {}, {
+    await api.post(`/admin/refunds/${idOrder}/${ruta}`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     alert('Operación finalizada');

@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, defineEmits, computed, ref } from "vue";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
-import axios from "axios";
+import api from "@/services/api";
 
 const props = defineProps({
   producto: {
@@ -68,7 +68,7 @@ const esMiProducto = computed(() => {
 const obtenerImagen = (ruta) => {
   if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
-  return `http://localhost:8080/storage/${ruta}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${ruta}`;
 };
 
 const manejarErrorImagen = (event) => {
@@ -80,7 +80,7 @@ const agregarAlCarrito = async () => {
     agregando.value = true;
     const token = localStorage.getItem("token");
     
-    await axios.post('http://localhost:8080/api/cart', {
+    await api.post('/cart', {
       product_id: props.producto.id,
       quantity: 1
     }, {

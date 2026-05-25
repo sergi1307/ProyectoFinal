@@ -29,7 +29,7 @@ const actualizarEstado = () => {
 const obtenerRutaAvatar = (ruta) => {
   if (!ruta || ruta === '0' || ruta === 0) return null;
   const limpia = ruta.replace(/^storage\//, '').replace(/^\//, '');
-  return `http://localhost:8080/storage/${limpia}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${limpia}`;
 };
 
 const obtenerRutaInicio = () => {

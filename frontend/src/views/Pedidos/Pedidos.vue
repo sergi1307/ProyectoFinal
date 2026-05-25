@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import NavBar from "../../components/NavBar.vue";
 import Footer from "../../components/Footer.vue";
 
@@ -38,19 +38,14 @@ const cargarPedidos = async () => {
 
     const token = localStorage.getItem("token");
 
-    const respuesta = await fetch("http://localhost:8080/api/orders", {
-      method: "GET",
+    const respuesta = await api.get("/orders", {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!respuesta.ok) {
-      throw new Error("No se pudo conectar con el servidor.");
-    }
-
-    const datos = await respuesta.json();
+    const datos = respuesta.data;
     console.log("DATOS RECIBIDOS DE LARAVEL:", datos);
     pedidos.value = datos;
   } catch (e) {
@@ -73,8 +68,8 @@ const solicitarReembolso = async (idPedido) => {
   try {
     const token = localStorage.getItem("token");
 
-    const respuesta = await axios.post(
-      `http://localhost:8080/api/orders/${idPedido}/refund`,
+    const respuesta = await api.post(
+      `/orders/${idPedido}/refund`,
       {},
       {
         headers: {
@@ -99,8 +94,8 @@ const solicitarFactura = async (idPedido) => {
   try {
     const token = localStorage.getItem("token");
 
-    const respuesta = await axios.post(
-      `http://localhost:8080/api/orders/${idPedido}/invoice`,
+    const respuesta = await api.post(
+      `/orders/${idPedido}/invoice`,
       {},
       {
         headers: {

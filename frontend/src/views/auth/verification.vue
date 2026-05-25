@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import api from "@/services/api";
 import "../../assets/css/auth.css";
 
 const route = useRoute();
@@ -33,7 +33,7 @@ const solicitarCodigo = async () => {
   try {
     const endpoint =
       mode.value === "reset" ? "forgot-password" : "reenviar-codigo";
-    await axios.post(`http://localhost:8080/api/auth/${endpoint}`, {
+    await api.post(`/auth/${endpoint}`, {
       email: email.value,
     });
 
@@ -52,7 +52,7 @@ const procesarCodigo = async () => {
 
   if (mode.value === "verify") {
     try {
-      await axios.post(`http://localhost:8080/api/auth/verificar-email`, {
+      await api.post(`/auth/verificar-email`, {
         email: email.value,
         code: code.value,
       });
@@ -80,7 +80,7 @@ const cambiarPassword = async () => {
   }
 
   try {
-    await axios.post(`http://localhost:8080/api/auth/reset-password`, {
+    await api.post(`/auth/reset-password`, {
       email: email.value,
       code: code.value,
       password: newPassword.value,

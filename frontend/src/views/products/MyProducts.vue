@@ -3,7 +3,7 @@ import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import ProductoCard from "@/components/products/ProductCard.vue";
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const productos = ref([]);
 const token = localStorage.getItem("token");
@@ -26,7 +26,7 @@ const productosFiltrados = computed(() => {
 
 const cargarProductos = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/products/me", {
+    const response = await api.get("/products/me", {
       headers: { Authorization: `Bearer ${token}` }
     });
     productos.value = response.data;

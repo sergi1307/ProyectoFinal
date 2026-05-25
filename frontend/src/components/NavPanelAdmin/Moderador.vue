@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import api from "@/services/api";
 
 const listaProductos = ref([]);
 const vistaActual = ref('pendientes');
@@ -8,7 +8,7 @@ const vistaActual = ref('pendientes');
 const obtenerImagen = (ruta) => {
   if (!ruta) return 'https://via.placeholder.com/150?text=Sin+Imagen';
   if (ruta.startsWith("http")) return ruta;
-  return `http://localhost:8080/storage/${ruta}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${ruta}`;
 };
 
 const cargarVista = async (tipo) => {
@@ -21,10 +21,10 @@ const cargarVista = async (tipo) => {
     token = token.replace(/^"(.*)"$/, '$1');
 
     const endpoint = tipo === 'pendientes' 
-      ? 'http://localhost:8080/api/admin/reports'
-      : 'http://localhost:8080/api/admin/reports/history';
+      ? '/admin/reports'
+      : '/admin/reports/history';
 
-    const response = await axios.get(endpoint, {
+    const response = await api.get(endpoint, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -38,7 +38,7 @@ const aprobar = async (id) => {
   if (!confirm("¿Seguro que quieres APROBAR este producto y descartar las denuncias?")) return;
   try {
     let token = localStorage.getItem("token").replace(/^"(.*)"$/, '$1');
-    await axios.post(`http://localhost:8080/api/admin/products/${id}/approve`, {}, {
+    await api.post(`/admin/products/${id}/approve`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);
@@ -52,7 +52,7 @@ const rechazar = async (id) => {
   if (!confirm("¿Seguro que quieres RECHAZAR y ocultar este producto del marketplace?")) return;
   try {
     let token = localStorage.getItem("token").replace(/^"(.*)"$/, '$1');
-    await axios.post(`http://localhost:8080/api/admin/products/${id}/reject`, {}, {
+    await api.post(`/admin/products/${id}/reject`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);

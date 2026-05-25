@@ -3,7 +3,7 @@ import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import api from "@/services/api";
 
 const router = useRouter();
 
@@ -24,7 +24,7 @@ const producto = ref({
 
 const obtenerCategorias = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/api/categories`);
+    const response = await api.get(`/categories`);
     if (Array.isArray(response.data)) {
       categoriasDisponibles.value = response.data;
     } else if (response.data && Array.isArray(response.data.data)) {
@@ -71,7 +71,7 @@ const crearProducto = async () => {
   cargando.value = true;
 
   try {
-    await axios.post(`http://localhost:8080/api/products/store`, formData, {
+    await api.post(`/products/store`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'

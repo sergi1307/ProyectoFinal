@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const usuarios = ref([]);
 const cargando = ref(true);
@@ -11,7 +11,7 @@ const cargarUsuarios = async () => {
 
   try {
     cargando.value = true;
-    const response = await axios.get("http://localhost:8080/api/users", {
+    const response = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -37,8 +37,8 @@ const alternarBan = async (user) => {
 
   const token = localStorage.getItem("token");
   try {
-    await axios.post(
-      `http://localhost:8080/api/users/${user.id}/toggle-status`,
+    await api.post(
+      `/users/${user.id}/toggle-status`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` },

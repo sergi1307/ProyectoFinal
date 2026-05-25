@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch, onUnmounted } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
@@ -150,7 +150,7 @@ const nombreCategoria = (id) => {
 
 const obtenerCategorias = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/categories`);
+    const res = await api.get(`/categories`);
     categorias.value = res.data;
   } catch (error) {
     console.error("Error al cargar las categorias:", error);
@@ -174,8 +174,8 @@ const cargarDatos = async () => {
       order: ordenSeleccionado.value,
     }
 
-    const resProd = await axios.get(
-      "http://localhost:8080/api/products/index",
+    const resProd = await api.get(
+      "/products/index",
       {
         params,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -206,8 +206,8 @@ const cambiarPagina = (p) => {
 
 const toggleFavorito = async (productId) => {
   try {
-    const res = await axios.post(
-      `http://localhost:8080/api/products/${productId}/favorite`,
+    const res = await api.post(
+      `/products/${productId}/favorite`,
       {},
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
     );

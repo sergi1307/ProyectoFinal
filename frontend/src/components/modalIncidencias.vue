@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, watch } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import { useToast } from "vue-toastification";
 
 const props = defineProps({
@@ -36,7 +36,7 @@ const handleSubmit = async () => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await axios.post('http://localhost:8080/api/incidents', {
+    const response = await api.post('/incidents', {
       asunto: form.asunto,
       descripcion: form.descripcion
     }, {
