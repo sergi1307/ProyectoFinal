@@ -78,8 +78,12 @@ const traducirCategoria = (nombreDB) => {
   const clave = nombreDB
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "");
   const ruta = `categorias.${clave}`;
+  if (!te(ruta)) {
+    console.warn(`No se encontró traducción para la clave: ${ruta} basada en: ${nombreDB}`);
+  }
   return te(ruta) ? t(ruta) : nombreDB;
 };
 
