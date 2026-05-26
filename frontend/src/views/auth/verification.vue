@@ -60,7 +60,7 @@ const procesarCodigo = async () => {
         email: email.value,
         code: code.value,
       });
-      addToast("Email verificado con éxito. Ya puedes iniciar sesión.", 'success');
+      addToast(t('toasts.emailVerified'), 'success');
       router.push("/login");
     } catch (error) {
       errorMsg.value = "Código incorrecto o expirado.";
@@ -89,7 +89,7 @@ const cambiarPassword = async () => {
       code: code.value,
       password: newPassword.value,
     });
-    addToast("Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.", 'success');
+    addToast(t('toasts.passwordUpdated'), 'success');
     router.push("/login");
   } catch (error) {
     errorMsg.value =
@@ -100,7 +100,7 @@ const cambiarPassword = async () => {
 
 const reenviarCodigo = async () => {
   await solicitarCodigo();
-  addToast("Te hemos enviado un nuevo código.", 'success');
+  addToast(t('toasts.codeSent'), 'success');
 };
 </script>
 

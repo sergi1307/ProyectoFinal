@@ -49,7 +49,7 @@ const toggleStatus = async () => {
     isMaintenance.value = nuevoEstado;
     lastUpdate.value = new Date();
   } catch (error) {
-    addToast("No se pudo cambiar el estado. Verifica tus permisos.", 'error');
+    addToast(t('toasts.statusPermissionError'), 'error');
   } finally {
     loading.value = false;
   }

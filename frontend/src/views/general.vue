@@ -54,7 +54,7 @@ onMounted(cargarDatosHome);
 
 const manejarFavorito = async (producto) => {
   if (!token) {
-    addToast("Debes iniciar sesión para guardar favoritos", 'error');
+    addToast(t('explorar.toast.authRequired'), 'error');
     return;
   }
   try {

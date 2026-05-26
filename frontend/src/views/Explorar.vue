@@ -200,7 +200,7 @@ const toggleFavorito = async (productId) => {
 };
 
 const handleAgregado = (productId) => {
-  addToast("¡Producto añadido al carrito correctamente!", 'success');
+  addToast(t('cart.addSuccess'), 'success');
 };
 
 onMounted(async () => {

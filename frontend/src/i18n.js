@@ -2,6 +2,27 @@ import { createI18n } from 'vue-i18n';
 
 const messages = {
   esp: {
+    toasts: {
+      selectCategory: "Por favor, selecciona al menos una categoría.",
+      createProductError: "Error al crear el producto.",
+      refundSuccess: "Reembolso solicitado correctamente.",
+      errorPrefix: "Error: ",
+      emailVerified: "Email verificado con éxito. Ya puedes iniciar sesión.",
+      passwordUpdated: "Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.",
+      codeSent: "Te hemos enviado un nuevo código.",
+      noEmail: "Este usuario no tiene un correo electrónico asociado.",
+      statusPermissionError: "No se pudo cambiar el estado. Verifica tus permisos.",
+      approveProductError: "Error al aprobar el producto.",
+      rejectProductError: "Error al rechazar el producto.",
+      operationFinished: "Operación finalizada",
+      serverError: "Error de servidor",
+      serverProcessError: "No se pudo procesar la acción en el servidor.",
+      userActionSuccess: "Usuario {action} con éxito",
+      actions: {
+        activated: "activado",
+        banned: "baneado"
+      }
+    },
     navbar: { 
       login: 'Iniciar Sesión', 
       register: 'Registrarse', 
@@ -78,6 +99,9 @@ const messages = {
       see: 'Ver',
       clearFilters: 'Limpiar filtros',
       productsFound: 'productos encontrados',
+      toast: {
+        authRequired: "Debes iniciar sesión para guardar favoritos"
+      }
     },
     cookieBanner: {
       title: 'Tu privacidad es importante',
@@ -533,6 +557,27 @@ const messages = {
     }
   },
   val: {
+    toasts: {
+      selectCategory: "Per favor, selecciona almenys una categoria.",
+      createProductError: "Error en crear el producte.",
+      refundSuccess: "Reemborsament sol·licitat correctament.",
+      errorPrefix: "Error: ",
+      emailVerified: "Correu electrònic verificat amb èxit. Ya pots iniciar sessió.",
+      passwordUpdated: "Contrasenya actualitzada amb èxit. Inicia sessió amb la teua nova clau.",
+      codeSent: "T'hem enviat un nou codi.",
+      noEmail: "Este usuari no té un correu electrònic associat.",
+      statusPermissionError: "No s'ha pogut canviar l'estat. Verifica els teus permisos.",
+      approveProductError: "Error en aprovar el producte.",
+      rejectProductError: "Error en rebutjar el producte.",
+      operationFinished: "Operació finalitzada",
+      serverError: "Error de servidor",
+      serverProcessError: "No s'ha pogut processar l'acció al servidor.",
+      userActionSuccess: "Usuari {action} amb èxit",
+      actions: {
+        activated: "activat",
+        banned: "banejat"
+      }
+    },
     navbar: { 
       login: 'Iniciar Sessió', 
       register: 'Registrar-se', 
@@ -609,6 +654,9 @@ const messages = {
       see: 'Veure',
       clearFilters: 'Netejar filtres',
       productsFound: 'productes trobats',
+      toast: {
+        authRequired: "Has d'iniciar sessió per a guardar favorits"
+      }
     },
     cookieBanner: {
       title: 'La teua privacitat és important',
@@ -1064,6 +1112,27 @@ const messages = {
     }
   },
   eng: {
+    toasts: {
+      selectCategory: "Please select at least one category.",
+      createProductError: "Error creating the product.",
+      refundSuccess: "Refund requested successfully.",
+      errorPrefix: "Error: ",
+      emailVerified: "Email verified successfully. You can now log in.",
+      passwordUpdated: "Password updated successfully. Log in with your new password.",
+      codeSent: "We have sent you a new code.",
+      noEmail: "This user does not have an associated email address.",
+      statusPermissionError: "Could not change the status. Verify your permissions.",
+      approveProductError: "Error approving the product.",
+      rejectProductError: "Error rejecting the product.",
+      operationFinished: "Operation completed",
+      serverError: "Server error",
+      serverProcessError: "Could not process the action on the server.",
+      userActionSuccess: "User {action} successfully",
+      actions: {
+        activated: "activated",
+        banned: "banned"
+      }
+    },
     navbar: { 
       login: 'Login', 
       register: 'Register', 
@@ -1140,6 +1209,9 @@ const messages = {
       see: 'See',
       clearFilters: 'Clear filters',
       productsFound: 'products found',
+      toast: {
+        authRequired: "You must log in to save favorites"
+      }
     },
     cookieBanner: {
       title: 'Your privacy is important',
