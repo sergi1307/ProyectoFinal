@@ -44,11 +44,11 @@ const procesarAccion = async (idOrder, ruta) => {
     await axios.post(`http://localhost:8080/api/admin/refunds/${idOrder}/${ruta}`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    addToast('Operación finalizada', 'success');
+    addToast(t('toasts.operationFinished'), 'success');
     cerrarModal();
     cargarSolicitudes();
   } catch (error) {
-    addToast("Error: " + (error.response?.data?.error || "Error de servidor", 'error'));
+    addToast(t('toasts.errorPrefix') + (error.response?.data?.error || t('toasts.serverError')), 'error');
   }
 };
 

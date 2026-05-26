@@ -46,7 +46,7 @@ const aprobar = async (id) => {
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);
   } catch (error) {
     console.error("Error al aprobar:", error);
-    addToast("Error al aprobar el producto.", 'error');
+    addToast(t('toasts.approveProductError'), 'error');
   }
 };
 
@@ -60,7 +60,7 @@ const rechazar = async (id) => {
     listaProductos.value = listaProductos.value.filter(p => p.id !== id);
   } catch (error) {
     console.error("Error al rechazar:", error);
-    addToast("Error al rechazar el producto.", 'error');
+    addToast(t('toasts.rejectProductError'), 'error');
   }
 };
 

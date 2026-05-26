@@ -84,13 +84,13 @@ const solicitarReembolso = async (idPedido) => {
       },
     );
 
-    addToast("Reembolso solicitado correctamente.", 'success');
+    addToast(t('toasts.refundSuccess'), 'success');
 
     await cargarPedidos();
   } catch (e) {
     const mensajeError =
       e.response?.data?.error || "No se pudo procesar el reembolso.";
-    addToast("Error: " + mensajeError, 'error');
+    addToast(t('toasts.errorPrefix') + mensajeError, 'error');
     console.error("Error en la petición de reembolso:", e);
   }
 };

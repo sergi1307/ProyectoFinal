@@ -49,10 +49,11 @@ const alternarBan = async (user) => {
 
     user.active = !user.active;
 
-    addToast(`Usuario ${user.active ? "activado" : "baneado"} con éxito`, 'success');
+    const accionTraducida = user.active ? t('toasts.actions.activated') : t('toasts.actions.banned');
+    addToast(t('toasts.userActionSuccess', { action: accionTraducida }), 'success');
   } catch (error) {
     console.error("Error al cambiar estado:", error);
-    addToast("No se pudo procesar la acción en el servidor.", 'error');
+    addToast(t('toasts.serverProcessError'), 'error');
   }
 };
 

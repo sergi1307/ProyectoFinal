@@ -5,7 +5,7 @@ import axios from "axios";
 import { useToast } from '@/composables/useToast';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 const { addToast } = useToast();
 const props = defineProps({
   producto: {
@@ -39,6 +39,20 @@ const obtenerUsuarioId = () => {
   } catch (error) {
     return null;
   }
+};
+
+const traducirCategoria = (nombreDB) => {
+  if (!nombreDB) return "";
+  const clave = nombreDB
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "");
+  const ruta = `categorias.${clave}`;
+  if (!te(ruta)) {
+    console.warn(`No se encontró traducción para la clave: ${ruta} basada en: ${nombreDB}`);
+  }
+  return te(ruta) ? t(ruta) : nombreDB;
 };
 
 const esMiProducto = computed(() => {
@@ -118,7 +132,7 @@ const agregarAlCarrito = async () => {
     <div class="contenedor-imagen-producto">
       <div class="categorias-wrapper" v-if="producto.categories?.length">
         <span v-for="cat in producto.categories" :key="cat.id" class="categoria-badge">
-          {{ cat.name }}
+          {{ traducirCategoria(cat.name) }}
         </span>
       </div>
 
@@ -151,11 +165,7 @@ const agregarAlCarrito = async () => {
         
         <span 
           v-if="producto.user?.plan && producto.user.plan !== 'Básico'" 
-          :class="[
-            'badge-vendedor-titulo', 
-            'badge-exclusivo',
-            'badge-' + producto.user.plan.toLowerCase()
-          ]"
+          :class="['badge-vendedor-titulo', 'badge-exclusivo', 'badge-' + producto.user.plan.toLowerCase()]"
         >
           {{ producto.user.plan }}
         </span>

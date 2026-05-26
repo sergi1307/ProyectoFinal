@@ -87,7 +87,6 @@ const suscribirse = async (planId) => {
 
     window.dispatchEvent(new Event("perfil-actualizado"));
 
-    // Traducimos también los toasts
     addToast(t('planes.toastSuccess') + " " + response.data.plan + "!", 'success');
 
     router.push("/perfil");

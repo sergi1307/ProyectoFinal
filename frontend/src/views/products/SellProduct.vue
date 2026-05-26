@@ -55,7 +55,7 @@ const manejarSubidaImagen = (evento) => {
 
 const crearProducto = async () => {
   if (producto.value.categorias.length === 0) {
-    addToast("Por favor, selecciona al menos una categoría.", 'error');
+    addToast(t('toasts.selectCategory'), 'error');
     return;
   }
 
@@ -81,7 +81,7 @@ const crearProducto = async () => {
     router.push("/mis-productos");
   } catch (error) {
     console.error("Error:", error);
-    addToast("Error al crear el producto.", 'error');
+    addToast(t('toasts.createProductError'), 'error');
   } finally {
     cargando.value = false;
   }

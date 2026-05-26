@@ -86,7 +86,7 @@ const actualizarEstadisticas = () => {
 
 const enviarmensaje = (email, asunto) => {
   if (!email) {
-    addToast("Este usuario no tiene un correo electrónico asociado.", 'error');
+    addToast(t('toasts.noEmail'), 'error');
     return;
   }
   const mailtoLink = `mailto:${email}?subject=Respuesta a incidencia: ${encodeURIComponent(asunto)}`;
