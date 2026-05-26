@@ -19,16 +19,16 @@ const hoverRating = ref(0);
 const nuevaReview = ref({ rating: 5, comment: "" });
 const mostrarModalReporte = ref(false);
 const enviandoReporte = ref(false);
-const reporte = ref({ reason: "Contenido inapropiado", details: "" });
+const reporte = ref({ reason: t("detail.report.reasons.inappropriate"), details: "" });
 
-const motivosReporte = [
-  { value: "Contenido inapropiado", label: "detail.report.reasons.inappropriate" },
-  { value: "Imagen engañosa", label: "detail.report.reasons.misleading" },
-  { value: "Precio abusivo o falso", label: "detail.report.reasons.price" },
-  { value: "Derechos de autor / Plagio", label: "detail.report.reasons.copyright" },
-  { value: "Estafa o Fraude", label: "detail.report.reasons.fraud" },
-  { value: "Otro", label: "detail.report.reasons.other" },
-];
+const motivosReporte = computed(() => [
+  { value: t("detail.report.reasons.inappropriate"), label: "detail.report.reasons.inappropriate" },
+  { value: t("detail.report.reasons.misleading"), label: "detail.report.reasons.misleading" },
+  { value: t("detail.report.reasons.price"), label: "detail.report.reasons.price" },
+  { value: t("detail.report.reasons.copyright"), label: "detail.report.reasons.copyright" },
+  { value: t("detail.report.reasons.fraud"), label: "detail.report.reasons.fraud" },
+  { value: t("detail.report.reasons.other"), label: "detail.report.reasons.other" },
+]);
 
 const formatoArchivo = computed(() => {
   if (!producto.value?.file_url) return t('detail.unknown');
