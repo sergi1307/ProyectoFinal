@@ -1,0 +1,134 @@
+@import "variables";
+
+/* ESTILOS ESPECÍFICOS DEL MODAL DE INCIDENCIAS */
+/* Los estilos base (.modal-overlay, .modal-content, .modal-header, etc.) están en _components.scss */
+
+h2 {
+  img {
+    width: 150px;
+    height: 60px;
+    object-fit: cover;
+  }
+}
+
+/* Customización del formulario dentro del modal */
+.form-group {
+  gap: 0.3rem !important;
+  margin: 0 !important;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+}
+
+input[type="text"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin: 0;
+
+  &:focus {
+    outline: none;
+    border-color: #0cc0df;
+    background-color: #ffffff;
+  }
+}
+
+textarea {
+  height: 100px;
+  resize: none !important;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+
+  &::after {
+    content: '▼';
+    font-size: 0.7rem;
+    color: #0f172a;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+select {
+  appearance: none;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+/* Botones específicos del modal */
+.btn-cancel,
+.btn-submit {
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: #e2e8f0;
+  color: #0f172a;
+  flex: 0 0 auto;
+}
+
+.btn-submit {
+  background-color: #0cc0df;
+  color: #0f172a;
+  flex: 1;
+  width: auto !important;
+  padding: 0.6rem 1.2rem !important;
+
+  &:hover {
+    background-color: #0aa5c0;
+  }
+}
+
+/* Sobreescribir estilos del header específico de este modal */
+.modal-header {
+  background-color: #0f172a;
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body {
+  padding: 1.2rem 1.5rem 0;
+}
+
+.modal-footer {
+  padding: 1.2rem 1.5rem 1.8rem;
+}
+
+:global(.Vue-Toastification__container) {
+  z-index: 100001 !important;
+}

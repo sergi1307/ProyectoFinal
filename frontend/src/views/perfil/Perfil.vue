@@ -1,12 +1,15 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import { useToast } from "@/composables/useToast";
 
+const { t } = useI18n();
+const { addToast } = useToast();
 const route = useRoute();
-
 const usuario = ref({
   nombre: "",
   email: "",
@@ -110,15 +113,12 @@ const actualizarPerfil = async () => {
     guardando.value = false;
   } catch (error) {
     guardando.value = false;
-    alert("Hubo un error al guardar los cambios.");
+    addToast(t("profile.toast.saveError"), "error");
   }
 };
 
 const confirmarEliminarCuenta = async () => {
-  if (
-    !confirm("¿Estás seguro de que quieres eliminar tu cuenta definitivamente?")
-  )
-    return;
+  if (!confirm(t("profile.confirmDelete"))) return;
   try {
     guardando.value = true;
     const token = localStorage.getItem("token");
@@ -129,7 +129,7 @@ const confirmarEliminarCuenta = async () => {
     window.location.href = "/";
   } catch (error) {
     guardando.value = false;
-    alert("No se pudo eliminar la cuenta.");
+    addToast(t("profile.toast.deleteError"), "error");
   }
 };
 
@@ -140,9 +140,6 @@ const obtenerRutaAvatar = (ruta) => {
     : `http://localhost:8080/storage/${ruta}?t=${new Date().getTime()}`;
 };
 
-// ==========================================
-// EL MOTOR REACTIVO INQUEBRANTABLE
-// ==========================================
 onMounted(() => {
   cargarDatos();
   window.addEventListener("perfil-actualizado", cargarDatos);
@@ -152,7 +149,6 @@ onUnmounted(() => {
   window.removeEventListener("perfil-actualizado", cargarDatos);
 });
 
-// ESTO ES LO NUEVO: Si Vue recicla la página y no ejecuta onMounted, este perro guardián detecta que has entrado al perfil y fuerza la actualización.
 watch(
   () => route.path,
   (newPath) => {
@@ -167,23 +163,28 @@ watch(
   <NavBar></NavBar>
 
   <main class="contenedor-principal">
-    <h1 class="titulo-pagina">Mi Perfil</h1>
+    <h1 class="titulo-pagina">{{ t("profile.title") }}</h1>
 
-    <div class="cuadricula-perfil">
+    <div
+      class="cuadricula-perfil"
+      :class="{ 'solo-admin': usuario.rol === 'admin' }"
+    >
       <section class="tarjeta-principal">
         <div class="cabecera-tarjeta">
-          <h2>Información Personal</h2>
-          <p>Administra tu información de cuenta</p>
+          <h2>{{ t("profile.personalInfo") }}</h2>
+          <p>{{ t("profile.manageAccount") }}</p>
         </div>
 
         <div class="contenedor-avatar">
-          <div class="circulo-avatar">
+          <div
+            class="circulo-avatar"
+            :class="['plan-' + usuario.plan?.toLowerCase()]"
+          >
             <img
               v-if="usuario.avatar && obtenerRutaAvatar(usuario.avatar)"
               :src="obtenerRutaAvatar(usuario.avatar)"
               class="imagen-perfil"
             />
-
             <svg
               v-else
               viewBox="0 0 24 24"
@@ -216,8 +217,19 @@ watch(
               </svg>
             </div>
             <div class="textos-campo">
-              <span class="etiqueta-campo">Nombre</span>
-              <span class="valor-campo">{{ usuario.nombre }}</span>
+              <span class="etiqueta-campo">{{ t("profile.name") }}</span>
+              <div class="nombre-wrapper">
+                <span class="valor-campo">{{ usuario.nombre }}</span>
+                <span
+                  v-if="usuario.plan && usuario.plan !== 'Básico'"
+                  :class="[
+                    'badge-exclusivo',
+                    'badge-' + usuario.plan.toLowerCase(),
+                  ]"
+                >
+                  {{ usuario.plan }}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -238,7 +250,7 @@ watch(
               </svg>
             </div>
             <div class="textos-campo">
-              <span class="etiqueta-campo">Email</span>
+              <span class="etiqueta-campo">{{ t("profile.email") }}</span>
               <span class="valor-campo">{{ usuario.email }}</span>
             </div>
           </div>
@@ -259,15 +271,21 @@ watch(
               </svg>
             </div>
             <div class="textos-campo">
-              <span class="etiqueta-campo">Rol</span>
-              <span class="valor-campo badge-admin">Administrador</span>
+              <span class="etiqueta-campo">{{ t("profile.role") }}</span>
+              <span class="valor-campo badge-admin">{{
+                t("profile.admin")
+              }}</span>
             </div>
           </div>
         </div>
 
         <div class="acciones-perfil">
           <button class="boton-editar" @click="mostrarModal = true">
-            {{ usuario.rol === "admin" ? "Cambiar Foto" : "Editar Perfil" }}
+            {{
+              usuario.rol === "admin"
+                ? t("profile.changePhoto")
+                : t("profile.editProfile")
+            }}
           </button>
 
           <button
@@ -275,7 +293,7 @@ watch(
             class="boton-eliminar"
             @click="confirmarEliminarCuenta"
           >
-            Eliminar Cuenta
+            {{ t("profile.deleteAccount") }}
           </button>
         </div>
       </section>
@@ -300,7 +318,7 @@ watch(
           </div>
           <div class="textos-estadistica">
             <span class="numero-estadistica">{{ usuario.pedidos || 0 }}</span>
-            <span class="etiqueta-estadistica">Pedidos</span>
+            <span class="etiqueta-estadistica">{{ t("profile.orders") }}</span>
           </div>
         </router-link>
 
@@ -321,7 +339,9 @@ watch(
           </div>
           <div class="textos-estadistica">
             <span class="numero-estadistica">{{ usuario.favoritos || 0 }}</span>
-            <span class="etiqueta-estadistica">Favoritos</span>
+            <span class="etiqueta-estadistica">{{
+              t("profile.favorites")
+            }}</span>
           </div>
         </router-link>
 
@@ -349,9 +369,11 @@ watch(
           </div>
           <div class="textos-estadistica">
             <span class="numero-estadistica">{{
-              usuario.plan || "Básico"
+              usuario.plan || t("profile.basicPlan")
             }}</span>
-            <span class="etiqueta-estadistica">Plan actual</span>
+            <span class="etiqueta-estadistica">{{
+              t("profile.currentPlan")
+            }}</span>
           </div>
         </router-link>
       </aside>
@@ -360,12 +382,16 @@ watch(
     <div v-if="mostrarModal" class="capa-modal">
       <div class="contenido-modal">
         <h3 class="titulo-modal">
-          {{ usuario.rol === "admin" ? "Actualizar Foto" : "Editar Perfil" }}
+          {{
+            usuario.rol === "admin"
+              ? t("profile.updatePhoto")
+              : t("profile.editProfile")
+          }}
         </h3>
 
         <form @submit.prevent="actualizarPerfil" class="formulario-edicion">
           <div class="seccion-vista-previa">
-            <label class="etiqueta-foto">Foto de perfil</label>
+            <label class="etiqueta-foto">{{ t("profile.profilePhoto") }}</label>
             <div class="contenedor-previsualizacion">
               <div class="circulo-avatar-preview">
                 <img
@@ -406,7 +432,7 @@ watch(
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                Seleccionar nueva imagen
+                {{ t("profile.selectNewImage") }}
               </label>
               <input
                 type="file"
@@ -420,11 +446,11 @@ watch(
 
           <template v-if="usuario.rol !== 'admin'">
             <div class="grupo-input">
-              <label>Nombre Completo</label>
+              <label>{{ t("profile.fullName") }}</label>
               <input v-model="editandoUsuario.nombre" type="text" required />
             </div>
             <div class="grupo-input">
-              <label>Correo Electrónico</label>
+              <label>{{ t("profile.emailAddress") }}</label>
               <input v-model="editandoUsuario.email" type="email" required />
             </div>
           </template>
@@ -435,10 +461,10 @@ watch(
               class="boton-cancelar"
               @click="mostrarModal = false"
             >
-              Cancelar
+              {{ t("profile.cancel") }}
             </button>
             <button type="submit" class="boton-guardar" :disabled="guardando">
-              {{ guardando ? "Guardando..." : "Guardar Cambios" }}
+              {{ guardando ? t("profile.saving") : t("profile.saveChanges") }}
             </button>
           </div>
         </form>

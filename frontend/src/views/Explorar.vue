@@ -1,55 +1,47 @@
 <script setup>
 import { ref, onMounted, computed, watch, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
 
-// ==========================================
-// 1. ESTADO GLOBAL Y VARIABLES
-// ==========================================
+const { addToast } = useToast();
+const { t, te } = useI18n();
+
 const productos = ref([]);
 const categorias = ref([]);
 const cargando = ref(true);
 const mostrarFiltros = ref(false);
 const usuarioActual = ref(null);
-
-// ==========================================
-// 2. ESTADO DE LOS FILTROS
-// ==========================================
 const searchQuery = ref("");
 const ordenSeleccionado = ref("Destacados");
-const opcionesOrden = [
-  "Destacados",
-  "Más populares",
-  "Mejor calificados",
-  "Precio: Menor a Mayor",
-  "Precio: Mayor a Menor",
-];
+
+const opcionesOrden = computed(() => [
+  { value: 'Destacados', label: t('explorar.sortOptions.featured') },
+  { value: 'Más populares', label: t('explorar.sortOptions.popular') },
+  { value: 'Mejor calificados', label: t('explorar.sortOptions.topRated') },
+  { value: 'Precio: Menor a Mayor', label: t('explorar.sortOptions.priceAsc') },
+  { value: 'Precio: Mayor a Menor', label: t('explorar.sortOptions.priceDesc') }
+]);
 
 const precioMin = ref(0);
 const precioMax = ref(1000);
 const maxTotal = 1000;
 
-const calificacionSeleccionada = ref("Todas las calificaciones");
-const calificaciones = [
-  { label: "Todas las calificaciones", value: "todas" },
-  { label: "3+ estrellas", value: 3 },
-  { label: "4+ estrellas", value: 4 },
-  { label: "4.5+ estrellas", value: 4.5 },
-];
+const calificacionSeleccionada = ref("todas");
+const calificaciones = computed(() => [
+  { label: t('explorar.ratingOptions.all'), value: "todas" },
+  { label: t('explorar.ratingOptions.stars', { count: 3 }), value: 3 },
+  { label: t('explorar.ratingOptions.stars', { count: 4 }), value: 4 },
+  { label: t('explorar.ratingOptions.stars', { count: 4.5 }), value: 4.5 },
+]);
 
 const categoriasSeleccionadas = ref([]);
-
-// --- NUEVO: ESTADO DEL BUSCADOR DE CATEGORÍAS ---
 const busquedaCategoria = ref("");
 const mostrarDropdownCategorias = ref(false);
 
-// ==========================================
-// 3. PROPIEDADES COMPUTADAS (Lógica reactiva)
-// ==========================================
-
-// Gradiente dinámico para la barra de rango de precio
 const estiloBarra = computed(() => {
   const dep1 = (precioMin.value / maxTotal) * 100;
   const dep2 = (precioMax.value / maxTotal) * 100;
@@ -58,58 +50,71 @@ const estiloBarra = computed(() => {
   };
 });
 
-// Categorías que aún no han sido seleccionadas
 const categoriasDisponibles = computed(() => {
   return categorias.value.filter(
     (cat) => !categoriasSeleccionadas.value.includes(cat.id),
   );
 });
 
-// Filtro en tiempo real para el nuevo buscador de categorías
 const categoriasFiltradasPorBusqueda = computed(() => {
   const query = busquedaCategoria.value.toLowerCase();
-  return categoriasDisponibles.value.filter((cat) =>
-    cat.name.toLowerCase().includes(query),
-  );
+  return categoriasDisponibles.value.filter((cat) => {
+    const nombre = te(`categorias.${cat.name.toLowerCase()}`) ? t(`categorias.${cat.name.toLowerCase()}`) : cat.name;
+    return nombre.toLowerCase().includes(query);
+  });
 });
 
-// El motor principal: Filtra y ordena los productos
+const normalizarClave = (str) => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/s$/, "");
+};
+
+const traducirCategoria = (nombreDB) => {
+  if (!nombreDB) return "";
+  const clave = nombreDB
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "");
+  const ruta = `categorias.${clave}`;
+  if (!te(ruta)) {
+    console.warn(`No se encontró traducción para la clave: ${ruta} basada en: ${nombreDB}`);
+  }
+  return te(ruta) ? t(ruta) : nombreDB;
+};
+
 const productosFiltrados = computed(() => {
   return productos.value
     .filter((p) => {
-      // 1. Ocultar mis propios productos
       const idDuenoProducto = Number(p.user_id || p.user?.id);
       const idMio = usuarioActual.value ? Number(usuarioActual.value.id) : null;
       const esMio = idMio && idDuenoProducto === idMio;
       if (esMio) return false;
 
-      // 2. Filtro por buscador de texto
       const query = searchQuery.value.toLowerCase();
       const cumpleNombre =
         !query ||
         (p.title || "").toLowerCase().includes(query) ||
         (p.description || "").toLowerCase().includes(query);
 
-      // 3. Filtro por categorías seleccionadas
       const cumpleCategoria =
         categoriasSeleccionadas.value.length === 0 ||
         p.categories?.some((c) => categoriasSeleccionadas.value.includes(c.id));
 
-      // 4. Filtro por rango de precios
       const cumplePrecio =
         p.price >= precioMin.value && p.price <= precioMax.value;
 
-      // 5. Filtro por estrellas
-      const ratingMinimo = calificaciones.find(
-        (c) => c.label === calificacionSeleccionada.value,
-      )?.value;
+      const ratingMinimo = calificacionSeleccionada.value;
       const cumpleRating =
-        ratingMinimo === "todas" || Number(p.rating || 0) >= ratingMinimo;
+        ratingMinimo === "todas" || Number(p.rating || 0) >= Number(ratingMinimo);
 
       return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
     })
     .sort((a, b) => {
-      // Ordenamiento final
       if (ordenSeleccionado.value === "Precio: Menor a Mayor")
         return a.price - b.price;
       if (ordenSeleccionado.value === "Precio: Mayor a Menor")
@@ -119,10 +124,6 @@ const productosFiltrados = computed(() => {
       return 0;
     });
 });
-
-// ==========================================
-// 4. MÉTODOS DE LA UI (Filtros y Rangos)
-// ==========================================
 
 const validarPrecios = () => {
   if (precioMin.value > precioMax.value - 50) {
@@ -139,7 +140,7 @@ const validarPreciosMax = () => {
 const limpiarFiltros = () => {
   ordenSeleccionado.value = "Destacados";
   categoriasSeleccionadas.value = [];
-  calificacionSeleccionada.value = "Todas las calificaciones";
+  calificacionSeleccionada.value = "todas";
   precioMin.value = 0;
   precioMax.value = 1000;
   searchQuery.value = "";
@@ -147,7 +148,6 @@ const limpiarFiltros = () => {
   mostrarFiltros.value = false;
 };
 
-// --- NUEVO: Métodos del Buscador Desplegable ---
 const seleccionarCategoria = (categoria) => {
   if (categoria && !categoriasSeleccionadas.value.includes(categoria.id)) {
     categoriasSeleccionadas.value.push(categoria.id);
@@ -156,7 +156,6 @@ const seleccionarCategoria = (categoria) => {
   mostrarDropdownCategorias.value = false;
 };
 
-// Conservado tu método antiguo por si acaso
 const añadirCategoria = (event) => {
   const id = Number(event.target.value);
   if (id && !categoriasSeleccionadas.value.includes(id)) {
@@ -174,10 +173,6 @@ const quitarCategoria = (id) => {
 const nombreCategoria = (id) => {
   return categorias.value.find((c) => c.id === id)?.name || "";
 };
-
-// ==========================================
-// 5. LLAMADAS A LA API (Datos)
-// ==========================================
 
 const obtenerCategorias = async () => {
   try {
@@ -231,20 +226,16 @@ const toggleFavorito = async (productId) => {
 };
 
 const handleAgregado = (productId) => {
-  alert("¡Producto añadido al carrito correctamente!");
+  addToast(t('cart.addSuccess'), 'success');
 };
 
-// ==========================================
-// 6. CICLO DE VIDA
-// ==========================================
 onMounted(async () => {
   await cargarDatos();
   await obtenerCategorias();
+
+  window.addEventListener("scroll", manejarScroll);
 });
 
-// ==========================================
-// 7. CONTROL DE SCROLL (Fondo bloqueado)
-// ==========================================
 watch(mostrarFiltros, (estaAbierto) => {
   if (estaAbierto) {
     document.body.style.overflow = 'hidden';
@@ -255,7 +246,22 @@ watch(mostrarFiltros, (estaAbierto) => {
 
 onUnmounted(() => {
   document.body.style.overflow = '';
+
+  window.removeEventListener("scroll", manejarScroll);
 });
+
+// ==========================================
+// 8. BOTÓN FLOTANTE (Scroll)
+// ==========================================
+const mostrarBotonFlotante = ref(false);
+
+const manejarScroll = () => {
+  if (window.scrollY > 250) {
+    mostrarBotonFlotante.value = true;
+  } else {
+    mostrarBotonFlotante.value = false;
+  }
+}
 </script>
 
 <template>
@@ -264,10 +270,8 @@ onUnmounted(() => {
     <div class="explorar-contenedor">
       <header class="cabecera-explorar">
         <div class="info-titulo">
-          <h1 class="titulo-seccion">Explorar Productos</h1>
-          <p class="contador-productos">
-            {{ productosFiltrados.length }} productos encontrados
-          </p>
+          <h1 class="titulo-seccion">{{ $t('explorar.featured') }} {{ $t('navbar.products') }}</h1>
+          {{ productosFiltrados.length }} {{ $t('explorar.productsFound').toLowerCase() }}
         </div>
 
         <div class="acciones-derecha">
@@ -314,7 +318,7 @@ onUnmounted(() => {
             <line x1="9" y1="8" x2="15" y2="8"></line>
             <line x1="17" y1="16" x2="23" y2="16"></line>
           </svg>
-          Filtros
+          {{ $t('explorar.filters') || 'Filtros' }}
         </button>
       </header>
 
@@ -339,8 +343,8 @@ onUnmounted(() => {
       <aside :class="['panel-lateral', { abierto: mostrarFiltros }]">
         <div class="panel-header">
           <div class="header-txt">
-            <h3>Personalizar Filtros</h3>
-            <p>Encuentra exactamente lo que buscas</p>
+            <h3>{{ $t('explorar.customizeFilters') }}</h3>
+            <p>{{ $t('explorar.findExactly') }}</p>
           </div>
           <button class="close-btn" @click="mostrarFiltros = false">
             &times;
@@ -349,45 +353,40 @@ onUnmounted(() => {
 
         <div class="panel-scroll">
           <section class="seccion-f">
-            <h4>Ordenar por</h4>
+            <h4>{{ $t('explorar.sortBy') }}</h4>
             <div
               v-for="opcion in opcionesOrden"
-              :key="opcion"
+              :key="opcion.value"
               class="control-f"
             >
               <input
                 type="radio"
-                :id="opcion"
-                :value="opcion"
+                :id="opcion.value"
+                :value="opcion.value"
                 v-model="ordenSeleccionado"
                 name="orden"
               />
-              <label :for="opcion">{{ opcion }}</label>
+              <label :for="opcion.value">{{ opcion.label }}</label>
             </div>
           </section>
 
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Categorías</h4>
+            <h4>{{ $t('explorar.categoriesLabel') }}</h4>
 
             <div class="buscador-categorias-wrapper">
               <input
                 type="text"
                 v-model="busquedaCategoria"
-                placeholder="Buscar y añadir categoría..."
+                :placeholder="$t('explorar.searchCategory')"
                 class="input-buscar-categoria"
                 @focus="mostrarDropdownCategorias = true"
-                @blur="
-                  setTimeout(() => (mostrarDropdownCategorias = false), 200)
-                "
+                @blur="setTimeout(() => (mostrarDropdownCategorias = false), 200)"
               />
 
               <ul
-                v-if="
-                  mostrarDropdownCategorias &&
-                  categoriasFiltradasPorBusqueda.length > 0
-                "
+                v-if="mostrarDropdownCategorias && categoriasFiltradasPorBusqueda.length > 0"
                 class="dropdown-categorias"
               >
                 <li
@@ -395,30 +394,25 @@ onUnmounted(() => {
                   :key="cat.id"
                   @click="seleccionarCategoria(cat)"
                 >
-                  {{ cat.name }}
+                  {{ traducirCategoria(cat.name) }}
                 </li>
               </ul>
 
               <div
-                v-else-if="
-                  mostrarDropdownCategorias && busquedaCategoria !== ''
-                "
+                v-else-if="mostrarDropdownCategorias && busquedaCategoria !== ''"
                 class="dropdown-categorias vacio"
               >
-                No se encontraron categorías
+                {{ $t('explorar.noCategoriesFound') }}
               </div>
             </div>
 
-            <div
-              class="chips-container"
-              v-if="categoriasSeleccionadas.length > 0"
-            >
+            <div class="chips-container" v-if="categoriasSeleccionadas.length > 0">
               <div
                 v-for="id in categoriasSeleccionadas"
                 :key="id"
                 class="chip-categoria"
               >
-                <span>{{ nombreCategoria(id) }}</span>
+                <span>{{ traducirCategoria(nombreCategoria(id)) }}</span>
                 <button @click="quitarCategoria(id)" class="btn-quitar-chip">
                   &times;
                 </button>
@@ -429,7 +423,7 @@ onUnmounted(() => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Rango de Precio</h4>
+            <h4>{{ $t('explorar.priceRange') }}</h4>
             <div class="contenedor-rango">
               <div class="barra-progreso" :style="estiloBarra"></div>
               <input
@@ -461,16 +455,13 @@ onUnmounted(() => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Calificación Mínima</h4>
+            <h4>{{ $t('explorar.minRating') }}</h4>
             <div class="calif-box">
               <div
                 v-for="c in calificaciones"
                 :key="c.value"
-                :class="[
-                  'calif-item',
-                  { active: calificacionSeleccionada === c.label },
-                ]"
-                @click="calificacionSeleccionada = c.label"
+                :class="['calif-item', { active: calificacionSeleccionada === c.value }]"
+                @click="calificacionSeleccionada = c.value"
               >
                 <span v-if="c.value !== 'todas'" class="stars-gold">★★★★☆</span>
                 {{ c.label }}
@@ -481,13 +472,34 @@ onUnmounted(() => {
 
         <div class="panel-footer">
           <button class="btn-ver-prod" @click="mostrarFiltros = false">
-            Ver {{ productosFiltrados.length }} Productos
+            {{ $t('explorar.seeProducts', { count: productosFiltrados.length }) }}
           </button>
           <button class="btn-limpiar" @click="limpiarFiltros">
-            Limpiar filtros
+            {{ $t('explorar.clearFilters') }}
           </button>
         </div>
       </aside>
+      <transition name="fade-flotante">
+        <button
+          v-if="mostrarBotonFlotante && !mostrarFiltros"
+          class="btn-flotante-filtros"
+          @click="mostrarFiltros = true"
+          title="Abrir filtros"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </button>
+      </transition>
+
     </div>
   </div>
   <Footer></Footer>

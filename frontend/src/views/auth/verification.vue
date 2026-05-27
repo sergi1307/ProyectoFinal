@@ -3,32 +3,30 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import "../../assets/css/auth.css";
+import { useToast } from '@/composables/useToast';
+import NavBar from "@/components/NavBar.vue";
+import Footer from "@/components/Footer.vue";
 
+const { addToast } = useToast();
 const route = useRoute();
 const router = useRouter();
-
-// Variables de estado
 const email = ref("");
 const code = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 const errorMsg = ref("");
-
-// Control del flujo
 const mode = ref("verify");
-const paso = ref(1); // 1: Email, 2: Código, 3: Nueva contraseña
+const paso = ref(1);
 
 onMounted(() => {
   mode.value = route.query.mode || "verify";
   email.value = route.query.email || "";
 
-  // Si ya venimos con un email (ej. desde el registro), saltamos al paso 2
   if (email.value) {
     paso.value = 2;
   }
 });
 
-// PASO 1: Enviar correo
 const solicitarCodigo = async () => {
   errorMsg.value = "";
   if (!email.value) {
@@ -43,13 +41,12 @@ const solicitarCodigo = async () => {
       email: email.value,
     });
 
-    paso.value = 2; // Avanzamos al paso del código
+    paso.value = 2;
   } catch (error) {
     errorMsg.value = "Hubo un error al intentar enviar el correo.";
   }
 };
 
-// PASO 2: Validar código en frontend y decidir qué hacer
 const procesarCodigo = async () => {
   errorMsg.value = "";
   if (!code.value || code.value.length !== 6) {
@@ -58,24 +55,21 @@ const procesarCodigo = async () => {
   }
 
   if (mode.value === "verify") {
-    // Si estamos verificando cuenta nueva, aquí termina el flujo y llamamos a la API
     try {
       await axios.post(`http://localhost:8080/api/auth/verificar-email`, {
         email: email.value,
         code: code.value,
       });
-      alert("Email verificado con éxito. Ya puedes iniciar sesión.");
+      addToast(t('toasts.emailVerified'), 'success');
       router.push("/login");
     } catch (error) {
       errorMsg.value = "Código incorrecto o expirado.";
     }
   } else {
-    // Si estamos reseteando contraseña, pasamos al Paso 3 para pedir las claves
     paso.value = 3;
   }
 };
 
-// PASO 3: Enviar la nueva contraseña (Solo modo Reset)
 const cambiarPassword = async () => {
   errorMsg.value = "";
 
@@ -95,27 +89,25 @@ const cambiarPassword = async () => {
       code: code.value,
       password: newPassword.value,
     });
-    alert(
-      "Contraseña actualizada con éxito. Inicia sesión con tu nueva clave.",
-    );
+    addToast(t('toasts.passwordUpdated'), 'success');
     router.push("/login");
   } catch (error) {
     errorMsg.value =
       "El código ha expirado o es incorrecto. Vuelve a intentarlo.";
-    paso.value = 1; // Le devolvemos al inicio si falló en el backend
+    paso.value = 1;
   }
 };
 
-// Reutilizamos la función de solicitar código para el botón de "Reenviar"
 const reenviarCodigo = async () => {
   await solicitarCodigo();
-  alert("Te hemos enviado un nuevo código.");
+  addToast(t('toasts.codeSent'), 'success');
 };
 </script>
 
 <template>
+  <NavBar></NavBar>
   <main>
-    <router-link to="/login" class="inicio">← Volver al login</router-link>
+    <router-link to="/login" class="inicio">{{ $t('verificacion.volverLogin') }}</router-link>
 
     <form
       class="container"
@@ -128,7 +120,7 @@ const reenviarCodigo = async () => {
       "
     >
       <h1>
-        {{ mode === "reset" ? "Recuperar Contraseña" : "Verificar Email" }}
+        {{ mode === "reset" ? $t('verificacion.tituloRecuperar') : $t('verificacion.tituloVerificar') }}
       </h1>
 
       <p
@@ -145,27 +137,27 @@ const reenviarCodigo = async () => {
 
       <template v-if="paso === 1">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Introduce tu correo electrónico para recibir el código de 6 dígitos.
+          {{ $t('verificacion.descPaso1') }}
         </p>
-        <label for="email">Correo electrónico:</label>
+        <label for="email">{{ $t('verificacion.lblEmail') }}</label>
         <input
           type="email"
           id="email"
           v-model="email"
-          placeholder="tu@email.com"
+          :placeholder="$t('verificacion.phEmail')"
           required
         />
 
-        <button type="submit">Enviar código</button>
+        <button type="submit">{{ $t('verificacion.btnEnviar') }}</button>
       </template>
 
       <template v-if="paso === 2">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Introduce el código de 6 dígitos que te hemos enviado a
+          {{ $t('verificacion.descPaso2') }}
           <strong>{{ email }}</strong>
         </p>
 
-        <label for="code">Código de verificación:</label>
+        <label for="code">{{ $t('verificacion.lblCodigo') }}</label>
         <input
           type="text"
           id="code"
@@ -176,23 +168,23 @@ const reenviarCodigo = async () => {
         />
 
         <button type="submit">
-          {{ mode === "reset" ? "Siguiente paso" : "Verificar cuenta" }}
+          {{ mode === "reset" ? $t('verificacion.btnSiguiente') : $t('verificacion.btnVerificar') }}
         </button>
 
         <p id="normal">
-          ¿No has recibido el código?
+          {{ $t('verificacion.preguntaCodigo') }}
           <span id="cambiar" @click="reenviarCodigo" style="cursor: pointer"
-            >Reenviar código</span
+            >{{ $t('verificacion.btnReenviar') }}</span
           >
         </p>
       </template>
 
       <template v-if="paso === 3">
         <p style="text-align: center; margin-bottom: 1.5rem">
-          Crea una nueva contraseña para tu cuenta.
+          {{ $t('verificacion.descPaso3') }}
         </p>
 
-        <label for="newPassword">Nueva contraseña:</label>
+        <label for="newPassword">{{ $t('verificacion.lblNuevaPass') }}</label>
         <input
           type="password"
           id="newPassword"
@@ -201,7 +193,7 @@ const reenviarCodigo = async () => {
           required
         />
 
-        <label for="confirmPassword">Confirmar contraseña:</label>
+        <label for="confirmPassword">{{ $t('verificacion.lblConfirmaPass') }}</label>
         <input
           type="password"
           id="confirmPassword"
@@ -210,8 +202,9 @@ const reenviarCodigo = async () => {
           required
         />
 
-        <button type="submit">Guardar y cambiar contraseña</button>
+        <button type="submit">{{ $t('verificacion.btnGuardarPass') }}</button>
       </template>
     </form>
   </main>
+  <Footer></Footer>
 </template>

@@ -24,11 +24,12 @@ const enviarDatos = async () => {
     });
 
     const data = response.data; 
-    console.log(data.value);
+    console.log("Respuesta de la API:", data);
+    const userData = data.usuario || data.user;
 
-    if (data.token && data.usuario) {
+    if (data.token && userData) {
       localStorage.setItem('token', data.token);
-      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      localStorage.setItem('usuario', JSON.stringify(userData));
 
       try {
         const resCart = await axios.get("http://localhost:8080/api/cart", {
@@ -52,11 +53,16 @@ const enviarDatos = async () => {
       window.dispatchEvent(new Event('storage'));
       window.dispatchEvent(new CustomEvent('cart-updated'));
 
-      if (data.usuario.role === 'admin') {
+      if (userData.role === 'admin') {
         router.push('/admin');
+      } else if (userData.primer_login === true || userData.primer_login === 1) {
+        router.push('/suscripciones');
       } else {
         router.push('/general');
       }
+    } else {
+      console.error("El backend no devolvió el token o el objeto de usuario. Respuesta:", data);
+      errorMsg.value = "Error en la respuesta del servidor.";
     }
   } catch (error) {
     if (error.response) {
@@ -109,7 +115,7 @@ const enviarDatos = async () => {
         required 
       />
 
-      <router-link class="resetPassword" to="/verificar-email?mode=reset">¿Has olvidado la contraseña?</router-link>
+      <router-link class="resetPassword" to="/verificar-email?mode=reset">{{ $t('auth.forgotPassword') }}</router-link>
 
       <button type="submit">{{ $t('auth.titleLogin') }}</button>
       

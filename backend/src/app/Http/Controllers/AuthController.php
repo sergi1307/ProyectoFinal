@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Log as AdminLog;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\RegistroRequest;
 use App\Http\Requests\LoginRequest;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -31,6 +33,13 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        AdminLog::create([
+            'clase' => 'Usuario',
+            'accion' => 'Registro',
+            'descripcion' => "Nuevo usuario registrado: {$user->name} ({$user->email})",
+            'user_id' => $user->id,
         ]);
 
         $this->enviarCodigoVerificacion($user);
@@ -73,18 +82,33 @@ class AuthController extends Controller
             ], 403);
         }
 
+        $esPrimerLogin = (bool) $user->primer_login;
+
+        if ($esPrimerLogin) {
+            $user->primer_login = false;
+            $user->save();
+        }
+
+        AdminLog::create([
+            'clase' => 'Usuario',
+            'accion' => 'Login',
+            'descripcion' => "El usuario {$user->name} ha iniciado sesión.",
+            'user_id' => $user->id,
+        ]);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'mensaje' => 'Login exitoso',
             'token'   => $token,
             'usuario' => [
-                'id'    => $user->id_user, 
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role,
-                'avatar' => $user->avatar,
-                'plan'   => $user->plan
+                'id'           => $user->id, 
+                'name'         => $user->name,
+                'email'        => $user->email,
+                'role'         => $user->role,
+                'avatar'       => $user->avatar,
+                'plan'         => $user->plan,
+                'primer_login' => $esPrimerLogin, 
             ]
         ], 200);
     }
@@ -182,8 +206,18 @@ class AuthController extends Controller
         ]);
 
         $user = $request->user();
+        $planAnterior = $user->plan;
+
         $user->plan = $request->plan;
         $user->save();
+
+        AdminLog::create([
+            'clase' => 'Usuario',
+            'accion' => 'Actualizar Suscripción',
+            'descripcion' => "El usuario {$user->name} ha actualizado su suscripción a: {$request->plan}.",
+            'user_id' => $user->id,
+            'payload' => ['plan_anterior' => $planAnterior, 'plan_nuevo' => $request->plan]
+        ]);
 
         return response()->json([
             'mensaje' => 'Suscripción actualizada correctamente',
@@ -228,6 +262,14 @@ class AuthController extends Controller
         $user->active = !$user->active;
         $user->save();
 
+        AdminLog::create([
+            'clase' => 'Usuario',
+            'accion' => $user->active ? 'Activar' : 'Banear',
+            'descripcion' => ($user->active ? "Se ha activado" : "Se ha baneado") . " la cuenta del usuario: {$user->name} (ID: {$id}).",
+            'user_id' => Auth::id(),
+            'payload' => ['target_user_id' => $user->id, 'status' => $user->active]
+        ]);
+
         return response()->json([
             'message' => $user->active ? 'Usuario activado' : 'Usuario baneado',
             'active' => $user->active
@@ -260,6 +302,13 @@ class AuthController extends Controller
 
             $user->avatar = $path;
         }
+
+        AdminLog::create([
+            'clase' => 'Usuario',
+            'accion' => 'Actualizar Perfil',
+            'descripcion' => "El usuario {$user->name} actualizó sus datos de perfil.",
+            'user_id' => $user->id,
+        ]);
 
         $user->save();
         
@@ -311,6 +360,13 @@ class AuthController extends Controller
 
             Mail::to($user->email)->send(new ResetPasswordCodeMail($code));
         }
+
+        AdminLog::create([
+            'clase' => 'Seguridad',
+            'accion' => 'Reset Password',
+            'descripcion' => "El usuario {$user->name} ha restablecido su contraseña mediante código de verificación.",
+            'user_id' => $user->id,
+        ]);
 
         return response()->json([
             'message' => "Si el correo existe, se ha enviado un código de verificación."

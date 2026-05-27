@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import ModalIncidencias from "./modalIncidencias.vue";
 
+const isLoggedIn = ref(false);
 const esAdmin = ref(false);
 const { t } = useI18n();
 const isModalOpen = ref(false);
@@ -11,8 +12,11 @@ const verificarRol = async () => {
   const usuarioRaw = JSON.parse(localStorage.getItem("usuario"));
 
   if (usuarioRaw) {
+    isLoggedIn.value = true;
     esAdmin.value = usuarioRaw.role === "admin";
     console.log(esAdmin.value);
+  } else {
+    isLoggedIn.value = false;
   }
 };
 
@@ -106,7 +110,8 @@ onMounted(() => {
           <a href="mailto:soporte@nexus.com">soporte@nexus.com</a>
           <p class="horario">{{ $t("footer.hours") }}</p>
         </div>
-        <div v-if="!esAdmin" id="incidencias">
+        
+        <div v-if="isLoggedIn && !esAdmin" id="incidencias">
           <button @click="isModalOpen = true">
             <svg
               class="icono-incidencia"
@@ -139,7 +144,7 @@ onMounted(() => {
           </button>
         </div>
         <ModalIncidencias
-          v-if="!esAdmin"
+          v-if="isLoggedIn && !esAdmin"
           :isOpen="isModalOpen"
           @close="isModalOpen = false"
         />
@@ -163,174 +168,3 @@ onMounted(() => {
     </div>
   </footer>
 </template>
-
-<style scoped>
-
-footer {
-  background-color: #0f172a;
-  color: #94a3b8;
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  padding: 5rem 2rem 3rem 2rem;
-}
-
-h3 {
-  color: #ffffff;
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.5px;
-}
-
-p {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-/* CAMBIO AQUÍ: Actualizada la clase en CSS */
-.footer-contenedor a {
-  display: table;
-  color: #cbd5e1;
-  text-decoration: none;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.footer-contenedor a:hover {
-  color: #0cc0df;
-  transform: translateX(4px);
-}
-
-#sobreNosotros p {
-  margin-bottom: 1.8rem;
-  text-align: left;
-  max-width: 90%;
-}
-
-.redes-sociales {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.redes-sociales a {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  margin-bottom: 0;
-}
-
-.redes-sociales a img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.img-normal { display: block; }
-.img-hover { display: none; }
-.redes-sociales a:hover .img-normal { display: none; }
-.redes-sociales a:hover .img-hover { display: block; }
-.redes-sociales a:hover { transform: translateY(-3px); }
-
-.email {
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 0.2rem 1rem;
-  margin-bottom: 1.8rem;
-  align-items: start;
-}
-
-.email img {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  margin-top: 2px;
-}
-
-.email p { color: #ffffff; margin-bottom: 0; font-weight: 500; }
-.email a { color: #94a3b8; margin-bottom: 0; display: inline-block; }
-.email .horario { color: #64748b; font-size: 0.85rem; margin-top: 0.3rem; }
-
-#incidencias button {
-  background-color: #ffffff;
-  color: #0f172a;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 0.85rem 1.5rem;
-  width: 100%;
-  max-width: 280px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-#incidencias button:hover {
-  background-color: #f8fafc;
-  color: #0cc0df;
-  border-color: #0cc0df;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
-}
-
-#incidencias button .icono-incidencia {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
-
-.derechos {
-  text-align: center;
-  margin-top: 5rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.derechos p { color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem; }
-.derechos p.copy { color: #e2e8f0; font-size: 0.95rem; margin-bottom: 0.5rem; }
-
-/* CAMBIO AQUÍ: Actualizada la clase en CSS */
-.footer-contenedor {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1.5fr 1fr;
-  gap: 4rem 2rem;
-  max-width: 1300px;
-  margin: 0 auto;
-  align-items: flex-start;
-}
-
-@media (max-width: 968px) {
-  .footer-contenedor {
-    grid-template-columns: 1.5fr 1fr;
-    gap: 3.5rem 2rem;
-  }
-}
-
-@media (max-width: 650px) {
-  .footer-contenedor {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-  
-  footer {
-    padding: 3rem 1.5rem 2rem 1.5rem;
-  }
-  
-  #sobreNosotros p {
-    max-width: 100%;
-  }
-
-  #incidencias button {
-    max-width: 100%;
-  }
-}
-</style>

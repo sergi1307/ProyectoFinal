@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PurchaseReceiptMail;
+use App\Models\Log as AdminLog;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -54,6 +55,20 @@ class PaymentController extends Controller
                     ]
                 ]
             ]);
+        
+        $paypalResponse = $response->json();
+
+        AdminLog::create([
+            'clase' => 'Pago',
+            'accion' => 'Crear Orden',
+            'descripcion' => "El usuario inició un proceso de pago por un total de {$totalFinal}€.",
+            'user_id' => Auth::id(),
+            'payload' => [
+                'paypal_order_id' => $paypalResponse['id'] ?? 'N/A',
+                'total' => $totalFinal,
+                'items_count' => count($items)
+            ]
+        ]);
 
         return response()->json($response->json());
     }
@@ -80,7 +95,7 @@ class PaymentController extends Controller
                 }
 
                 return DB::transaction(function () use ($paypalData, $orderId) {
-                    $user = auth()->user();
+                    $user = Auth::user();
 
                     $cart = DB::table('carts')->where('user_id', $user->id)->first();
 
@@ -115,6 +130,18 @@ class PaymentController extends Controller
                         'updated_at' => now()
                     ]);
 
+                    AdminLog::create([
+                        'clase' => 'Pago',
+                        'accion' => 'Capturar',
+                        'descripcion' => "Pago confirmado y pedido #{$idOrder} creado. Total: {$totalPagado}€.",
+                        'user_id' => $user->id,
+                        'payload' => [
+                            'order_id' => $idOrder,
+                            'paypal_capture_id' => $payPalCapturedId,
+                            'total' => $totalPagado
+                        ]
+                    ]);
+
                     $details = $items->map(function ($item) use ($idOrder) {
                         return [
                             'id_order' => $idOrder,
@@ -140,10 +167,8 @@ class PaymentController extends Controller
                 });
             }
 
-            Log::error("Fallo de PayPal Capture:", $response->json());
             return response()->json($response->json(), $response->status());
         } catch (\Exception $e) {
-            Log::error("Error en captureOrder: " . $e->getMessage());
             return response()->json(['error' => 'Hubo un problema al procesar el pedido: ' . $e->getMessage()], 500);
         }
     }
@@ -154,8 +179,6 @@ class PaymentController extends Controller
             $id_order = (int) $id_order;
 
             $order = DB::table('orders')->where('id_order', $id_order)->first();
-
-            Log::info("ID Recibido: " . $id_order);
 
             if (!$order) {
                 return response()->json([
@@ -195,7 +218,26 @@ class PaymentController extends Controller
                             'status' => 'refunded',
                             'updated_at' => now()
                         ]);
+
+                    DB::table('refund_requests')
+                        ->where('order_id', $id_order)
+                        ->update([
+                            'status' => 'approved',
+                            'updated_at' => now()
+                        ]);
                 });
+
+                AdminLog::create([
+                    'clase' => 'Pago',
+                    'accion' => 'Reembolsar',
+                    'descripcion' => "Se ha procesado un reembolso para el pedido #{$id_order} por un total de {$order->total}€.",
+                    'user_id' => Auth::id(),
+                    'payload' => [
+                        'order_id' => $id_order,
+                        'paypal_capture_id' => $order->paypal_capture_id,
+                        'monto_reembolsado' => $order->total
+                    ]
+                ]);
 
                 return response()->json([
                     'status' => 'REFUNDED',
@@ -203,15 +245,14 @@ class PaymentController extends Controller
                 ], 200);
             }
 
-            Log::error('Fallo de Paypal Refund:', $response->json());
             return response()->json([
                 'error' => 'Paypal rechazó el reembolso'
             ], 400);
 
         } catch (\Exception $e) {
-            Log::error('Error en refundOrder:', $e->getMessage());
             return response()->json([
-                'error' => 'Error interno procesando la devolución.'
+                'error' => 'Error interno procesando la devolución.',
+                'detalles' => $e->getMessage()
             ], 500);
         }
     }

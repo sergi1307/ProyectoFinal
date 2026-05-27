@@ -5,7 +5,9 @@ import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import ProductCard from "@/components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const { t } = useI18n();
 
 const token = localStorage.getItem("token");
@@ -38,7 +40,6 @@ const cargarDatosHome = async () => {
     cargandoDestacados.value = false;
   }
 
-  // Cargar Tendencias
   try {
     const res = await axios.get(`http://localhost:8080/api/products/tendencias`, { headers: authHeader });
     productosTendencia.value = res.data;
@@ -51,10 +52,9 @@ const cargarDatosHome = async () => {
 
 onMounted(cargarDatosHome);
 
-// Manejo de Favoritos sincronizado con la BD
 const manejarFavorito = async (producto) => {
   if (!token) {
-    alert("Debes iniciar sesión para guardar favoritos");
+    addToast(t('explorar.toast.authRequired'), 'error');
     return;
   }
   try {
@@ -107,7 +107,7 @@ const manejarAgregado = (id) => {
       <div class="contenido-destacados">
         <div class="cabecera-destacados">
           <div class="titulos-seccion">
-            <h2>Destacados</h2>
+            <h2>{{ $t('explorar.destacados') }}</h2>
             <p class="descripcion-seccion">{{ $t("home.whyNexusSub") }}</p>
           </div>
           <router-link to="/explorar" class="enlace-ver-todo"
@@ -176,7 +176,6 @@ const manejarAgregado = (id) => {
 </template>
 
 <style scoped>
-/* ESTILOS DE CARGA Y SECCIONES */
 .loader-placeholder {
   text-align: center;
   padding: 4rem;
@@ -188,7 +187,6 @@ const manejarAgregado = (id) => {
   margin-bottom: 6rem;
 }
 
-/* REJILLA UNIFICADA PARA QUE AMBAS SECCIONES SE VEAN IGUAL */
 .rejilla-comun-nexus {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -196,7 +194,6 @@ const manejarAgregado = (id) => {
   width: 100%;
 }
 
-/* CABECERAS DE SECCIÓN */
 .cabecera-destacados, .cabecera-tendencias {
   display: flex;
   justify-content: space-between;
@@ -227,7 +224,6 @@ const manejarAgregado = (id) => {
   color: #007a8f;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
   .rejilla-comun-nexus {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

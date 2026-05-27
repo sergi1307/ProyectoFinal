@@ -14,6 +14,8 @@ import Cart from '@/views/user/Cart.vue';
 import Perfil from '@/views/perfil/Perfil.vue';
 import NotFound from '@/components/Error/NotFound.vue';
 import Suscripciones from '@/components/Suscripciones/Suscripciones.vue';
+import Pedidos from '@/views/Pedidos/Pedidos.vue';
+import { mostrarLoader, ocultarLoader } from '@/loaderState';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -101,13 +103,17 @@ const router = createRouter({
             name: 'Suscripciones',
             component: Suscripciones
         },
+        {
+            path: '/pedidos',
+            name: 'Pedidos',
+            component: Pedidos
+        },
     ]
 });
 
-// ==========================================
-// SEGURIDAD DE LAS RUTAS
-// ==========================================
 router.beforeEach((to, from, next) => {
+    mostrarLoader();
+
     const userData = localStorage.getItem("usuario");
     let user = null;
 
@@ -138,6 +144,10 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+});
+
+router.afterEach(() => {
+    ocultarLoader();
 });
 
 export default router;

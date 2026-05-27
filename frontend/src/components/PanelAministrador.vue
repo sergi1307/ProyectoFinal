@@ -1,24 +1,29 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useI18n } from 'vue-i18n';
 import NavBar from "./NavBar.vue";
 import Footer from "./Footer.vue";
-
-// Importamos las vistas de las pestañas
 import Incidencias from "./NavPanelAdmin/Incidencias.vue";
 import Ingresos from "./NavPanelAdmin/Ingresos.vue";
 import Usuarios from "./NavPanelAdmin/Usuarios.vue";
+import Reembolsos from "./NavPanelAdmin/Reembolsos.vue";
+import Moderador from "./NavPanelAdmin/Moderador.vue";
+import LogsPanel from "./NavPanelAdmin/LogsPanel.vue";
+import Mantenimiento from "./NavPanelAdmin/Mantenimiento.vue";
+
+const { t } = useI18n();
 
 const activeTab = ref("incidencias");
 
-const tabs = [
-  { id: "incidencias", label: "Incidencias" },
-  { id: "usuarios", label: "Usuarios" },
-  { id: "ingresos", label: "Ingresos" },
-  { id: "reembolsos", label: "Reembolsos" },
-  { id: "imagenes", label: "Imágenes" },
-  { id: "mantenimiento", label: "Mantenimiento" },
-  { id: "logs", label: "Logs" },
-];
+const tabs = computed(() => [
+  { id: "incidencias", label: t('panelAdmin.tabIncidencias') },
+  { id: "usuarios", label: t('panelAdmin.tabUsuarios') },
+  { id: "ingresos", label: t('panelAdmin.tabIngresos') },
+  { id: "reembolsos", label: t('panelAdmin.tabReembolsos') },
+  { id: "moderador", label: t('panelAdmin.tabModerador') },
+  { id: "mantenimiento", label: t('panelAdmin.tabMantenimiento') },
+  { id: "logs", label: t('panelAdmin.tabLogs') },
+]);
 </script>
 
 <template>
@@ -105,7 +110,7 @@ const tabs = [
               <path d="M4 12c0 4.4 3.6 8 8 8 0.8 0 1.6-.1 2.4-.3"></path>
             </svg>
             <svg
-              v-if="tab.id === 'imagenes'"
+              v-if="tab.id === 'moderador'"
               width="18"
               height="18"
               viewBox="0 0 24 24"
@@ -155,14 +160,14 @@ const tabs = [
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </span>
-          {{ tab.label }}
+          <span class="tab-text">{{ tab.label }}</span>
         </button>
       </nav>
 
       <div class="mobile-tab-selector">
         <select v-model="activeTab">
           <option v-for="tab in tabs" :key="tab.id" :value="tab.id">
-            Sección: {{ tab.label }}
+            {{ $t('panelAdmin.seccionLabel') }} {{ tab.label }}
           </option>
         </select>
         <div class="select-arrow">
@@ -195,10 +200,26 @@ const tabs = [
         <Ingresos />
       </div>
 
+      <div v-else-if="activeTab === 'reembolsos'" class="fade-in">
+        <Reembolsos />
+      </div>
+
+      <div v-else-if="activeTab === 'moderador'" class="fade-in">
+        <Moderador />
+      </div>
+
+      <div v-else-if="activeTab === 'mantenimiento'" class="fade-in">
+        <Mantenimiento />
+      </div>
+
+      <div v-else-if="activeTab === 'logs'" class="fade-in">
+        <LogsPanel />
+      </div>
+
       <div v-else class="fade-in">
         <div class="main-container">
           <p class="empty-state-text">
-            Sección de {{ activeTab }} en desarrollo...
+            {{ $t('panelAdmin.enDesarrollo', { tab: activeTab }) }}
           </p>
         </div>
       </div>
@@ -206,175 +227,3 @@ const tabs = [
   </div>
   <Footer></Footer>
 </template>
-
-<style scoped>
-.admin-panel {
-  padding: 40px 20px;
-  background-color: #f8fafc;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-.submenu-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 35px;
-  width: 100%;
-}
-.submenu {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #f1f5f9;
-  padding: 8px;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  width: fit-content;
-  justify-content: center;
-}
-.tab-btn {
-  margin: 0 !important;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 28px;
-  border: none;
-  background: transparent;
-  color: #1e293b;
-  font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  border-radius: 14px;
-  transition: all 0.3s ease-in-out;
-  white-space: nowrap;
-}
-.icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  color: inherit;
-}
-.tab-btn.active {
-  background: #ffffff;
-  color: #0f172a;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.08),
-    0 4px 6px -2px rgba(0, 0, 0, 0.04);
-}
-.tab-btn:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.6);
-  color: #0f172a;
-}
-.tab-content {
-  width: 100%;
-  max-width: 1400px;
-}
-
-.main-container {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 20px 20px;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-.empty-state-text {
-  color: #94a3b8;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Selector Móvil */
-.mobile-tab-selector {
-  display: none;
-}
-
-@media (max-width: 1050px) {
-  .desktop-tabs {
-    display: none !important;
-  }
-  .mobile-tab-selector {
-    display: block;
-    position: relative;
-    width: 90%;
-    max-width: 350px;
-    margin: 0 auto;
-    transition: transform 0.2s ease;
-  }
-  .mobile-tab-selector:hover {
-    transform: translateY(-2px);
-  }
-  .mobile-tab-selector select {
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 14px 50px 14px 20px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1e293b;
-    cursor: pointer;
-    box-shadow:
-      0 4px 10px rgba(0, 0, 0, 0.03),
-      0 1px 3px rgba(0, 0, 0, 0.05);
-    outline: none;
-    transition: all 0.3s ease;
-  }
-  .mobile-tab-selector select:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-  }
-  .mobile-tab-selector select:focus {
-    border-color: #0097b2;
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.15);
-  }
-  .select-arrow {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #0097b2;
-    background-color: #f0fdff;
-    padding: 6px;
-    border-radius: 50%;
-    display: flex;
-    transition: all 0.3s ease;
-  }
-  .mobile-tab-selector select:hover + .select-arrow {
-    background-color: #e0f2fe;
-    color: #0284c7;
-  }
-}
-@media (max-width: 480px) {
-  .submenu-container {
-    padding: 0 10px;
-  }
-  .mobile-tab-selector {
-    max-width: 100%;
-  }
-}
-</style>

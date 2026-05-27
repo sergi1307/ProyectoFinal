@@ -1,0 +1,125 @@
+@import "variables";
+
+.gestion-container {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 15px;
+}
+
+.gestion-header {
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #1a202c;
+  }
+
+  p {
+    color: #718096;
+    font-size: 0.9rem;
+    margin: 4px 0 15px 0;
+  }
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+
+  th {
+    padding: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.85rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #f7fafc;
+    font-size: 0.9rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+.nombre-cell {
+  font-weight: 500;
+  text-align: center;
+}
+
+.badge {
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+
+  &.badge-activo {
+    background-color: #f0fff4;
+    color: #22c55e;
+  }
+
+  &.badge-baneado {
+    background-color: #fff5f5;
+    color: #e53e3e;
+  }
+}
+
+.badge-rol {
+  background-color: #0097b2;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.btn-ban {
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.btn-rojo {
+  background-color: #ef4444;
+  color: white;
+
+  &:hover {
+    background-color: #b03232;
+    color: white;
+  }
+}
+
+.btn-verde {
+  background-color: #22c55e;
+  color: white;
+
+  &:hover {
+    background-color: #188942;
+    color: white;
+  }
+}
+
+.acciones-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.texto-protegido {
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.text-center {
+  text-align: center;
+}

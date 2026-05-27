@@ -1,0 +1,104 @@
+@use 'variables' as *;
+
+/* ========================================== */
+/* BANNER DE COOKIES (Bloqueo de pantalla)    */
+/* ========================================== */
+
+.cookie-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cookie-modal {
+    background-color: $bg-card;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .cookie-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+
+    h2 {
+        color: $text-main;
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-weight: 800;
+    }
+
+    p {
+        color: $text-muted;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .cookie-acciones {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        button {
+            flex: 1;
+            min-width: 140px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: $text-muted;
+            border: 2px solid #e2e8f0;
+
+            &:hover {
+                background-color: #f8fafc;
+                border-color: #cbd5e1;
+                color: $text-main;
+            }
+        }
+
+        .btn-primary {
+            background-color: $primary-blue;
+            color: white;
+            border: 2px solid $primary-blue;
+
+            &:hover {
+                background-color: $primary-hover;
+                border-color: $primary-hover;
+                box-shadow: 0 4px 12px rgba(0, 151, 178, 0.3);
+            }
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

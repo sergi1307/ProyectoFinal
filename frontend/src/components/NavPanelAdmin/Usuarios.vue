@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const usuarios = ref([]);
 const cargando = ref(true);
 
@@ -47,10 +49,11 @@ const alternarBan = async (user) => {
 
     user.active = !user.active;
 
-    alert(`Usuario ${user.active ? "activado" : "baneado"} con éxito`);
+    const accionTraducida = user.active ? t('toasts.actions.activated') : t('toasts.actions.banned');
+    addToast(t('toasts.userActionSuccess', { action: accionTraducida }), 'success');
   } catch (error) {
     console.error("Error al cambiar estado:", error);
-    alert("No se pudo procesar la acción en el servidor.");
+    addToast(t('toasts.serverProcessError'), 'error');
   }
 };
 
@@ -60,45 +63,24 @@ onMounted(cargarUsuarios);
 <template>
   <div class="gestion-container">
     <header class="gestion-header">
-      <h2>Gestión de Usuarios</h2>
-      <p>Gestiona los usuarios de la plataforma</p>
+      <h2>{{ $t('gestionUsuarios.titulo') }}</h2>
+      <p>{{ $t('gestionUsuarios.descripcion') }}</p>
     </header>
 
     <div class="tabla-wrapper">
       <table class="tabla-usuarios">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Estado</th>
-            <th>Rol</th>
-            <th class="text-center">Acciones</th>
+            <th>{{ $t('gestionUsuarios.thNombre') }}</th>
+            <th>{{ $t('gestionUsuarios.thEmail') }}</th>
+            <th>{{ $t('gestionUsuarios.thRol') }}</th>
+            <th class="text-center">{{ $t('gestionUsuarios.thAcciones') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="user in usuarios" :key="user.id">
             <td class="nombre-cell">{{ user.name }}</td>
             <td class="email-cell">{{ user.email }}</td>
-            <td>
-              <span
-                :class="[
-                  'badge',
-                  user.active == 0 &&
-                  user.active !== null &&
-                  user.active !== undefined
-                    ? 'badge-baneado'
-                    : 'badge-activo',
-                ]"
-              >
-                {{
-                  user.active == 0 &&
-                  user.active !== null &&
-                  user.active !== undefined
-                    ? "Baneado"
-                    : "Activo"
-                }}
-              </span>
-            </td>
             <td>
               <span class="badge-rol">{{ user.role }}</span>
             </td>
@@ -108,7 +90,7 @@ onMounted(cargarUsuarios);
                   v-if="user.active != 0"
                   @click="alternarBan(user)"
                   class="btn-ban btn-rojo"
-                  title="Banear usuario"
+                  :title="$t('gestionUsuarios.titleBanear')"
                 >
                   <svg
                     width="18"
@@ -129,7 +111,7 @@ onMounted(cargarUsuarios);
                   v-else
                   @click="alternarBan(user)"
                   class="btn-ban btn-verde"
-                  title="Activar usuario"
+                  :title="$t('gestionUsuarios.titleActivar')"
                 >
                   <svg
                     width="18"
@@ -149,7 +131,7 @@ onMounted(cargarUsuarios);
                 </button>
               </div>
 
-              <span v-else class="texto-protegido">Protegido</span>
+              <span v-else class="texto-protegido">{{ $t('gestionUsuarios.protegido') }}</span>
             </td>
           </tr>
         </tbody>

@@ -3,18 +3,21 @@
 .carrito-page {
   min-height: calc(100vh - 150px);
   background-color: $bg-color;
-  padding: 3rem 1.5rem;
+  padding: 2rem 0; 
 
   .container-wide {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 1.5rem; 
   }
 
   .titulo-pagina {
     font-size: 2rem;
     font-weight: 800;
     color: $text-main;
-    margin-bottom: 2rem;
+    margin: 0 0 2rem 0 !important; 
+    padding: 0 !important; 
+    line-height: 1.2;
   }
 
   .estado-carga, .carrito-vacio {
