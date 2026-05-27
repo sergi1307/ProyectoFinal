@@ -37,7 +37,11 @@
       right: -20px;
       width: 80px;
       height: 80px;
-      background: linear-gradient(135deg, rgba($primary-blue, 0.05) 0%, transparent 100%);
+      background: linear-gradient(
+        135deg,
+        rgba($primary-blue, 0.05) 0%,
+        transparent 100%
+      );
       border-radius: 50%;
     }
 
@@ -106,85 +110,132 @@
   table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 8px;
+    border-spacing: 0;
+    color: #313131;
+    text-align: center !important;
 
     th {
-      text-align: left;
-      padding: 1rem 1.5rem;
-      color: #94a3b8;
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      border-bottom: 1px solid #f1f5f9;
+      background-color: #f8fafc !important;
+      color: #1e293b !important;
+      padding: 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: none;
+      border-bottom: 1px solid #e2e8f0 !important;
+      white-space: nowrap;
+      text-align: center !important;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+      }
+      &:last-child {
+        border-top-right-radius: 8px;
+      }
     }
 
     tbody tr {
       transition: all 0.2s ease;
 
+      &:hover {
+        z-index: 101;
+        position: relative;
+        background-color: #fafbfc;
+      }
+
       &:hover td {
-        background-color: #f8fafc;
+        background-color: transparent;
       }
 
       td {
-        padding: 1.2rem 1.5rem;
-        background-color: white;
-        border-top: 1px solid transparent;
+        padding: 16px;
+        background-color: transparent;
+        border-top: none;
         border-bottom: 1px solid #f1f5f9;
-        color: #475569;
+        color: #334155;
         font-size: 0.95rem;
+        vertical-align: middle;
+        position: relative;
+        text-align: center !important;
 
         &:first-child {
-          border-radius: 12px 0 0 12px;
+          border-radius: 0;
         }
         &:last-child {
-          border-radius: 0 12px 12px 0;
+          border-radius: 0;
         }
 
         &.bold {
-          font-weight: 800;
+          font-weight: bold;
           color: $primary-blue;
         }
       }
     }
 
     .id-cell {
-      font-weight: 700;
-      color: #94a3b8;
+      font-weight: 800;
+      color: #1e293b;
     }
   }
 
   .status-badge {
     padding: 6px 14px;
-    border-radius: 10px;
+    border-radius: 50px;
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    border: 1px solid;
 
     &::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
+      display: none !important;
     }
 
     &.completado,
-    &.resuelta {
-      background: #ecfdf5;
-      color: #10b981;
+    &.completed,
+    &.resuelta,
+    &.approved {
+      color: #10b981 !important;
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, 0.05) !important;
     }
     &.pendiente,
+    &.pending,
     &.en-proceso {
-      background: #fffbeb;
-      color: #f59e0b;
+      color: #ea580c !important;
+      border-color: #ea580c !important;
+      background-color: rgba(234, 88, 12, 0.05) !important;
     }
     &.cancelado,
-    &.cerrada {
-      background: #fef2f2;
-      color: #ef4444;
+    &.canceled,
+    &.cancelled,
+    &.cerrada,
+    &.rejected {
+      color: #ef4444 !important;
+      border-color: #ef4444 !important;
+      background-color: rgba(239, 68, 68, 0.05) !important;
+    }
+  }
+
+  .btn-action-view {
+    background: #3b82f6;
+    border: none;
+    color: #eff6ff;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #eff6ff;
+      color: #3b82f6;
     }
   }
 }
@@ -227,100 +278,139 @@
   table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 8px;
+    border-spacing: 0;
+    color: #313131;
+    text-align: center !important;
 
     th {
-      text-align: left;
-      padding: 1rem 1.5rem;
-      color: #94a3b8;
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      border-bottom: 1px solid #f1f5f9;
+      background-color: #f8fafc !important;
+      color: #1e293b !important;
+      padding: 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: none;
+      border-bottom: 1px solid #e2e8f0 !important;
+      white-space: nowrap;
+      text-align: center !important;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+      }
+      &:last-child {
+        border-top-right-radius: 8px;
+      }
     }
 
     tbody tr {
       transition: all 0.2s ease;
+
+      &:hover {
+        z-index: 101;
+        position: relative;
+        background-color: #fafbfc;
+      }
+
       &:hover td {
-        background-color: #f8fafc;
+        background-color: transparent;
       }
 
       td {
-        padding: 1.2rem 1.5rem;
-        background-color: white;
+        padding: 16px;
+        background-color: transparent;
+        border-top: none;
         border-bottom: 1px solid #f1f5f9;
-        color: #475569;
+        color: #334155;
         font-size: 0.95rem;
+        vertical-align: middle;
+        position: relative;
+        text-align: center !important;
 
         &:first-child {
-          border-radius: 12px 0 0 12px;
+          border-radius: 0;
         }
         &:last-child {
-          border-radius: 0 12px 12px 0;
+          border-radius: 0;
         }
+
         &.bold {
-          font-weight: 800;
+          font-weight: bold;
           color: $primary-blue;
         }
       }
+    }
+
+    .id-cell {
+      font-weight: 800;
+      color: #1e293b;
     }
   }
 
   .status-badge {
     padding: 6px 14px;
-    border-radius: 10px;
+    border-radius: 50px;
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    border: 1px solid;
 
     &::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
+      display: none !important;
     }
 
+    &.completado,
+    &.completed,
+    &.resuelta,
     &.approved,
     &.approved-status {
-      background: #ecfdf5;
-      color: #10b981;
+      color: #10b981 !important;
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, 0.05) !important;
     }
+    &.pendiente,
     &.pending,
-    &.pending-status {
-      background: #fffbeb;
-      color: #f59e0b;
+    &.pending-status,
+    &.en-proceso {
+      color: #ea580c !important;
+      border-color: #ea580c !important;
+      background-color: rgba(234, 88, 12, 0.05) !important;
     }
+    &.cancelado,
+    &.canceled,
+    &.cancelled,
+    &.cerrada,
     &.rejected,
     &.rejected-status {
-      background: #fef2f2;
-      color: #ef4444;
+      color: #ef4444 !important;
+      border-color: #ef4444 !important;
+      background-color: rgba(239, 68, 68, 0.05) !important;
     }
   }
 
   .btn-action-view {
-    background: #f1f5f9;
+    background: #3b82f6;
     border: none;
-    color: $primary-blue;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.85rem;
+    color: #eff6ff;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
-      background: $primary-blue;
-      color: white;
-      transform: translateY(-2px);
+      background: #eff6ff;
+      color: #3b82f6;
     }
   }
 }
 
-// MODAL STYLES
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -351,12 +441,12 @@
     h2 {
       font-size: 1.1rem;
       font-weight: 900;
-      color: #1e293b;
+      color: #f1f5f9;
       margin: 0;
     }
 
     .close-btn-modal {
-      background: none;
+      background: none !important;
       border: none;
       font-size: 1.5rem;
       color: #94a3b8;

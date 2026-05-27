@@ -1,10 +1,14 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue";
 import api from "@/services/api";
+import { useI18n } from "vue-i18n";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+import { useToast } from '@/composables/useToast';
 
+const { t } = useI18n();
+const { addToast } = useToast();
 const paypalRendered = ref(false);
 const productosCarrito = ref([]);
 const cargando = ref(true);
@@ -80,7 +84,7 @@ const actualizarCantidad = async (item, nuevaCantidad) => {
 };
 
 const eliminarProducto = async (item) => {
-  if (!confirm("¿Seguro que quieres quitar este producto del carrito?")) return;
+  if (!confirm(t('cart.confirmRemove'))) return;
 
   try {
     item.procesando = true;
@@ -101,7 +105,7 @@ const eliminarProducto = async (item) => {
     
   } catch (error) {
     console.error("Error al eliminar del carrito:", error);
-    alert("No se pudo eliminar el producto.");
+    addToast(t('cart.toast.removeError'), 'error');
     item.procesando = false;
   }
 };
@@ -147,7 +151,7 @@ const inicializarPaypal = () => {
               {},
               { headers: { Authorization: `Bearer ${token}` } },
             );
-            alert("¡Pago completado!");
+            addToast(t('cart.toast.paymentSuccess'), 'success');
             productosCarrito.value = [];
             localStorage.removeItem("carrito");
 
@@ -195,16 +199,16 @@ onMounted(async () => {
 
   <div class="carrito-page">
     <div class="container-wide">
-      <h1 class="titulo-pagina">Mi Carrito</h1>
+      <h1 class="titulo-pagina">{{ t('cart.title') }}</h1>
 
       <div v-if="cargando" class="estado-carga">
-        <p>Cargando tu carrito...</p>
+        <p>{{ t('cart.loading') }}</p>
       </div>
 
       <div v-else-if="productosCarrito.length === 0" class="carrito-vacio">
-        <p>Aún no tienes productos en tu carrito.</p>
+        <p>{{ t('cart.emptyCart') }}</p>
         <router-link to="/explorar" class="btn-explorar">
-          Explorar Productos
+          {{ t('cart.exploreProducts') }}
         </router-link>
       </div>
 
@@ -226,7 +230,7 @@ onMounted(async () => {
             <div class="producto-info">
               <div class="info-texto">
                 <h3 class="producto-titulo">{{ item.product.title }}</h3>
-                <p class="producto-categoria">Producto Digital</p>
+                <p class="producto-categoria">{{ t('cart.digitalProduct') }}</p>
               </div>
 
               <div class="controles-fila">
@@ -253,7 +257,7 @@ onMounted(async () => {
                 <button
                   @click="eliminarProducto(item)"
                   class="btn-eliminar"
-                  title="Eliminar del carrito"
+                  :title="t('cart.removeFromCart')"
                   :disabled="item.procesando"
                 >
                   <svg 
@@ -284,22 +288,22 @@ onMounted(async () => {
 
         <aside class="resumen-seccion">
           <div class="tarjeta-resumen">
-            <h2 class="resumen-titulo">Resumen del Pedido</h2>
+            <h2 class="resumen-titulo">{{ t('cart.orderSummary') }}</h2>
 
             <div class="resumen-fila">
-              <span>Subtotal ({{ totalItems }} items)</span>
+              <span>{{ t('cart.subtotalItems', { count: totalItems }) }}</span>
               <span>{{ subtotal.toFixed(2) }}€</span>
             </div>
 
             <div class="resumen-fila comision-fila">
-              <span>Tasas y servicio</span>
+              <span>{{ t('cart.feesAndService') }}</span>
               <span>{{ comision.toFixed(2) }}€</span>
             </div>
 
             <hr class="divisor" />
 
             <div class="resumen-fila fila-total">
-              <span>Total</span>
+              <span>{{ t('cart.total') }}</span>
               <span class="precio-total">{{ total.toFixed(2) }}€</span>
             </div>
 
@@ -319,7 +323,7 @@ onMounted(async () => {
               class="btn-secundario"
               style="margin-top: 1rem; display: block; text-align: center"
             >
-              Continuar Comprando
+              {{ t('cart.continueShopping') }}
             </router-link>
           </div>
         </aside>

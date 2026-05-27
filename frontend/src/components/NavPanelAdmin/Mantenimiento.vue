@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import api from "@/services/api";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const isMaintenance = ref(false);
 const loading = ref(false);
 const lastUpdate = ref(null);
@@ -47,7 +49,7 @@ const toggleStatus = async () => {
     isMaintenance.value = nuevoEstado;
     lastUpdate.value = new Date();
   } catch (error) {
-    alert("No se pudo cambiar el estado. Verifica tus permisos.");
+    addToast(t('toasts.statusPermissionError'), 'error');
   } finally {
     loading.value = false;
   }
@@ -63,10 +65,10 @@ onMounted(fetchStatus);
 <template>
   <div class="panel-mantenimiento fade-in">
     <div class="cabecera-explorar">
-      <h1 class="titulo-pagina">Gestión de Disponibilidad</h1>
+      <h1 class="titulo-pagina">{{ $t('mantenimiento.tituloPagina') }}</h1>
       <div class="badge-sistema" :class="{ 'modo-critico': isMaintenance }">
         <span class="punto-latido"></span>
-        {{ isMaintenance ? 'MANTENIMIENTO ACTIVO' : 'SISTEMA EN LÍNEA' }}
+        {{ isMaintenance ? $t('mantenimiento.estadoActivo') : $t('mantenimiento.estadoLinea') }}
       </div>
     </div>
 
@@ -80,43 +82,44 @@ onMounted(fetchStatus);
               <i v-else class="fas fa-tools"></i>
             </div>
             <div class="pulse-ring"></div>
+            <div class="pulse-ring" :class="isMaintenance ? 'ring-red' : 'ring-blue'"></div>
           </div>
           <div class="status-text-central">
-            <h2>{{ isMaintenance ? 'Acceso Restringido' : 'Acceso Público' }}</h2>
-            <p>{{ isMaintenance ? 'Solo el equipo administrativo puede acceder a Nexus.' : 'La plataforma opera con normalidad para todos los usuarios.' }}</p>
+            <h2>{{ isMaintenance ? $t('mantenimiento.accesoRestringido') : $t('mantenimiento.accesoPublico') }}</h2>
+            <p>{{ isMaintenance ? $t('mantenimiento.descRestringido') : $t('mantenimiento.descPublico') }}</p>
           </div>
         </div>
 
         <div class="control-panel">
           <div class="control-card">
-            <span class="control-label">Interruptor Maestro</span>
+            <span class="control-label">{{ $t('mantenimiento.interruptorMaestro') }}</span>
             
             <div class="master-switch-wrapper">
               <label class="master-switch">
                 <input type="checkbox" :checked="isMaintenance" @change="confirmarCambio" :disabled="loading">
                 <div class="switch-design">
-                  <span class="switch-text off">OFF</span>
+                  <span class="switch-text off">{{ $t('mantenimiento.off') }}</span>
                   <span class="switch-slider"></span>
-                  <span class="switch-text on">ON</span>
+                  <span class="switch-text on">{{ $t('mantenimiento.on') }}</span>
                 </div>
               </label>
             </div>
 
             <div class="warning-box" v-if="!isMaintenance">
               <i class="fas fa-info-circle"></i>
-              <span>Activar esto redirigirá a todos los clientes a la página de espera.</span>
+              <span>{{ $t('mantenimiento.avisoLinea') }}</span>
             </div>
             <div class="warning-box critical" v-else>
               <i class="fas fa-exclamation-triangle"></i>
-              <span>El marketplace está oculto. Las ventas están pausadas.</span>
+              <span>{{ $t('mantenimiento.avisoCritico') }}</span>
             </div>
           </div>
 
           <div class="logs-miniatura">
-            <span class="tiny-label">ÚLTIMA ACTIVIDAD</span>
+            <span class="tiny-label">{{ $t('mantenimiento.ultimaActividad') }}</span>
             <div class="log-entry">
               <i class="fas fa-history"></i>
-              <span>{{ lastUpdate ? formatFecha(lastUpdate) : 'Sin registros recientes' }}</span>
+              <span>{{ lastUpdate ? formatFecha(lastUpdate) : $t('mantenimiento.sinRegistros') }}</span>
             </div>
           </div>
         </div>

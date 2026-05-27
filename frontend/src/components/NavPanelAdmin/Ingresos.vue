@@ -42,38 +42,39 @@ onMounted(() => {
   <div class="panel-ingresos">
     <div class="grid-stats">
       <div class="stat-card">
-        <span class="label">Ingresos Totales</span>
+        <span class="label">{{ $t('ingresos.totales') }}</span>
         <h2 class="value">{{ (ingresosTotales || 0).toFixed(2) }}€</h2>
       </div>
 
       <div class="stat-card">
-        <span class="label">Pedidos Totales</span>
+        <span class="label">{{ $t('ingresos.pedidos') }}</span>
         <h2 class="value">{{ pedidosTotales || 0 }}</h2>
       </div>
 
       <div class="stat-card">
-        <span class="label">Ticket Promedio</span>
+        <span class="label">{{ $t('ingresos.ticket') }}</span>
         <h2 class="value">{{ (ticketPromedio || 0).toFixed(2) }}€</h2>
       </div>
     </div>
 
     <div class="tabla-container">
-      <h3>Pedidos Recientes</h3>
+      <h3>{{ $t('ingresos.recientes') }}</h3>
       <div class="responsive-table">
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Usuario</th> <th>Total</th>
-              <th>Estado</th>
+              <th>{{ $t('ingresos.thId') }}</th>
+              <th>{{ $t('ingresos.thFecha') }}</th>
+              <th>{{ $t('ingresos.thUsuario') }}</th> 
+              <th>{{ $t('ingresos.thTotal') }}</th>
+              <th>{{ $t('ingresos.thEstado') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="pedido in pedidosRecientes" :key="pedido.id">
               <td class="id-cell">#{{ pedido.id }}</td>
               <td>{{ new Date(pedido.fecha).toLocaleDateString() }}</td>
-              <td>{{ pedido.usuario || 'N/A' }}</td>
+              <td>{{ pedido.usuario || $t('ingresos.na') }}</td>
               <td class="bold">{{ pedido.total }}€</td>
               <td>
                 <span :class="['status-badge', pedido.status]">
@@ -83,7 +84,7 @@ onMounted(() => {
             </tr>
             <tr v-if="pedidosRecientes.length === 0">
               <td colspan="5" class="empty-msg">
-                No hay pedidos registrados todavía.
+                {{ $t('ingresos.noPedidos') }}
               </td>
             </tr>
           </tbody>

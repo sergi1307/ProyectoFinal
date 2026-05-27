@@ -3,7 +3,9 @@ import { ref, onMounted } from "vue";
 import api from "@/services/api";
 import NavBar from "../../components/NavBar.vue";
 import Footer from "../../components/Footer.vue";
+import { useToast } from '@/composables/useToast';
 
+const { addToast } = useToast();
 const pedidos = ref([]);
 const cargando = ref(true);
 const error = ref(null);
@@ -78,13 +80,13 @@ const solicitarReembolso = async (idPedido) => {
       },
     );
 
-    alert("Reembolso solicitado correctamente.");
+    addToast(t('toasts.refundSuccess'), 'success');
 
     await cargarPedidos();
   } catch (e) {
     const mensajeError =
       e.response?.data?.error || "No se pudo procesar el reembolso.";
-    alert("Error: " + mensajeError);
+    addToast(t('toasts.errorPrefix') + mensajeError, 'error');
     console.error("Error en la petición de reembolso:", e);
   }
 };

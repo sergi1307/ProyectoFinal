@@ -1,9 +1,14 @@
 <script setup>
 import { ref, onMounted, computed, watch, onUnmounted } from "vue";
 import api from "@/services/api";
+import { useI18n } from "vue-i18n";
 import NavBar from "../components/NavBar.vue";
 import Footer from "../components/Footer.vue";
 import ProductCard from "../components/products/ProductCard.vue";
+import { useToast } from '@/composables/useToast';
+
+const { addToast } = useToast();
+const { t, te } = useI18n();
 
 const paginaActual = ref(1);
 const totalPaginas = ref(1);
@@ -14,25 +19,26 @@ const mostrarFiltros = ref(false);
 const usuarioActual = ref(null);
 const searchQuery = ref("");
 const ordenSeleccionado = ref("Destacados");
-const opcionesOrden = [
-  "Destacados",
-  "Más populares",
-  "Mejor calificados",
-  "Precio: Menor a Mayor",
-  "Precio: Mayor a Menor",
-];
+
+const opcionesOrden = computed(() => [
+  { value: 'Destacados', label: t('explorar.sortOptions.featured') },
+  { value: 'Más populares', label: t('explorar.sortOptions.popular') },
+  { value: 'Mejor calificados', label: t('explorar.sortOptions.topRated') },
+  { value: 'Precio: Menor a Mayor', label: t('explorar.sortOptions.priceAsc') },
+  { value: 'Precio: Mayor a Menor', label: t('explorar.sortOptions.priceDesc') }
+]);
 
 const precioMin = ref(0);
 const precioMax = ref(1000);
 const maxTotal = 1000;
 
-const calificacionSeleccionada = ref("Todas las calificaciones");
-const calificaciones = [
-  { label: "Todas las calificaciones", value: "todas" },
-  { label: "3+ estrellas", value: 3 },
-  { label: "4+ estrellas", value: 4 },
-  { label: "4.5+ estrellas", value: 4.5 },
-];
+const calificacionSeleccionada = ref("todas");
+const calificaciones = computed(() => [
+  { label: t('explorar.ratingOptions.all'), value: "todas" },
+  { label: t('explorar.ratingOptions.stars', { count: 3 }), value: 3 },
+  { label: t('explorar.ratingOptions.stars', { count: 4 }), value: 4 },
+  { label: t('explorar.ratingOptions.stars', { count: 4.5 }), value: 4.5 },
+]);
 
 const categoriasSeleccionadas = ref([]);
 const busquedaCategoria = ref("");
@@ -54,10 +60,34 @@ const categoriasDisponibles = computed(() => {
 
 const categoriasFiltradasPorBusqueda = computed(() => {
   const query = busquedaCategoria.value.toLowerCase();
-  return categoriasDisponibles.value.filter((cat) =>
-    cat.name.toLowerCase().includes(query),
-  );
+  return categoriasDisponibles.value.filter((cat) => {
+    const nombre = te(`categorias.${cat.name.toLowerCase()}`) ? t(`categorias.${cat.name.toLowerCase()}`) : cat.name;
+    return nombre.toLowerCase().includes(query);
+  });
 });
+
+const normalizarClave = (str) => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/s$/, "");
+};
+
+const traducirCategoria = (nombreDB) => {
+  if (!nombreDB) return "";
+  const clave = nombreDB
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "");
+  const ruta = `categorias.${clave}`;
+  if (!te(ruta)) {
+    console.warn(`No se encontró traducción para la clave: ${ruta} basada en: ${nombreDB}`);
+  }
+  return te(ruta) ? t(ruta) : nombreDB;
+};
 
 const productosFiltrados = computed(() => {
   return productos.value
@@ -80,11 +110,9 @@ const productosFiltrados = computed(() => {
       const cumplePrecio =
         p.price >= precioMin.value && p.price <= precioMax.value;
 
-      const ratingMinimo = calificaciones.find(
-        (c) => c.label === calificacionSeleccionada.value,
-      )?.value;
+      const ratingMinimo = calificacionSeleccionada.value;
       const cumpleRating =
-        ratingMinimo === "todas" || Number(p.rating || 0) >= ratingMinimo;
+        ratingMinimo === "todas" || Number(p.rating || 0) >= Number(ratingMinimo);
 
       return cumpleNombre && cumpleCategoria && cumplePrecio && cumpleRating;
     })
@@ -114,7 +142,7 @@ const validarPreciosMax = () => {
 const limpiarFiltros = () => {
   ordenSeleccionado.value = "Destacados";
   categoriasSeleccionadas.value = [];
-  calificacionSeleccionada.value = "Todas las calificaciones";
+  calificacionSeleccionada.value = "todas";
   precioMin.value = 0;
   precioMax.value = 1000;
   searchQuery.value = "";
@@ -222,7 +250,7 @@ const toggleFavorito = async (productId) => {
 };
 
 const handleAgregado = (productId) => {
-  alert("¡Producto añadido al carrito correctamente!");
+  addToast(t('cart.addSuccess'), 'success');
 };
 
 onMounted(async () => {
@@ -266,10 +294,8 @@ const manejarScroll = () => {
     <div class="explorar-contenedor">
       <header class="cabecera-explorar">
         <div class="info-titulo">
-          <h1 class="titulo-seccion">Explorar Productos</h1>
-          <p class="contador-productos">
-            {{ productosFiltrados.length }} productos encontrados
-          </p>
+          <h1 class="titulo-seccion">{{ $t('explorar.featured') }} {{ $t('navbar.products') }}</h1>
+          {{ productosFiltrados.length }} {{ $t('explorar.productsFound').toLowerCase() }}
         </div>
 
         <div class="acciones-derecha">
@@ -316,7 +342,7 @@ const manejarScroll = () => {
             <line x1="9" y1="8" x2="15" y2="8"></line>
             <line x1="17" y1="16" x2="23" y2="16"></line>
           </svg>
-          Filtros
+          {{ $t('explorar.filters') || 'Filtros' }}
         </button>
       </header>
 
@@ -341,8 +367,8 @@ const manejarScroll = () => {
       <aside :class="['panel-lateral', { abierto: mostrarFiltros }]">
         <div class="panel-header">
           <div class="header-txt">
-            <h3>Personalizar Filtros</h3>
-            <p>Encuentra exactamente lo que buscas</p>
+            <h3>{{ $t('explorar.customizeFilters') }}</h3>
+            <p>{{ $t('explorar.findExactly') }}</p>
           </div>
           <button class="close-btn" @click="mostrarFiltros = false">
             &times;
@@ -351,45 +377,40 @@ const manejarScroll = () => {
 
         <div class="panel-scroll">
           <section class="seccion-f">
-            <h4>Ordenar por</h4>
+            <h4>{{ $t('explorar.sortBy') }}</h4>
             <div
               v-for="opcion in opcionesOrden"
-              :key="opcion"
+              :key="opcion.value"
               class="control-f"
             >
               <input
                 type="radio"
-                :id="opcion"
-                :value="opcion"
+                :id="opcion.value"
+                :value="opcion.value"
                 v-model="ordenSeleccionado"
                 name="orden"
               />
-              <label :for="opcion">{{ opcion }}</label>
+              <label :for="opcion.value">{{ opcion.label }}</label>
             </div>
           </section>
 
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Categorías</h4>
+            <h4>{{ $t('explorar.categoriesLabel') }}</h4>
 
             <div class="buscador-categorias-wrapper">
               <input
                 type="text"
                 v-model="busquedaCategoria"
-                placeholder="Buscar y añadir categoría..."
+                :placeholder="$t('explorar.searchCategory')"
                 class="input-buscar-categoria"
                 @focus="mostrarDropdownCategorias = true"
-                @blur="
-                  setTimeout(() => (mostrarDropdownCategorias = false), 200)
-                "
+                @blur="setTimeout(() => (mostrarDropdownCategorias = false), 200)"
               />
 
               <ul
-                v-if="
-                  mostrarDropdownCategorias &&
-                  categoriasFiltradasPorBusqueda.length > 0
-                "
+                v-if="mostrarDropdownCategorias && categoriasFiltradasPorBusqueda.length > 0"
                 class="dropdown-categorias"
               >
                 <li
@@ -397,30 +418,25 @@ const manejarScroll = () => {
                   :key="cat.id"
                   @click="seleccionarCategoria(cat)"
                 >
-                  {{ cat.name }}
+                  {{ traducirCategoria(cat.name) }}
                 </li>
               </ul>
 
               <div
-                v-else-if="
-                  mostrarDropdownCategorias && busquedaCategoria !== ''
-                "
+                v-else-if="mostrarDropdownCategorias && busquedaCategoria !== ''"
                 class="dropdown-categorias vacio"
               >
-                No se encontraron categorías
+                {{ $t('explorar.noCategoriesFound') }}
               </div>
             </div>
 
-            <div
-              class="chips-container"
-              v-if="categoriasSeleccionadas.length > 0"
-            >
+            <div class="chips-container" v-if="categoriasSeleccionadas.length > 0">
               <div
                 v-for="id in categoriasSeleccionadas"
                 :key="id"
                 class="chip-categoria"
               >
-                <span>{{ nombreCategoria(id) }}</span>
+                <span>{{ traducirCategoria(nombreCategoria(id)) }}</span>
                 <button @click="quitarCategoria(id)" class="btn-quitar-chip">
                   &times;
                 </button>
@@ -431,7 +447,7 @@ const manejarScroll = () => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Rango de Precio</h4>
+            <h4>{{ $t('explorar.priceRange') }}</h4>
             <div class="contenedor-rango">
               <div class="barra-progreso" :style="estiloBarra"></div>
               <input
@@ -463,16 +479,13 @@ const manejarScroll = () => {
           <hr class="linea" />
 
           <section class="seccion-f">
-            <h4>Calificación Mínima</h4>
+            <h4>{{ $t('explorar.minRating') }}</h4>
             <div class="calif-box">
               <div
                 v-for="c in calificaciones"
                 :key="c.value"
-                :class="[
-                  'calif-item',
-                  { active: calificacionSeleccionada === c.label },
-                ]"
-                @click="calificacionSeleccionada = c.label"
+                :class="['calif-item', { active: calificacionSeleccionada === c.value }]"
+                @click="calificacionSeleccionada = c.value"
               >
                 <span v-if="c.value !== 'todas'" class="stars-gold">★★★★☆</span>
                 {{ c.label }}
@@ -483,10 +496,10 @@ const manejarScroll = () => {
 
         <div class="panel-footer">
           <button class="btn-ver-prod" @click="mostrarFiltros = false">
-            Ver {{ productosFiltrados.length }} Productos
+            {{ $t('explorar.seeProducts', { count: productosFiltrados.length }) }}
           </button>
           <button class="btn-limpiar" @click="limpiarFiltros">
-            Limpiar filtros
+            {{ $t('explorar.clearFilters') }}
           </button>
         </div>
       </aside>

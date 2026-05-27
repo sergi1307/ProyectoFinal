@@ -44,9 +44,9 @@ onMounted(cargarFavoritos);
   <div class="favoritos-contenedor">
     <header class="cabecera-seccion">
       <div class="info-titulo">
-        <h2 class="titulo-principal">Mis Favoritos</h2>
+        <h2 class="titulo-principal">{{ $t('favoritos.titulo') }}</h2>
         <p class="subtitulo">
-          Tienes {{ favoritos.length }} productos guardados en tu lista de deseos
+          {{ $t('favoritos.tienes') }} {{ favoritos.length }} {{ $t('favoritos.guardados') }}
         </p>
       </div>
     </header>
@@ -69,14 +69,14 @@ onMounted(cargarFavoritos);
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
         </div>
-        <h3>Aún no tienes favoritos</h3>
-        <p>Explora nuestro marketplace y guarda los productos que más te gusten.</p>
-        <router-link to="/explorar" class="btn-explorar">Ir a Explorar</router-link>
+        <h3>{{ $t('favoritos.vacioTitulo') }}</h3>
+        <p>{{ $t('favoritos.vacioDesc') }}</p>
+        <router-link to="/explorar" class="btn-explorar">{{ $t('favoritos.btnExplorar') }}</router-link>
       </div>
     </main>
 
     <div v-else class="loader-contenedor">
-      <p>Cargando tu colección...</p>
+      <p>{{ $t('favoritos.cargando') }}</p>
     </div>
   </div>
   <Footer />

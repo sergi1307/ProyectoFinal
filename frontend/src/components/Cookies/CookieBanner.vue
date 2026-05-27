@@ -29,16 +29,14 @@ const aceptarCookies = (tipo) => {
 
         <div class="cookie-modal">
             <div class="cookie-icon">🍪</div>
-            <h2>Tu privacidad es importante</h2>
+            <h2>{{ $t('cookieBanner.title') }}</h2>
             <p>
-                En Nexus Marketplace utilizamos cookies propios y de terceros para
-                el funcionamiento básico de la web, así como para fines analíticos
-                y para mostrarte publicidad personalizada basada en tus hábitos de navegación.
+                {{ $t('cookieBanner.description') }}
             </p>
 
             <div class="cookie-acciones">
-                <button class="btn-outline" @click="aceptarCookies('esenciales')">Solo esenciales</button>
-                <button class="btn-primary" @click="aceptarCookies('todas')">Aceptar todas</button>
+                <button class="btn-outline" @click="aceptarCookies('esenciales')">{{ $t('cookieBanner.btnEssential') }}</button>
+                <button class="btn-primary" @click="aceptarCookies('todas')">{{ $t('cookieBanner.btnAll') }}</button>
             </div>
         </div>
 

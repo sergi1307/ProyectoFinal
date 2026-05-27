@@ -66,10 +66,18 @@
     .pulse-ring {
       position: absolute;
       top: -10%; left: -10%; width: 120%; height: 120%;
-      border: 2px solid $primary-blue;
       border-radius: 50%;
       animation: ripple 2s infinite;
       opacity: 0;
+      pointer-events: none;
+
+      &.ring-blue {
+        border: 2px solid $primary-blue;
+      }
+
+      &.ring-red {
+        border: 2px solid #f43f5e; 
+      }
     }
   }
 }

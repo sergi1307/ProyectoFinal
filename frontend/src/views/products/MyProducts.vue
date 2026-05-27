@@ -49,8 +49,8 @@ onMounted(cargarProductos);
     <div class="container-wide">
       <div class="header-section">
         <div class="titles">
-          <h1>Mis Productos</h1>
-          <p>{{ productosFiltrados.length }} productos publicados</p>
+          <h1>{{ $t('misProductos.titulo') }}</h1>
+          <p>{{ productosFiltrados.length }} {{ $t('misProductos.publicados') }}</p>
         </div>
         
         <div class="actions-right">
@@ -62,12 +62,12 @@ onMounted(cargarProductos);
             <input 
               type="text" 
               v-model="searchQuery"
-              placeholder="Buscar en mis productos..." 
+              :placeholder="$t('misProductos.buscarPlaceholder')" 
               class="search-input" 
             />
           </div>
           
-          <router-link to="/vender" class="btn-create">+ Crear Producto</router-link>
+          <router-link to="/vender" class="btn-create">{{ $t('misProductos.btnCrear') }}</router-link>
         </div>
       </div>
 

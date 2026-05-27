@@ -1,5 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import NavBar from '../NavBar.vue';
+import Footer from '../Footer.vue';
 
 const router = useRouter();
 
@@ -13,26 +15,20 @@ const volverAtras = () => {
 </script>
 
 <template>
+  <NavBar></NavBar>
   <div class="not-found-container">
     <div class="not-found-card">
-      <div class="icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="error-icon">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="m15 9-6 6"></path>
-          <path d="m9 9 6 6"></path>
-        </svg>
-      </div>
-
       <h1 class="error-code">404</h1>
-      <h2 class="error-title">¡Ups! Te has salido de la órbita</h2>
+      <h2 class="error-title">{{ $t('notFound.title') }}</h2>
       
       <p class="error-desc">
-        La página que buscas en Nexus no existe, ha sido movida o actualmente no está disponible.
+        {{ $t('notFound.desc') }}
       </p>
 
       <button @click="volverAtras" class="btn-home" style="cursor: pointer; border: none; font-family: inherit;">
-        Volver a la página anterior
+        {{ $t('notFound.goBack') }}
       </button>
     </div>
   </div>
+  <Footer></Footer>
 </template>
