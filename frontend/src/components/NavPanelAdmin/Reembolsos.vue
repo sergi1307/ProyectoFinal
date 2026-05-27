@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue';
 import api from "@/services/api";
 import { useToast } from '@/composables/useToast';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const { addToast } = useToast();
 const solicitudes = ref([]);
 const cargando = ref(true);
