@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://nexus-isaria.es/api';
+// const baseURL = 'https://nexus-isaria.es/api';
+const baseURL = 'http://localhost:8080/api';
 
 console.log('[Nexus API] Base URL loaded:', baseURL);
 
