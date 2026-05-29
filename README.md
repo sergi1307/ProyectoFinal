@@ -1,9 +1,12 @@
 # NEXUS 🚀
 
-![Estado del Proyecto](https://img.shields.io/badge/estado-pendiente-yellow)
-![Vue.js](https://img.shields.io/badge/vue.js-3.x-4FC08D)
-![Node.js](https://img.shields.io/badge/node.js-18.x-339933)
-![SQL](https://img.shields.io/badge/database-SQL-blue)
+![Estado del Proyecto](https://img.shields.io/badge/estado-en%20producción-brightgreen)
+![Laravel](https://img.shields.io/badge/Laravel-13.1.1-FF2D20)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4)
+![Vue.js](https://img.shields.io/badge/Vue.js-3.5.27-4FC08D)
+![Node.js](https://img.shields.io/badge/Node.js-v24.13.0-339933)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1)
+![Docker](https://img.shields.io/badge/Docker-contenedores-2496ED)
 
 ## 📖 Descripción
 
@@ -18,22 +21,34 @@ https://github.com/user-attachments/assets/57aa71ef-8d9e-46eb-bb0c-7129f941fdc1
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend
-* **Node.js**: Entorno de ejecución.
-* **Express**: Framework para la creación de la API REST.
-* **mysql2, cors**: Para la conexión con el frontend y con la base de datos.
-* **JWT (JsonWebToken)**: Para la autenticación y seguridad.
+* **Laravel 13.1.1**: Framework PHP con arquitectura API REST para gestionar la lógica de negocio de forma independiente del frontend.
+* **PHP 8.4**: Lenguaje base del servidor.
+* **Eloquent ORM**: Motor de base de datos que simplifica y optimiza la gestión de consultas complejas.
+* **Laravel Sanctum**: Autenticación y protección de la API.
+* **Laravel DomPDF**: Generación de documentos PDF (facturas, informes).
+* **Protección integrada** frente a ataques comunes: inyecciones SQL, XSS y CSRF.
 
 ### Frontend
-* **Vue.js 3**: Framework progresivo (Composition API).
-* **Vite**: Empaquetador y servidor de desarrollo.
-* **Vue Router**: Gestión de rutas.
-* **Axios / Fetch**: Consumo de la API.
+* **Vue.js 3.5.27**: Framework progresivo con arquitectura basada en componentes reactivos (Composition API).
+* **Vite**: Empaquetador de nueva generación para optimización de builds y HMR (Hot Module Replacement).
+* **Vue Router**: Gestión de rutas de la SPA.
+* **Axios / Fetch**: Consumo de la API REST.
+* **Vue I18n**: Internacionalización y soporte multiidioma.
+* **SASS**: Preprocesador CSS para estilos modulares y reutilizables.
+* **Vue Toastification**: Notificaciones emergentes.
 
 ### Base de Datos
-* **MySQL**: Diseño relacional con tablas normalizadas.
+* **MySQL 8.0**: Arquitectura relacional robusta con cumplimiento ACID.
+* **Motor InnoDB**: Optimizado para transacciones concurrentes y alta disponibilidad.
+* **Índices avanzados** y técnicas de replicación para un rendimiento eficiente y escalable.
+
+### Entorno - Docker
+* **Contenedor MySQL**: Almacenamiento de datos de la BD.
+* **Contenedor PHP (8.4-fpm)**: Ejecución de la lógica de negocio Laravel.
+* **Contenedor Nginx**: Servidor web y proxy inverso.
 
 ### Herramientas
-* **Git**: Control de versiones.
+* **Git / GitHub**: Control de versiones.
 * **Trello**: Gestión de tareas (Scrum/Kanban).
 * **Postman**: Pruebas de Endpoints.
 
@@ -42,41 +57,61 @@ https://github.com/user-attachments/assets/57aa71ef-8d9e-46eb-bb0c-7129f941fdc1
 Sigue estos pasos para levantar el proyecto en local.
 
 ### Prerrequisitos
-* Node.js (v16 o superior)
+* Docker y Docker Compose
+* Node.js (v20.19.0 o superior)
 * NPM
-* Motor SQL instalado o en un contenedor Docker
 * Git
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone [https://github.com/tu-usuario/nombre-repo.git](https://github.com/tu-usuario/nombre-repo.git)
+git clone https://github.com/tu-usuario/nombre-repo.git
 cd nombre-repo
 ```
 
-### 2. Configuración del Backend (API)
+### 2. Configuración del Backend (API Laravel)
+```bash
+cd backend/src
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+**Variables de Entorno:** Edita el archivo `.env` en la carpeta `backend/src` con la siguiente estructura:
+```env
+APP_NAME=Nexus
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8080
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=Nexus
+DB_USERNAME=nexus
+DB_PASSWORD=nexus
+
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+```
+
+### 3. Levantar los contenedores Docker
+**Desde la carpeta `backend`:**
 ```bash
 cd backend
-npm install
+docker compose up -d
 ```
 
-**Variables de Entorno:** Crea un archivo .env en la carpeta backend con la siguiente estructura:
-```code
-PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=tu_contraseña
-DB_NAME=nombre_base_datos
-JWT_SECRET=tu_palabra_secreta
-```
+Esto levantará automáticamente los tres servicios:
+- **mysql** en el puerto `3306`
+- **php-fpm** (Laravel)
+- **nginx** en el puerto `8080`
 
-**Para iniciar el servidor:**
+**Ejecutar migraciones y seeders:**
 ```bash
-npm run dev
-# o
-npm start
+docker exec -it <nombre_contenedor_php> php artisan migrate --seed
 ```
 
-### 3. Configuración del Frontend (Cliente)
+### 4. Configuración del Frontend (Cliente Vue)
 **En una nueva terminal:**
 ```bash
 cd frontend
@@ -88,39 +123,52 @@ npm install
 npm run dev
 ```
 
-### 4. Base de Datos
-**Abre una terminal:**
+El cliente estará disponible en `http://localhost:5173`
+
+### 5. Base de Datos
+El contenedor Docker inicializa la base de datos automáticamente con las credenciales definidas en `docker-compose.yml`. Si necesitas importar el esquema manualmente:
 ```bash
-docker exec -it mysql_docker mysql -u root -p  #Una vez hecho, introduce tu contraseña de administrador
-CREATE DATABASE NombreBaseDeDatos
-exit
+docker exec -i mysql_docker mysql -u nexus -pnexus Nexus < bd/init.sql
 ```
 
 ## 🗂️ Estructura del Proyecto
 **El proyecto sigue una arquitectura MVC (Modelo-Vista-Controlador):**
-```code
+```
 nombre-repo/
-├── backend/            # API REST (Node + Express)
+├── backend/                    # API REST (Laravel + PHP)
+│   ├── docker-compose.yml      # Orquestación de contenedores
+│   ├── nginx/                  # Configuración del servidor web
+│   ├── php/                    # Dockerfile PHP 8.4-fpm
+│   └── src/                    # Código fuente Laravel
+│       ├── app/
+│       │   ├── Http/Controllers/  # Lógica de las rutas
+│       │   └── Models/            # Modelos Eloquent
+│       ├── routes/
+│       │   └── api.php            # Definición de Endpoints
+│       └── database/              # Migraciones y seeders
+├── frontend/                   # SPA (Vue.js 3)
 │   ├── src/
-│   │   ├── controllers/# Lógica de las rutas
-│   │   ├── routes/     # Definición de Endpoints
-│   │   ├── models/     # Consultas SQL
-│   │   └── config/     # Conexión a BD
-├── frontend/           # SPA (Vue.js)
-│   ├── src/
-│   │   ├── components/ # Componentes reutilizables
-│   │   ├── views/      # Vistas principales
-│   │   ├── stores/     # Estado (Pinia)
-│   │   └── services/   # Llamadas a la API
-└── database/           # Scripts SQL y diagrama ER
+│   │   ├── components/         # Componentes reutilizables
+│   │   ├── views/              # Vistas principales
+│   │   ├── routes/             # Configuración Vue Router
+│   │   ├── services/           # Llamadas a la API
+│   │   └── composables/        # Lógica reutilizable (Composition API)
+│   └── vite.config.js
+└── bd/                         # Scripts SQL
+    └── init.sql
 ```
 
 ## ✨ Funcionalidades Principales
 
-* Registro e inicio de sesión de usuarios (Auth).
-* CRUD completo.
-* Filtrado y búsqueda de datos.
+* Registro e inicio de sesión de usuarios con autenticación via Sanctum.
+* CRUD completo de productos digitales (iconos, librerías, texturas...).
+* Sistema de carrito de compra y pasarela de pago.
+* Filtrado y búsqueda de productos por categoría.
 * Panel de administración protegido.
+* Sistema de reseñas y valoraciones.
+* Gestión de pedidos e incidencias.
+* Generación de facturas en PDF.
+* Soporte multiidioma (Vue I18n).
 
 ## ✒️ Autores
 * **Inés Álvarez Calle**
