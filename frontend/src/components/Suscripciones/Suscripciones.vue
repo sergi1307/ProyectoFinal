@@ -1,6 +1,6 @@
 <script setup>
+import api from "@/services/api";
 import { ref, computed } from "vue";
-import axios from "axios";
 import NavBar from "../NavBar.vue";
 import Footer from "../Footer.vue";
 import { useRouter } from "vue-router";
@@ -70,8 +70,8 @@ const suscribirse = async (planId) => {
 
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.post(
-      "http://localhost:8080/api/user/subscribe",
+    const response = await api.post(
+      "/user/subscribe",
       { plan: planParaEnviar },
       {
         headers: {

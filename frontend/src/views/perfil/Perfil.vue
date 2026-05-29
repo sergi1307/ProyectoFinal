@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import api from "@/services/api";
 import { useI18n } from "vue-i18n";
-import axios from "axios";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import { useToast } from "@/composables/useToast";
@@ -42,8 +42,8 @@ const cargarDatos = async () => {
 
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await axios.get(
-      `http://localhost:8080/api/perfil?nocache=${Date.now()}`,
+    const respuesta = await api.get(
+      `/perfil?nocache=${Date.now()}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       },
@@ -90,8 +90,8 @@ const actualizarPerfil = async () => {
       formulario.append("avatar", nuevaFotoArchivo.value);
     }
 
-    const respuesta = await axios.post(
-      "http://localhost:8080/api/perfil/update",
+    const respuesta = await api.post(
+      "/perfil/update",
       formulario,
       {
         headers: {
@@ -122,7 +122,7 @@ const confirmarEliminarCuenta = async () => {
   try {
     guardando.value = true;
     const token = localStorage.getItem("token");
-    await axios.delete("http://localhost:8080/api/perfil/delete", {
+    await api.delete("/perfil/delete", {
       headers: { Authorization: `Bearer ${token}` },
     });
     localStorage.clear();
@@ -137,7 +137,7 @@ const obtenerRutaAvatar = (ruta) => {
   if (!ruta || typeof ruta !== "string" || ruta.includes(".vue")) return null;
   return ruta.startsWith("http")
     ? ruta
-    : `http://localhost:8080/storage/${ruta}?t=${new Date().getTime()}`;
+    : `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${ruta}?t=${new Date().getTime()}`;
 };
 
 onMounted(() => {

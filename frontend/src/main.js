@@ -6,7 +6,9 @@ import axios from 'axios';
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000' 
+const baseURL = 'https://nexus-isaria.es/api';
+
+axios.defaults.baseURL = baseURL;
 axios.defaults.withCredentials = true;
 
 const app = createApp(App)

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue";
+import api from "@/services/api";
 import { useI18n } from "vue-i18n";
-import axios from "axios";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
@@ -35,7 +35,7 @@ const total = computed(() => {
 const cargarCarrito = async () => {
   try {
     cargando.value = true;
-    const res = await axios.get(`http://localhost:8080/api/cart`, {
+    const res = await api.get(`/cart`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     productosCarrito.value = res.data.map((item) => ({
@@ -59,8 +59,8 @@ const actualizarCantidad = async (item, nuevaCantidad) => {
   try {
     item.procesando = true;
 
-    await axios.put(
-      `http://localhost:8080/api/cart/${item.id_cart_item}`,
+    await api.put(
+      `/cart/${item.id_cart_item}`,
       { quantity: nuevaCantidad },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -89,7 +89,7 @@ const eliminarProducto = async (item) => {
   try {
     item.procesando = true;
 
-    await axios.delete(`http://localhost:8080/api/cart/${item.id_cart_item}`, {
+    await api.delete(`/cart/${item.id_cart_item}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -113,7 +113,7 @@ const eliminarProducto = async (item) => {
 const obtenerImagen = (ruta) => {
   if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
-  return `http://localhost:8080/storage/${ruta}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${ruta}`;
 };
 
 const manejarErrorImagen = (event) => {
@@ -135,8 +135,8 @@ const inicializarPaypal = () => {
           label: "pay",
         },
         createOrder: async () => {
-          const res = await axios.post(
-            "http://localhost:8080/api/paypal/create-order",
+          const res = await api.post(
+            "/paypal/create-order",
             { items: productosCarrito.value },
             { headers: { Authorization: `Bearer ${token}` } },
           );
@@ -146,8 +146,8 @@ const inicializarPaypal = () => {
         },
         onApprove: async (data) => {
           try {
-            await axios.post(
-              `http://localhost:8080/api/paypal/capture-order/${data.orderID}`,
+            await api.post(
+              `/paypal/capture-order/${data.orderID}`, // Ajusta la URL si hace falta
               {},
               { headers: { Authorization: `Bearer ${token}` } },
             );

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import "../../assets/css/auth.css";
@@ -31,7 +31,7 @@ const registrarUsuario = async () => {
   };
 
   try {
-    const response = await axios.post("http://localhost:8080/api/auth/registro", payload);
+    const response = await api.post("/auth/registro", payload);
     console.log("Registro realizado con éxito", response.data);
     
     router.push(`/verificar-email?email=${email.value}`);

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import axios from "axios";
+import api from "@/services/api";
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
 import ProductCard from "@/components/products/ProductCard.vue";
@@ -32,7 +32,7 @@ const cargandoTendencias = ref(true);
 
 const cargarDatosHome = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/api/products/destacados`, { headers: authHeader });
+    const res = await api.get(`/products/destacados`, { headers: authHeader });
     productosDestacados.value = res.data.data || res.data;
   } catch (e) {
     console.error("Error destacados:", e);
@@ -41,7 +41,7 @@ const cargarDatosHome = async () => {
   }
 
   try {
-    const res = await axios.get(`http://localhost:8080/api/products/tendencias`, { headers: authHeader });
+    const res = await api.get(`/products/tendencias`, { headers: authHeader });
     productosTendencia.value = res.data;
   } catch (e) {
     console.error("Error tendencias:", e);
@@ -58,8 +58,8 @@ const manejarFavorito = async (producto) => {
     return;
   }
   try {
-    const res = await axios.post(
-      `http://localhost:8080/api/products/${producto.id}/favorite`,
+    const res = await api.post(
+      `/products/${producto.id}/favorite`,
       {},
       { headers: authHeader },
     );

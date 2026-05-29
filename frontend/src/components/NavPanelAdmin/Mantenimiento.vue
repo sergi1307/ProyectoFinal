@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import api from "@/services/api";
 import { useToast } from '@/composables/useToast';
 
 const { addToast } = useToast();
@@ -11,7 +11,7 @@ const lastUpdate = ref(null);
 const fetchStatus = async () => {
   try {
     const token = localStorage.getItem("token");
-    const res = await axios.get(`http://localhost:8080/api/admin/maintenance-status`, {
+    const res = await api.get(`/admin/maintenance-status`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -41,7 +41,7 @@ const toggleStatus = async () => {
   try {
     const token = localStorage.getItem("token");
     const nuevoEstado = !isMaintenance.value;
-    await axios.post(`http://localhost:8080/api/admin/toggle-maintenance`, { active: nuevoEstado }, {
+    await api.post(`/admin/toggle-maintenance`, { active: nuevoEstado }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

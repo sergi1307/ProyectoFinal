@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import "../../assets/css/auth.css";
@@ -18,7 +18,7 @@ const enviarDatos = async () => {
   if (!email.value || !password.value) return;
 
   try {
-    const response = await axios.post("http://localhost:8080/api/auth/login", {
+    const response = await api.post("/auth/login", {
       email: email.value,
       password: password.value,
     });
@@ -32,7 +32,7 @@ const enviarDatos = async () => {
       localStorage.setItem('usuario', JSON.stringify(userData));
 
       try {
-        const resCart = await axios.get("http://localhost:8080/api/cart", {
+        const resCart = await api.get("/cart", {
           headers: { Authorization: `Bearer ${data.token}` },
         });
 

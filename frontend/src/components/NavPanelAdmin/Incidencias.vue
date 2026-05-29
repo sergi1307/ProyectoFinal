@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import { useToast } from '@/composables/useToast';
 
 const { addToast } = useToast();
@@ -26,7 +26,7 @@ const cargarIncidencias = async () => {
 
   try {
     loading.value = true;
-    const response = await axios.get("http://localhost:8080/api/incidents", {
+    const response = await api.get("/incidents", {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -46,8 +46,8 @@ const cargarIncidencias = async () => {
 const cambiarEstado = async (id, nuevoEstado) => {
   const token = localStorage.getItem("token");
   try {
-    const response = await axios.put(
-      `http://localhost:8080/api/incidents/${id}`,
+    const response = await api.put(
+      `/incidents/${id}`,
       { status: nuevoEstado },
       {
         headers: {

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 
 const ingresosTotales = ref(0);
 const pedidosTotales = ref(0);
@@ -13,8 +13,8 @@ const obtenerDatosIngresos = async () => {
     cargando.value = true;
     const token = localStorage.getItem("token");
 
-    const res = await axios.get(
-      `http://localhost:8080/api/admin/ingresos`,
+    const res = await api.get(
+      `/admin/ingresos`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

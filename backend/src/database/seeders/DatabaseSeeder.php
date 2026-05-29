@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $vendedoresIds = [];
-        for ($i = 0; $i < 14; $i++) {
+        for ($i = 0; $i < 10; $i++) { // Reducido un poco para 50 productos
             $user = User::create([
                 'name' => $faker->company . ' Digital Studio',
                 'email' => $faker->unique()->safeEmail,
@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $compradoresIds = [];
-        for ($i = 0; $i < 35; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $user = User::create([
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
@@ -83,8 +83,8 @@ class DatabaseSeeder extends Seeder
             $catIds[$cat] = $c->id;
         }
 
-        // --- 3. PRODUCTOS DIGITALES ---
-        $this->command->info('Creando 200 productos con imágenes de animales...');
+        // --- 3. PRODUCTOS DIGITALES (REDUCIDO A 50) ---
+        $this->command->info('Creando 50 productos con imágenes aleatorias...');
         $productosIds = [];
         
         $nombresPorCat = [
@@ -102,7 +102,7 @@ class DatabaseSeeder extends Seeder
             'Otros' => ['Pack de Iconos SVG', 'Pinceles para Procreate', 'Manual de Usuario Genérico', 'Lista de Contactos B2B', 'Filtros para Redes Sociales']
         ];
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 50; $i++) { // <-- CAMBIADO A 50
             $categoriaRandom = $faker->randomElement($categorias);
             $nombreBase = $faker->randomElement($nombresPorCat[$categoriaRandom]);
             $titulo = $nombreBase . ' ' . $faker->word; 
@@ -115,16 +115,16 @@ class DatabaseSeeder extends Seeder
                 'file_size' => $faker->numberBetween(5242880, 524288000),
                 'image_url' => 'https://picsum.photos/seed/' . $i . '/800/600', 
                 'user_id' => $faker->randomElement($vendedoresIds),
-                'active' => $faker->boolean(95),
+                'active' => true, // Más productos activos para que se vean en la tienda
             ]);
 
             $product->categories()->attach($catIds[$categoriaRandom]);
             $productosIds[] = $product->id;
         }
 
-        // --- 4. PEDIDOS ---
+        // --- 4. PEDIDOS (REDUCIDO PARA 50 PRODUCTOS) ---
         $this->command->info('Creando pedidos y ventas...');
-        for ($i = 0; $i < 300; $i++) {
+        for ($i = 0; $i < 100; $i++) { // Reducido a 100 para no saturar los 50 productos
             $buyerId = $faker->randomElement($compradoresIds);
             $fechaCompra = Carbon::now()->subDays($faker->numberBetween(1, 365));
             $estado = $faker->randomElement(['completed', 'completed', 'completed', 'pending', 'cancelled']);
@@ -138,7 +138,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $fechaCompra,
             ]);
 
-            $numProductos = $faker->numberBetween(1, 3);
+            $numProductos = $faker->numberBetween(1, 2);
             $totalPedido = 0;
             $productosComprados = $faker->randomElements($productosIds, $numProductos);
 
@@ -159,7 +159,7 @@ class DatabaseSeeder extends Seeder
 
         // --- 5. RESEÑAS ---
         $this->command->info('Escribiendo reseñas...');
-        for ($i = 0; $i < 400; $i++) {
+        for ($i = 0; $i < 150; $i++) { // Reducido acorde
             Review::create([
                 'rating' => $faker->randomFloat(1, 3.5, 5.0),
                 'comment' => $faker->randomElement(['Excelente calidad', 'Justo lo que necesitaba', 'Funciona perfectamente', 'Muy buen soporte del vendedor', 'Gran relación calidad-precio']),
@@ -170,10 +170,10 @@ class DatabaseSeeder extends Seeder
         }
 
         // --- 6. INCIDENCIAS ---
-        $this->command->info('Generando 35 incidencias...');
+        $this->command->info('Generando incidencias...');
         $asuntos = ['Error al descargar archivo', 'Duda sobre licencia', 'Factura no recibida', 'El archivo ZIP está dañado', 'Problema con el pago'];
         
-        for ($i = 0; $i < 35; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             Incident::create([
                 'user_id' => $faker->randomElement($users)->id,
                 'subject' => $faker->randomElement($asuntos),
@@ -184,7 +184,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // --- 7. REPORTES DE PRODUCTOS ---
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             Report::create([
                 'product_id' => $faker->randomElement($productosIds),
                 'user_id' => $faker->randomElement($compradoresIds),
@@ -194,6 +194,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✅ ¡Éxito! DB rellena: 50 Usuarios, 12 Categorías, 200 Productos (Animales), 300 Pedidos y 35 Incidencias.');
+        $this->command->info('✅ ¡Éxito! DB rellena: ~30 Usuarios, 12 Categorías, 50 Productos, 100 Pedidos y 20 Incidencias.');
     }
 }

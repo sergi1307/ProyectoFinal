@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
+import api from "@/services/api";
 import { useI18n } from "vue-i18n";
 import imagenPorDefecto from "@/assets/logos/Logo.png";
 import Navbar from "@/components/NavBar.vue";
@@ -59,7 +59,7 @@ const obtenerProducto = async () => {
     const token = localStorage.getItem("token");
     const { id } = route.params;
 
-    const res = await axios.get(`http://localhost:8080/api/products/${id}`, {
+    const res = await api.get(`/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -74,7 +74,7 @@ const obtenerProducto = async () => {
 const obtenerImagen = (ruta) => {
   if (!ruta) return imagenPorDefecto;
   if (ruta.startsWith("http")) return ruta;
-  return `http://localhost:8080/storage/${ruta}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${ruta}`;
 };
 
 const manejarErrorImagen = (event) => {
@@ -86,8 +86,8 @@ const agregarAlCarrito = async () => {
     agregando.value = true;
     const token = localStorage.getItem("token");
 
-    await axios.post(
-      `http://localhost:8080/api/cart`,
+    await api.post(
+      `/cart`,
       { product_id: producto.value.id, quantity: 1 },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -107,14 +107,14 @@ const agregarAlCarrito = async () => {
 const obtenerRutaAvatar = (ruta) => {
   if (!ruta || ruta === "0" || ruta === 0) return null;
   const limpia = ruta.replace(/^storage\//, "").replace(/^\//, "");
-  return `http://localhost:8080/storage/${limpia}`;
+  return `${import.meta.env.VITE_STORAGE_BASE_URL || 'https://nexus-isaria.es/storage'}/${limpia}`;
 };
 
 const toggleFavorito = async () => {
   try {
     const token = localStorage.getItem("token");
-    const res = await axios.post(
-      `http://localhost:8080/api/products/${producto.value.id}/favorite`,
+    const res = await api.post(
+      `/products/${producto.value.id}/favorite`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -141,8 +141,8 @@ const enviarReview = async () => {
     enviandoReview.value = true;
     const token = localStorage.getItem("token");
 
-    await axios.post(
-      `http://localhost:8080/api/products/${producto.value.id}/reviews`,
+    await api.post(
+      `/products/${producto.value.id}/reviews`,
       nuevaReview.value,
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -170,8 +170,8 @@ const enviarDenuncia = async () => {
       return;
     }
     token = token.replace(/^"(.*)"$/, "$1");
-    await axios.post(
-      `http://localhost:8080/api/products/${producto.value.id}/report`,
+    await api.post(
+      `/products/${producto.value.id}/report`,
       reporte.value,
       {
         headers: {

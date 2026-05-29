@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import axios from "axios";
+import { ref, computed, onMounted } from 'vue';
+import api from "@/services/api";
 
 const logs = ref([]);
 const loading = ref(false);
@@ -12,10 +12,10 @@ const fetchLogs = async () => {
   const token = localStorage.getItem("token");
   loading.value = true;
   try {
-    const response = await axios.get(`http://localhost:8080/api/admin/logs`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await api.get(`/admin/logs`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
     logs.value = response.data;
   } catch (error) {

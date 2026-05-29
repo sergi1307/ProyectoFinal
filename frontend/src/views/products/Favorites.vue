@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
+import api from "@/services/api";
 import NavBar from "../../components/NavBar.vue";
 import Footer from "../../components/Footer.vue";
 import ProductCard from "../../components/products/ProductCard.vue";
@@ -11,7 +11,7 @@ const cargando = ref(true);
 const cargarFavoritos = async () => {
   try {
     cargando.value = true;
-    const res = await axios.get('http://localhost:8080/api/products/favorites', {
+    const res = await api.get('/products/favorites', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     favoritos.value = res.data;
@@ -24,7 +24,7 @@ const cargarFavoritos = async () => {
 
 const manejarFavorito = async (productId) => {
   try {
-    const res = await axios.post(`http://localhost:8080/api/products/${productId}/favorite`, {}, {
+    const res = await api.post(`/products/${productId}/favorite`, {}, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     
